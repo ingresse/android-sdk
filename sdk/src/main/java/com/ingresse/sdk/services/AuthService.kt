@@ -2,26 +2,25 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
-import com.ingresse.sdk.model.response.GuestJSON
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.guard
-import com.ingresse.sdk.model.request.GuestList
-import com.ingresse.sdk.request.Entrance
+import com.ingresse.sdk.model.request.Login
+import com.ingresse.sdk.model.response.LoginJSON
+import com.ingresse.sdk.request.Auth
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-class EntranceService(private val client: IngresseClient) {
+class AuthService(private val client: IngresseClient) {
     private var host = Host.API
-    private var service: Entrance
+    private var service: Auth
 
-    private var mGuestListCall: Call<String>? = null
+    private var mLoginCall: Call<String>? = null
 
     init {
         val adapter = Retrofit.Builder()
@@ -29,26 +28,33 @@ class EntranceService(private val client: IngresseClient) {
             .baseUrl(URLBuilder(host, client.environment).build())
             .build()
 
-        service = adapter.create(Entrance::class.java)
+        service = adapter.create(Auth::class.java)
     }
 
-    fun cancelGuestList() {
-        mGuestListCall?.cancel()
+    /**
+     * Method to cancel a login request
+     */
+    fun cancelLogin() {
+        mLoginCall?.cancel()
     }
 
-    fun getGuestList(request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
-        mGuestListCall = service.getEventGuestList(
+    /**
+     * Login with email and password
+     *
+     * @param request - all parameters used in auth interface
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onNetworkFail = network error callback
+     */
+    fun loginWithEmail(request: Login, onSuccess: (LoginJSON) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
+        mLoginCall = service.loginWithEmail(
             apikey = client.key,
-            eventId = request.eventId,
-            sessionId = request.sessionId,
-            page = request.page,
-            pageSize = request.pageSize,
-            userToken = request.userToken,
-            dateFrom = request.from
+            email = request.email,
+            password = request.password
         )
 
-        val callback = object : IngresseCallback<Response<Array<GuestJSON>>> {
-            override fun onSuccess(data: Response<Array<GuestJSON>>?) {
+        val callback = object : IngresseCallback<Response<LoginJSON>?> {
+            override fun onSuccess(data: Response<LoginJSON>?) {
                 val response = data?.responseData
                 if (!guard(data, response)) {
                     onError(APIError.default)
@@ -67,8 +73,7 @@ class EntranceService(private val client: IngresseClient) {
             }
         }
 
-        val type = object: TypeToken<Response<Array<GuestJSON>>>() {}.type
-        mGuestListCall?.enqueue(RetrofitCallback(type, callback))
+        val type = object: TypeToken<Response<LoginJSON>>() {}.type
+        mLoginCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
-
