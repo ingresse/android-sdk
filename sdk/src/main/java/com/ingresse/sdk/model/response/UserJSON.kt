@@ -4,5 +4,5 @@ class UserJSON {
     val userId: Int = 0
     val token: String = ""
     val authToken: String = ""
-    //val data: UserDataJSON?
+    var data: UserDataJSON = UserDataJSON()
 }
