@@ -104,25 +104,25 @@ class AuthService(private val client: IngresseClient) {
      * @param onError - error callback
      */
     fun getUserData(request: UserData, onSuccess: (UserDataJSON) -> Unit, onError: (APIError) -> Unit) {
-        val fields= listOf(
-            "id",
-            "name",
-            "lastname",
-            "document",
-            "email",
-            "zip",
-            "number",
-            "complement",
-            "city",
-            "state",
-            "street",
-            "district",
-            "phone",
-            "verified",
-            "fbUserId",
-            "type",
-            "pictures",
-            "picture")
+        val fields= mutableListOf<String>()
+        fields.add("id")
+        fields.add("name")
+        fields.add("lastname")
+        fields.add("document")
+        fields.add("email")
+        fields.add("zip")
+        fields.add("number")
+        fields.add("complement")
+        fields.add("city")
+        fields.add("state")
+        fields.add("street")
+        fields.add("district")
+        fields.add("phone")
+        fields.add("verified")
+        fields.add("fbUserId")
+        fields.add("type")
+        fields.add("pictures")
+        fields.add("picture")
 
         val customField = request.fields?.let { it } ?: fields.joinToString(",")
         mUserDataCall = service.getUserData(
