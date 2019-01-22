@@ -15,4 +15,10 @@ interface Auth {
     fun loginWithEmail(@Query("apikey") apikey: String,
                        @Field("email") email: String,
                        @Field("password") password: String) : Call<String>
+
+    @GET("/user/{userId}")
+    fun getUserData(@Path("userId") userId: Int,
+                    @Query("apikey") apikey: String,
+                    @Query("usertoken") userToken: String,
+                    @Query("fields") fields: String) : Call<String>
 }
