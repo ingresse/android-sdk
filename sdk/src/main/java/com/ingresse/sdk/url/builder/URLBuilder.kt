@@ -12,11 +12,10 @@ enum class Environment(val prefix: String) {
     PROD(""),
     HML("hml-"),
     TEST("test-"),
-    STG("stg-"),
-    UNDEFINED("undefined-")
+    STG("stg-")
 }
 
-class URLBuilder(private val host: Host, private val environment: Environment) {
+class URLBuilder(private val host: Host, private val environment: Environment = Environment.PROD) {
     private val hostPrefix = "https://"
     fun build(): String {
         if (host == Host.SEARCH && environment == Environment.HML) {
