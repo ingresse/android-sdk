@@ -63,6 +63,11 @@ class AuthService(private val client: IngresseClient) {
                     return
                 }
 
+                if (response?.message != null) {
+                    onSuccess(response)
+                    return
+                }
+
                 response?.data?.let { userJSON ->
                     val request = UserData(userJSON.userId, userJSON.token)
                     getUserData(request, {userData ->
