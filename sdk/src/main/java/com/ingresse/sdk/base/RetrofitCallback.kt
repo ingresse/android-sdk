@@ -11,13 +11,26 @@ import java.lang.reflect.Type
 class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : Callback<String> {
     override fun onResponse(call: Call<String>, response: Response<String>) {
         val body = response.body()
+        val errorBody = response.errorBody()?.string()
+        val gson = Gson()
 
-        if (body == null || body == "") {
+        if (!errorBody.isNullOrEmpty()) {
+            try {
+                val obj = gson.fromJson(errorBody, ErrorData::class.java)
+                val apiError = APIError.Builder().setCode(obj.code ?: 0)
+                callback.onError(apiError.build())
+            } catch (e: RuntimeException) {
+                callback.onError(APIError.default)
+            }
+
+            return
+        }
+
+        if (body.isNullOrEmpty()) {
             callback.onError(APIError.default)
             return
         }
 
-        val gson = Gson()
         if (!body.contains(ERROR_PREFIX)) {
             try {
                 val obj = gson.fromJson<T>(body, type)
@@ -32,15 +45,10 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
         val errorResponse = gson.fromJson(body, Error::class.java)
         val errorData = errorResponse.responseError
 
-        if (errorData == null) {
-            callback.onError(APIError.default)
-            return
-        }
-
         val error = APIError.Builder()
-                .setCode(errorData.code)
-                .setError(errorData.message)
-                .setCategory(errorData.category)
+                .setCode(errorData.code ?: 0)
+                .setError(errorData.message ?: "")
+                .setCategory(errorData.category ?: "")
                 .build()
 
         callback.onError(error)
