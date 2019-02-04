@@ -19,6 +19,7 @@ class EntranceService(private val client: IngresseClient) {
     private var service: Entrance
 
     private var mGuestListCall: Call<String>? = null
+    private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
         val adapter = Retrofit.Builder()
@@ -29,20 +30,28 @@ class EntranceService(private val client: IngresseClient) {
         service = adapter.create(Entrance::class.java)
     }
 
-    fun cancelGuestList() {
-        mGuestListCall?.cancel()
+    fun cancelGuestList(concurrent: Boolean = false) {
+        if (!concurrent) {
+            mGuestListCall?.cancel()
+            return
+        }
+
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
     }
 
-    fun getGuestList(request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
-        mGuestListCall = service.getEventGuestList(
-            apikey = client.key,
-            eventId = request.eventId,
-            sessionId = request.sessionId,
-            page = request.page,
-            pageSize = request.pageSize,
-            userToken = request.userToken,
-            dateFrom = request.from
+    fun getGuestList(concurrent: Boolean = false, request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
+        val call = service.getEventGuestList(
+                apikey = client.key,
+                eventId = request.eventId,
+                sessionId = request.sessionId,
+                page = request.page,
+                pageSize = request.pageSize,
+                userToken = request.userToken,
+                dateFrom = request.from
         )
+
+        if (!concurrent) mGuestListCall = call else mConcurrentCalls.add(call)
 
         val callback = object : IngresseCallback<Response<Array<GuestJSON>>> {
             override fun onSuccess(data: Response<Array<GuestJSON>>?) {
@@ -52,20 +61,23 @@ class EntranceService(private val client: IngresseClient) {
                     return
                 }
 
+                if (!concurrent) mGuestListCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response!!)
             }
 
             override fun onError(error: APIError) {
+                if (!concurrent) mGuestListCall = null else mConcurrentCalls.remove(call)
                 onError(error)
             }
 
             override fun onRetrofitError(error: Throwable) {
+                if (!concurrent) mGuestListCall = null else mConcurrentCalls.remove(call)
                 onNetworkFail(error.localizedMessage)
             }
         }
 
         val type = object: TypeToken<Response<Array<GuestJSON>>>() {}.type
-        mGuestListCall?.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback))
     }
 }
 
