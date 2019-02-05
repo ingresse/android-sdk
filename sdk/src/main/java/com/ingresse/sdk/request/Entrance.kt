@@ -37,5 +37,5 @@ interface Entrance {
     fun checkin(@Query("apikey") apiKey: String,
                 @Path("eventId") eventId: String,
                 @Query("usertoken") userToken: String,
-                @Body tickets: Array<CheckinTicket>) : Call<String>
+                @Body tickets: List<CheckinTicket>) : Call<String>
 }

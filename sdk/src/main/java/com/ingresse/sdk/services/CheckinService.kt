@@ -7,10 +7,9 @@ import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
-import com.ingresse.sdk.helper.guard
 import com.ingresse.sdk.model.request.CheckinRequest
+import com.ingresse.sdk.model.response.CheckinStatus
 import com.ingresse.sdk.model.response.GuestCheckinJSON
-import com.ingresse.sdk.model.response.GuestJSON
 import com.ingresse.sdk.request.Entrance
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -33,52 +32,70 @@ class CheckinService(private val client: IngresseClient) {
         service = adapter.create(Entrance::class.java)
     }
 
-    fun cancelCheckin(concurrent: Boolean = false) {
-        if (!concurrent) {
-            mCheckinCall?.cancel()
-            return
-        }
+    fun cancelSingleCheckin() {
+        mCheckinCall?.cancel()
+    }
 
+    fun cancelCheckin() {
         mConcurrentCalls.forEach { it.cancel() }
     }
 
-    fun checkin(concurrent: Boolean = false, request: CheckinRequest, onSuccess: (Array<GuestCheckinJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
+    fun checkin(request: CheckinRequest,
+                onSuccess: (tickets: List<GuestCheckinJSON>) -> Unit,
+                onFail: (tickets: List<GuestCheckinJSON>) -> Unit,
+                onError: (APIError) -> Unit,
+                onNetworkFail: (String) -> Unit) {
+
         val call = service.checkin(
                 apiKey = client.key,
                 eventId = request.eventId,
                 userToken = request.userToken,
                 tickets = request.tickets)
 
-        if (!concurrent) mCheckinCall = call else mConcurrentCalls.add(call)
+        mConcurrentCalls.add(call)
 
         val callback = object : IngresseCallback<Response<Array<GuestCheckinJSON>>> {
             override fun onSuccess(data: Response<Array<GuestCheckinJSON>>?) {
-                val response = data?.responseData
-                if (!guard(data, response)) {
+                if (data?.responseData?.data == null) {
                     onError(APIError.default)
                     return
                 }
 
-                if (!concurrent) mCheckinCall = null else mConcurrentCalls.remove(call)
-                onSuccess(response!!)
+                val response = data.responseData?.data
+                val success = response?.filter { it.getStatus() == CheckinStatus.UPDATED } ?: emptyList()
+                val fail = response?.filter { it.getStatus() != CheckinStatus.UPDATED } ?: emptyList()
+
+                mConcurrentCalls.remove(call)
+
+                onFail(fail)
+                onSuccess(success)
             }
 
             override fun onError(error: APIError) {
-                if (!concurrent) mCheckinCall = null else mConcurrentCalls.remove(call)
+                mConcurrentCalls.remove(call)
                 onError(error)
             }
 
             override fun onRetrofitError(error: Throwable) {
-                if (!concurrent) mCheckinCall = null else mConcurrentCalls.remove(call)
+                mConcurrentCalls.remove(call)
                 onNetworkFail(error.localizedMessage)
             }
         }
 
-        val type = object: TypeToken<Response<Array<GuestJSON>>>() {}.type
+        val type = object: TypeToken<Response<Array<GuestCheckinJSON>>>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 
-    fun singleCheckin(request: CheckinRequest, onSuccess: (GuestCheckinJSON) -> Unit, onFail: (GuestCheckinJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun singleCheckin(request: CheckinRequest,
+                      onSuccess: (GuestCheckinJSON) -> Unit,
+                      onFail: (ticket: GuestCheckinJSON, reason: CheckinStatus) -> Unit,
+                      onError: (APIError) -> Unit,
+                      onTimeout: () -> Unit) {
 
+        mCheckinCall = service.checkin(
+                apiKey = client.key,
+                eventId = request.eventId,
+                userToken = request.userToken,
+                tickets = request.tickets)
     }
 }
