@@ -18,6 +18,13 @@ interface User {
                     @Query("usertoken") userToken: String,
                     @Query("fields") fields: String) : Call<String>
 
+    /**
+     * Update user basic infos
+     *
+     * @param userId - id from user
+     * @param userToken - token from user
+     * @param params - object with infos to update
+     */
     @POST("/user/{userId}")
     fun updateBasicInfos(@Path("userId") userId: Int,
                          @Query("apikey") apikey: String,

@@ -113,31 +113,22 @@ class UserService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
             override fun onSuccess(data: Response<UserUpdatedJSON>?) {
-                val response = data?.responseData
-                if (response == null) {
-                    onError(APIError.default)
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                if (response.status == null) return onError(APIError.default)
+
+                if (!response.status) {
+                    if (response.message == null) return onError(APIError.default)
+
+                    val apiError = APIError()
+                    apiError.message = response.message .joinToString(",")
+                    apiError.title = "Verifique suas informações"
+                    apiError.code = 0
+                    onError(apiError)
                     return
                 }
 
-                response.status?.let { status ->
-                    if (!status) {
-                        response.message?.let { messages ->
-                            val apiError = APIError()
-                            apiError.message = messages.joinToString(",")
-                            apiError.title = "Verifique suas informações"
-                            apiError.code = 0
-                            onError(apiError)
-                            return
-                        }
-
-                        onError(APIError.default)
-                        return
-                    }
-
-                    response.data?.let { data -> onSuccess(data) }
-                }
-
-                onError(APIError.default)
+                response.data?.let { data -> onSuccess(data) }
             }
 
             override fun onError(error: APIError) {
