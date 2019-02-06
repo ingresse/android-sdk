@@ -117,18 +117,18 @@ class UserService(private val client: IngresseClient) {
 
                 if (response.status == null) return onError(APIError.default)
 
-                if (!response.status) {
-                    if (response.message == null) return onError(APIError.default)
-
-                    val apiError = APIError()
-                    apiError.message = response.message .joinToString(",")
-                    apiError.title = "Verifique suas informações"
-                    apiError.code = 0
-                    onError(apiError)
+                if (response.status) {
+                    response.data?.let { data -> onSuccess(data) }
                     return
                 }
 
-                response.data?.let { data -> onSuccess(data) }
+                if (response.message == null) return onError(APIError.default)
+
+                val apiError = APIError()
+                apiError.message = response.message .joinToString(",")
+                apiError.title = "Verifique suas informações"
+                apiError.code = 0
+                onError(apiError)
             }
 
             override fun onError(error: APIError) {
