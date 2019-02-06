@@ -6,11 +6,8 @@ import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
-import com.ingresse.sdk.helper.guard
-import com.ingresse.sdk.model.request.Login
-import com.ingresse.sdk.model.request.UserData
-import com.ingresse.sdk.model.response.LoginJSON
-import com.ingresse.sdk.model.response.UserDataJSON
+import com.ingresse.sdk.model.request.CompanyLogin
+import com.ingresse.sdk.model.response.CompanyLoginJSON
 import com.ingresse.sdk.request.Auth
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder
@@ -22,8 +19,7 @@ class AuthService(private val client: IngresseClient) {
     private var host = Host.API
     private var service: Auth
 
-    private var mLoginCall: Call<String>? = null
-    private var mUserDataCall: Call<String>? = null
+    private var mCompanyLoginCall: Call<String>? = null
 
     init {
         val adapter = Retrofit.Builder()
@@ -35,48 +31,36 @@ class AuthService(private val client: IngresseClient) {
     }
 
     /**
-     * Method to cancel a login request
+     * Method to cancel a company login request
      */
-    fun cancelLogin() {
-        mLoginCall?.cancel()
+    fun cancelCompanyLogin() {
+        mCompanyLoginCall?.cancel()
     }
 
     /**
-     * Login with email and password
+     * Company login with email and password
      *
      * @param request - all parameters used in auth interface
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun loginWithEmail(request: Login, onSuccess: (LoginJSON) -> Unit, onError: (APIError) -> Unit) {
-        mLoginCall = service.loginWithEmail(
+    fun companyLoginWithEmail(request: CompanyLogin, onSuccess: (CompanyLoginJSON) -> Unit, onError: (APIError) -> Unit) {
+        mCompanyLoginCall = service.companyLoginWithEmail(
             apikey = client.key,
             email = request.email,
             password = request.password
         )
 
-        val callback = object : IngresseCallback<Response<LoginJSON>?> {
-            override fun onSuccess(data: Response<LoginJSON>?) {
+        val callback = object : IngresseCallback<Response<CompanyLoginJSON>?> {
+            override fun onSuccess(data: Response<CompanyLoginJSON>?) {
                 val response = data?.responseData
-                if (!guard(data, response)) {
+
+                if (response == null) {
                     onError(APIError.default)
                     return
                 }
 
-                if (response?.message != null) {
-                    onSuccess(response)
-                    return
-                }
-
-                response?.data?.let { userJSON ->
-                    val request = UserData(userJSON.userId, userJSON.token)
-                    getUserData(request, {userData ->
-                        response.data?.data = userData
-                        onSuccess(response)
-                    }, {
-                        onError(it)
-                    })
-                }
+                onSuccess(response)
             }
 
             override fun onError(error: APIError) {
@@ -90,76 +74,7 @@ class AuthService(private val client: IngresseClient) {
             }
         }
 
-        val type = object: TypeToken<Response<LoginJSON>>() {}.type
-        mLoginCall?.enqueue(RetrofitCallback(type, callback))
-    }
-
-    /**
-     * Method to cancel user data request
-     */
-    fun cancelUserData() {
-        mUserDataCall?.cancel()
-    }
-
-    /**
-     * Get user data
-     *
-     * @param request - all parameters used for retrieve user data
-     * @param onSuccess - success callback
-     * @param onError - error callback
-     */
-    fun getUserData(request: UserData, onSuccess: (UserDataJSON) -> Unit, onError: (APIError) -> Unit) {
-        val fields= mutableListOf<String>()
-        fields.add("id")
-        fields.add("name")
-        fields.add("lastname")
-        fields.add("document")
-        fields.add("email")
-        fields.add("zip")
-        fields.add("number")
-        fields.add("complement")
-        fields.add("city")
-        fields.add("state")
-        fields.add("street")
-        fields.add("district")
-        fields.add("phone")
-        fields.add("verified")
-        fields.add("fbUserId")
-        fields.add("type")
-        fields.add("pictures")
-        fields.add("picture")
-
-        val customField = request.fields?.let { it } ?: fields.joinToString(",")
-        mUserDataCall = service.getUserData(
-            userId = request.userId,
-            apikey = client.key,
-            userToken = request.userToken,
-            fields = customField
-        )
-
-        val callback = object : IngresseCallback<Response<UserDataJSON>?> {
-            override fun onSuccess(data: Response<UserDataJSON>?) {
-                val response = data?.responseData
-                if (!guard(data, response)) {
-                    onError(APIError.default)
-                    return
-                }
-
-                onSuccess(response!!)
-            }
-
-            override fun onError(error: APIError) {
-                onError(error)
-            }
-
-            override fun onRetrofitError(error: Throwable) {
-                val apiError = APIError()
-                apiError.message = error.localizedMessage
-                onError(apiError)
-            }
-        }
-
-        val type = object: TypeToken<Response<UserDataJSON>>() {}.type
-        mUserDataCall?.enqueue(RetrofitCallback(type, callback))
+        val type = object: TypeToken<Response<CompanyLoginJSON>>() {}.type
+        mCompanyLoginCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
