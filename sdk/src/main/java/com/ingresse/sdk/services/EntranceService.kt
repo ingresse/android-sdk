@@ -71,4 +71,3 @@ class EntranceService(private val client: IngresseClient) {
         mGuestListCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
-

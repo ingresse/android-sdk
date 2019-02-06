@@ -1,8 +1,9 @@
 package com.ingresse.sdk.model.response
 
-class UserJSON {
+class CompanyDataJSON {
     val userId: Int = 0
     val token: String = ""
     val authToken: String = ""
-    var data: UserDataJSON = UserDataJSON()
+    val company: CompanyJSON? = null
+    val application: CompanyApplicationJSON? = null
 }
