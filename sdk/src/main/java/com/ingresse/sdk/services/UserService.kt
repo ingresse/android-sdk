@@ -122,10 +122,10 @@ class UserService(private val client: IngresseClient) {
                     return
                 }
 
-                if (response.message == null) return onError(APIError.default)
+                val messages = response.message ?: return onError(APIError.default)
 
                 val apiError = APIError()
-                apiError.message = response.message .joinToString(",")
+                apiError.message = messages.joinToString(", ")
                 apiError.title = "Verifique suas informações"
                 apiError.code = 0
                 onError(apiError)
