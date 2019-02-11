@@ -1,15 +1,20 @@
 package com.ingresse.sdk.errors
 
+import java.util.*
 import kotlin.collections.HashMap
 
 object IngresseErrors {
-    private val errorTitles: HashMap<Int, String> = hashMapOf(
-            Pair(6001, "Ops!")
-    )
+    private val errors = Properties()
 
-    private val errors: HashMap<Int, String> = hashMapOf(
-            Pair(6001, "Erro codigo 6001")
-    )
+    init {
+        val locale = Locale.getDefault().language
+        val fileName = "res/raw/errors_$locale.properties"
+        try {
+            val input = this.javaClass.classLoader?.getResourceAsStream(fileName)
+            errors.load(input)
+        } catch (ignored: Exception) {}
+    }
+
 
     private val defaults: HashMap<String, String> = hashMapOf(
             Pair("title", "Ops!"),
@@ -17,9 +22,9 @@ object IngresseErrors {
             Pair("error_no_code", "Algo de errado")
     )
 
-    fun getTitle(code: Int) = errorTitles[code] ?: defaults["title"]!!
+    fun getTitle(code: Int): String = errors.getProperty("title_$code", defaults["title"]!!)
     fun getError(code: Int): String {
         if (code == 0) return defaults["error_no_code"]!!
-        return errors[code] ?: String.format(defaults["error"]!!, code)
+        return errors.getProperty(code.toString(), String.format(defaults["error"]!!, code))
     }
 }

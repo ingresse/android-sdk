@@ -1,6 +1,6 @@
 package com.ingresse.sdk.request
 
-import com.ingresse.sdk.model.request.CheckinTicket
+import com.ingresse.sdk.model.request.CheckinRequest
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -32,10 +32,10 @@ interface Entrance {
      * @param userToken - Token for logged user
      * @param callback - Callback action
      */
-    @FormUrlEncoded
+    @Headers("ContentType: application/json")
     @POST("/event/{eventId}/guestlist?method=updatestatus")
-    fun checkin(@Query("apikey") apiKey: String,
-                @Path("eventId") eventId: String,
+    fun checkin(@Path("eventId") eventId: String,
+                @Query("apikey") apiKey: String,
                 @Query("usertoken") userToken: String,
-                @Body tickets: List<CheckinTicket>) : Call<String>
+                @Body request: CheckinRequest) : Call<String>
 }
