@@ -5,7 +5,7 @@ data class GuestCheckinJSON(
         val status: Int,
         val checked: Int,
         val lastUpdate: String,
-        val owner: UserJSON,
+        val owner: PersonJSON,
         val lastCheckin: LastCheckinJSON) {
 
     fun getStatus(): CheckinStatus {
