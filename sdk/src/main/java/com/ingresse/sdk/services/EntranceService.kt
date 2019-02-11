@@ -11,11 +11,14 @@ import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.guard
 import com.ingresse.sdk.model.request.GuestList
 import com.ingresse.sdk.request.Entrance
+import com.ingresse.sdk.url.builder.Host
+import com.ingresse.sdk.url.builder.URLBuilder
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class EntranceService(private val client: IngresseClient) {
+    private var host = Host.API
     private var service: Entrance
 
     private var mGuestListCall: Call<String>? = null
@@ -24,7 +27,7 @@ class EntranceService(private val client: IngresseClient) {
     init {
         val adapter = Retrofit.Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(client.host)
+            .baseUrl(URLBuilder(host, client.environment).build())
             .build()
 
         service = adapter.create(Entrance::class.java)
