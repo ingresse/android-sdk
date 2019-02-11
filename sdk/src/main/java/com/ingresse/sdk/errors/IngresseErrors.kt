@@ -1,5 +1,6 @@
 package com.ingresse.sdk.errors
 
+import java.io.InputStream
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -10,16 +11,17 @@ object IngresseErrors {
         val locale = Locale.getDefault().language
         val fileName = "res/raw/errors_$locale.properties"
         try {
-            val input = this.javaClass.classLoader?.getResourceAsStream(fileName)
+            val input = getFile(fileName) ?: getFile("res/raw/errors_pt.properties")
             errors.load(input)
         } catch (ignored: Exception) {}
     }
 
+    private fun getFile(fileName: String): InputStream? = this.javaClass.classLoader?.getResourceAsStream(fileName)
 
     private val defaults: HashMap<String, String> = hashMapOf(
             Pair("title", "Ops!"),
-            Pair("error", "Algo de errado, código [%d]"),
-            Pair("error_no_code", "Algo de errado")
+            Pair("error", "Ocorreu um problema durante a solicitação. Entre em contato com o organizador do evento e informe o código ao lado. [%d]"),
+            Pair("error_no_code", "Ocorreu um problema durante a solicitação. Entre em contato com o organizador do evento.")
     )
 
     fun getTitle(code: Int): String = errors.getProperty("title_$code", defaults["title"]!!)
