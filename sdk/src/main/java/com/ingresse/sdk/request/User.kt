@@ -26,7 +26,7 @@ interface User {
      * @param params - object with infos to update
      */
     @POST("/user/{userId}")
-    fun updateBasicInfos(@Path("userId") userId: Int,
+    fun updateBasicInfos(@Path("userId") userId: String,
                          @Query("apikey") apikey: String,
                          @Query("usertoken") userToken: String,
                          @Body params: UserBasicInfos): Call<String>
