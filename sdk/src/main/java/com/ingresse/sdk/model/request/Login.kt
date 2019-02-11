@@ -1,5 +1,5 @@
 package com.ingresse.sdk.model.request
 
-data class Login (
+data class CompanyLogin (
     var email: String,
     var password: String)
