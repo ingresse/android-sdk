@@ -1,4 +1,4 @@
-package com.ingresse.sdk.model.response
+package com.ingresse.sdk.model.response.entrance
 
 class GuestJSON {
     val id: String? = null

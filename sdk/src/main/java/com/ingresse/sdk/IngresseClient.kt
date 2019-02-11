@@ -1,3 +1,5 @@
 package com.ingresse.sdk
 
-class IngresseClient(val key: String, val host: String, val debug: Boolean = false)
+import com.ingresse.sdk.url.builder.Environment
+
+class IngresseClient(val key: String, val environment: Environment, val debug: Boolean = false)

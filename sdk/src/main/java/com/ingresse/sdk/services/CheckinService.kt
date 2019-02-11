@@ -8,7 +8,7 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.CheckinRequest
 import com.ingresse.sdk.model.response.CheckinStatus
-import com.ingresse.sdk.model.response.GuestCheckinJSON
+import com.ingresse.sdk.model.response.entrance.GuestCheckinJSON
 import com.ingresse.sdk.request.Entrance
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

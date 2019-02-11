@@ -1,6 +1,6 @@
-package com.ingresse.sdk.model.response
+package com.ingresse.sdk.model.response.entrance
 
-data class UserJSON(
+data class PersonJSON(
         val id: Long,
         val name: String,
         val email: String)

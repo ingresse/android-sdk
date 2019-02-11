@@ -1,11 +1,13 @@
-package com.ingresse.sdk.model.response
+package com.ingresse.sdk.model.response.entrance
+
+import com.ingresse.sdk.model.response.CheckinStatus
 
 data class GuestCheckinJSON(
         val code: String,
         val status: Int,
         val checked: Int,
         val lastUpdate: String,
-        val owner: UserJSON,
+        val owner: PersonJSON,
         val lastCheckin: LastCheckinJSON) {
 
     fun getStatus(): CheckinStatus {
