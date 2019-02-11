@@ -1,4 +1,4 @@
-package com.ingresse.sdk.model.response
+package com.ingresse.sdk.model.response.login
 
 class CompanyDataJSON {
     val userId: Int = 0

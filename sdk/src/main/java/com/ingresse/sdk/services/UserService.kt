@@ -8,9 +8,9 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.UserBasicInfos
 import com.ingresse.sdk.model.request.UserData
-import com.ingresse.sdk.model.response.UserDataJSON
 import com.ingresse.sdk.model.response.UserUpdatedDataJSON
 import com.ingresse.sdk.model.response.UserUpdatedJSON
+import com.ingresse.sdk.model.response.login.UserDataJSON
 import com.ingresse.sdk.request.User
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder

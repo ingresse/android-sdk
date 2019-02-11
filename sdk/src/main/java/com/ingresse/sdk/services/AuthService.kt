@@ -6,13 +6,8 @@ import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
-import com.ingresse.sdk.helper.guard
-import com.ingresse.sdk.model.request.Login
-import com.ingresse.sdk.model.request.UserData
-import com.ingresse.sdk.model.response.login.LoginJSON
-import com.ingresse.sdk.model.response.login.UserDataJSON
 import com.ingresse.sdk.model.request.CompanyLogin
-import com.ingresse.sdk.model.response.CompanyLoginJSON
+import com.ingresse.sdk.model.response.login.CompanyLoginJSON
 import com.ingresse.sdk.request.Auth
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder

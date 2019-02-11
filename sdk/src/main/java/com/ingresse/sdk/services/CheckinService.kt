@@ -10,6 +10,8 @@ import com.ingresse.sdk.model.request.CheckinRequest
 import com.ingresse.sdk.model.response.CheckinStatus
 import com.ingresse.sdk.model.response.entrance.GuestCheckinJSON
 import com.ingresse.sdk.request.Entrance
+import com.ingresse.sdk.url.builder.Host
+import com.ingresse.sdk.url.builder.URLBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -24,10 +26,11 @@ class CheckinService(private val client: IngresseClient) {
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
+        val url = URLBuilder(Host.API, client.environment).build()
         val builder = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(client.host)
+                .baseUrl(url)
 
         if (client.debug) {
             val logging = HttpLoggingInterceptor()
