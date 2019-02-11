@@ -2,7 +2,6 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -50,18 +49,15 @@ class CheckinService(private val client: IngresseClient) {
                 apiKey = client.key,
                 eventId = request.eventId,
                 userToken = request.userToken,
-                tickets = request.tickets)
+                request = request)
 
         mConcurrentCalls.add(call)
 
-        val callback = object : IngresseCallback<Response<Array<GuestCheckinJSON>>> {
-            override fun onSuccess(data: Response<Array<GuestCheckinJSON>>?) {
-                if (data?.responseData?.data == null) {
-                    onError(APIError.default)
-                    return
-                }
+        val callback = object : IngresseCallback<Response<ArrayList<GuestCheckinJSON>>> {
+            override fun onSuccess(data: Response<ArrayList<GuestCheckinJSON>>?) {
+                if (data?.responseData == null) return onError(APIError.default)
 
-                val response = data.responseData?.data
+                val response = data.responseData
                 val success = response?.filter { it.getStatus() == CheckinStatus.UPDATED } ?: emptyList()
                 val fail = response?.filter { it.getStatus() != CheckinStatus.UPDATED } ?: emptyList()
 
@@ -82,7 +78,7 @@ class CheckinService(private val client: IngresseClient) {
             }
         }
 
-        val type = object: TypeToken<Response<Array<GuestCheckinJSON>>>() {}.type
+        val type = object: TypeToken<Response<ArrayList<GuestCheckinJSON>>>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 
@@ -96,6 +92,6 @@ class CheckinService(private val client: IngresseClient) {
                 apiKey = client.key,
                 eventId = request.eventId,
                 userToken = request.userToken,
-                tickets = request.tickets)
+                request = request)
     }
 }

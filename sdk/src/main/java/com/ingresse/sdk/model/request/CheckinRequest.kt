@@ -6,7 +6,7 @@ data class CheckinRequest(
         var tickets: List<CheckinTicket>)
 
 data class CheckinTicket(
-        var code: String,
-        var status: String,
-        var timestamp: String,
+        var ticketCode: String,
+        var ticketStatus: String,
+        var ticketTimestamp: String,
         var sessionId: String)
