@@ -1,7 +1,7 @@
 package com.ingresse.sdk.model.request
 
 data class UserBasicInfos (
-        var userId: Int,
+        var userId: String,
         var userToken: String,
         var name: String? = null,
         var lastname: String? = null,
