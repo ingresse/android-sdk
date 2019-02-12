@@ -27,7 +27,6 @@ dependencies {
     // SERVICES
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
-    implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3', { transitive = true }
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
