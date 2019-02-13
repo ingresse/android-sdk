@@ -54,7 +54,7 @@ class HistoryService(private val client: IngresseClient) {
 
         mGetTransferHistoryCall = service.getTransferHistory(
             ticketId = request.ticketId,
-                apikey = "e9424e72263bcab5d37ecb04e05505cf91d67639",
+                apikey = client.key,
             userToken = request.userToken
         )
 
