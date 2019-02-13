@@ -6,8 +6,10 @@ import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.model.request.CheckinHistoryData
 import com.ingresse.sdk.model.request.TransferHistoryData
 import com.ingresse.sdk.model.request.UserData
+import com.ingresse.sdk.model.response.CheckinHistoryJSON
 import com.ingresse.sdk.model.response.TransferHistoryDataJSON
 import com.ingresse.sdk.model.response.TransferHistoryJSON
 import com.ingresse.sdk.model.response.UserDataJSON
@@ -25,6 +27,7 @@ class HistoryService(private val client: IngresseClient) {
     private var service: History
 
     private var mGetTransferHistoryCall: Call<String>? = null
+    private var mGetCheckinHistoryCall: Call<String>? = null
 
     init {
         val adapter = Retrofit.Builder()
@@ -37,16 +40,23 @@ class HistoryService(private val client: IngresseClient) {
     }
 
     /**
-     * Method to cancel user data request
+     * Method to cancel get transfer history request
      */
     fun cancelGetTransferHistory() {
         mGetTransferHistoryCall?.cancel()
     }
 
     /**
-     * Get user data
+     * Method to cancel get checkin history request
+     */
+    fun cancelGetCheckinHistory() {
+        mGetCheckinHistoryCall?.cancel()
+    }
+
+    /**
+     * Get ticket transfer history
      *
-     * @param request - all parameters used for retrieving user data
+     * @param request - all parameters used for retrieving ticket transfer history
      * @param onSuccess - success callback
      * @param onError - error callback
      */
@@ -77,5 +87,40 @@ class HistoryService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<TransferHistoryJSON>>() {}.type
         mGetTransferHistoryCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get ticket checkin history
+     *
+     * @param request - all parameters used for retrieving ticket checkin history
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
+    fun getTicketCheckinHistory(request: CheckinHistoryData, onSuccess: (CheckinHistoryJSON) -> Unit, onError: (APIError) -> Unit){
+        mGetCheckinHistoryCall = service.getCheckinHistory(
+            apikey = client.key,
+            ticketCode = request.ticketCode,
+            userToken = request.userToken
+        )
+
+        val callback = object : IngresseCallback<Response<CheckinHistoryJSON>?> {
+            override fun onSuccess(data: Response<CheckinHistoryJSON>?) {
+                val response = data?.responseData
+                    ?: return onError(APIError.default)
+
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<CheckinHistoryJSON>>() {}.type
+        mGetCheckinHistoryCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

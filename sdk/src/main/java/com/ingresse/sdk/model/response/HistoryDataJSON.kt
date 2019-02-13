@@ -9,12 +9,3 @@ data class TransferHistoryDataJSON(
         var datetime: String,
         var user: UserHistoryDataJSON
 )
-
-data class UserHistoryDataJSON(
-        var id: String,
-        var email: String,
-        var username: String?,
-        var name: String,
-        var phone: String,
-        var picture: String
-)
