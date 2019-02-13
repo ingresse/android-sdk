@@ -66,9 +66,7 @@ class HistoryService(private val client: IngresseClient) {
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
                 val apiError = APIError()
