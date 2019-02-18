@@ -9,6 +9,7 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.CompanyLogin
 import com.ingresse.sdk.model.request.RefundData
+import com.ingresse.sdk.model.request.RequestMethod
 import com.ingresse.sdk.model.response.CompanyLoginJSON
 import com.ingresse.sdk.model.response.TransactionDetailsJSON
 import com.ingresse.sdk.request.Auth
@@ -92,7 +93,7 @@ class RefundService(private val client: IngresseClient) {
         mRefundTransactionCall = service.refundTransaction(
             transactionId = request.transactionId,
             apikey = client.key,
-            method = "refund",
+            method = RequestMethod.REFUND.method,
             userToken = request.userToken,
             reason = request.reason
         )
