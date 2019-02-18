@@ -17,11 +17,14 @@ data class UserDataJSON(
     val state: String? = "",
     val zip: String? = "",
     val verified: Boolean? = false,
-    val pictures: Any? = null
-)
+    val pictures: Any? = null,
+    val social: Array<SocialAccountJSON>? = emptyArray())
 
-data class UserPictures(
+data class UserPicturesJSON(
     val small: String? = "",
     val medium: String? = "",
-    val large: String? = ""
-)
+    val large: String? = "")
+
+data class SocialAccountJSON(
+    val id: String? = "",
+    val network: String? = "")
