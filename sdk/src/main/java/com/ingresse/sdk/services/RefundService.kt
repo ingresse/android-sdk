@@ -63,18 +63,12 @@ class RefundService(private val client: IngresseClient) {
         val callback = object : IngresseCallback<Response<Array<String>>?> {
             override fun onSuccess(data: Response<Array<String>>?) {
                 val response = data?.responseData
-
-                if (response == null) {
-                    onError(APIError.default)
-                    return
-                }
+                    ?: return onError(APIError.default)
 
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
                 val apiError = APIError()
@@ -107,6 +101,7 @@ class RefundService(private val client: IngresseClient) {
             override fun onSuccess(data: Response<TransactionDetailsJSON>?) {
                 val response = data?.responseData
                     ?: return onError(APIError.default)
+
                 onSuccess(response)
             }
 
