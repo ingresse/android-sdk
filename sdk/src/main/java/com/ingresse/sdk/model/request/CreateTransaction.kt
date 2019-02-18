@@ -1,20 +1,18 @@
 package com.ingresse.sdk.model.request
 
 data class CreateTransaction(
-    val userToken: String,
-    val userId: String,
-    val eventId: String,
-    val passkey: String? = null,
-    val shopTickets: Array<ShopTicket> = emptyArray(),
-    val tickets: HashMap<String, String> = createTicketsParam(shopTickets)
-)
+        val userToken: String,
+        val userId: String,
+        val eventId: String,
+        val passkey: String? = null,
+        val shopTickets: List<ShopTicket> = mutableListOf(),
+        val tickets: HashMap<String, String> = createTicketsParam(shopTickets))
 
 data class ShopTicket(
-    val guestTypeId: String? = "",
-    val quantity: Int? = 0
-)
+    val guestTypeId: Int? = 0,
+    val quantity: Int? = 0)
 
-fun createTicketsParam(shopTickets: Array<ShopTicket>) : HashMap<String, String> {
+fun createTicketsParam(shopTickets: List<ShopTicket>) : HashMap<String, String> {
     val hashMap = HashMap<String, String>()
     var ticketIndex = 0
 
