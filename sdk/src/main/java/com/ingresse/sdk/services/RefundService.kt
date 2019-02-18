@@ -56,7 +56,7 @@ class RefundService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getRefundReasons(onSuccess: (Array<String>) -> Unit, onError: (APIError) -> Unit) {
+    fun getRefundReasons(onSuccess: (ArrayList<String>) -> Unit, onError: (APIError) -> Unit) {
         mGetRefundReasonsCall = service.getRefundReasons(
             apikey = client.key
         )
@@ -66,7 +66,7 @@ class RefundService(private val client: IngresseClient) {
                 val response = data?.responseData
                     ?: return onError(APIError.default)
 
-                onSuccess(response)
+                onSuccess(response.data)
             }
 
             override fun onError(error: APIError) = onError(error)
@@ -93,7 +93,6 @@ class RefundService(private val client: IngresseClient) {
         mRefundTransactionCall = service.refundTransaction(
             transactionId = request.transactionId,
             apikey = client.key,
-            method = RequestMethod.REFUND.method,
             userToken = request.userToken,
             reason = request.reason
         )

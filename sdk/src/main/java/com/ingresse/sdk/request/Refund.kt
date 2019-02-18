@@ -23,6 +23,6 @@ interface Refund {
     fun refundTransaction(@Path("transactionId") transactionId: String,
                           @Query("apikey") apikey: String,
                           @Query("usertoken") userToken: String,
-                          @Query("method") method: String,
+                          @Query("method") method: String = "refund",
                           @Field("reason") reason: String): Call<String>
 }
