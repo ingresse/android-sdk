@@ -1,5 +1,7 @@
 package com.ingresse.sdk.model.response
 
+import com.ingresse.sdk.base.Array
+
 data class TransactionTicketJSON(
     val id: Int? = 0,
     val code: String? = "",
@@ -14,4 +16,4 @@ data class TransactionTicketJSON(
     val price: String? = "",
     val tax: String? = "",
     val percentTax: String? = "",
-    val sessions: Array<BasketSessionsJSON>? = emptyArray())
+    val sessions: Array<BasketSessionsJSON>?)
