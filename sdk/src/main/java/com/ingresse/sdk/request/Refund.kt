@@ -5,11 +5,7 @@ import retrofit2.http.*
 
 interface Refund {
     /**
-     * Get ticket transfer history
-     *
-     * @param ticketId  - Event id
-     * @param userToken - user token required
-     * @param callback - Callback action
+     * Get refund reasons
      */
     @GET("/refundReasons")
     fun getRefundReasons(@Query("apikey") apikey: String) : Call<String>
