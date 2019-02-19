@@ -1,5 +1,6 @@
 package com.ingresse.sdk.request
 
+import com.ingresse.sdk.model.request.TransactionParams
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -14,11 +15,9 @@ interface Transaction {
      * @param tickets - all tickets for transaction
      */
     @POST("/shop")
-    fun createTransaction(@Query("usertoken") userToken: String,
-                          @Query("userId") userId: String,
-                          @Query("eventId") eventId: String,
-                          @Query("passkey") passkey: String?,
-                          @QueryMap tickets: Map<String, String>) : Call<String>
+    fun createTransaction(@Query("apikey") apikey: String,
+                          @Query("usertoken") userToken: String,
+                          @Body params: TransactionParams): Call<String>
 
     /**
      * Get transaction details
@@ -28,15 +27,17 @@ interface Transaction {
      */
     @GET("/sale/{transactionId}")
     fun getTransactionDetails(@Path("transactionId") transactionId: String,
-                              @Query("usertoken") userToken: String) : Call<String>
+                              @Query("apikey") apikey: String,
+                              @Query("usertoken") userToken: String): Call<String>
 
     /**
-     * Get status from user tickets
+     * Cancel transaction
      *
-     * @param ticketCode - ticket code
+     * @param transactionId - transaction id
      * @param userToken - user token
      */
-    @GET("/ticket/{ticketCode}/status")
-    fun getCheckinStatus(@Path("ticketCode") ticketCode: String,
-                         @Query("userToken") userToken: String) : Call<String>
+    @POST("/shop/{transactionId}/cancel")
+    fun cancelTransaction(@Path("transactionId") transactionId: String,
+                          @Query("apikey") apikey: String,
+                          @Query("usertoken") userToken: String): Call<String>
 }
