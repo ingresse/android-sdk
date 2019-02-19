@@ -46,6 +46,20 @@ class TransactionService(private val client: IngresseClient) {
     }
 
     /**
+     * Method to cancel transaction details request
+     */
+    fun cancelGetTransactionDetails() {
+        mGetTransactionDetailsCall?.cancel()
+    }
+
+    /**
+     * Method to cancel a transaction cancelment call
+     */
+    fun cancelCancelTransaction() {
+        mCancelTransactionCall?.cancel()
+    }
+
+    /**
      * Create transaction to get id for payment or reserve
      *
      * @param request - all parameters used for create a transaction
@@ -78,13 +92,6 @@ class TransactionService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<CreateTransactionJSON>?>() {}.type
         mCreateTransactionCall?.enqueue(RetrofitCallback(type, callback))
-    }
-
-    /**
-     * Method to cancel transaction details request
-     */
-    fun cancelGetTransactionDetails() {
-        mGetTransactionDetailsCall?.cancel()
     }
 
     /**
@@ -121,13 +128,6 @@ class TransactionService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<TransactionDetailsJSON>?>() {}.type
         mGetTransactionDetailsCall?.enqueue(RetrofitCallback(type, callback))
-    }
-
-    /**
-     * Method to cancel a transaction cancelment call
-     */
-    fun cancelCancelTransaction() {
-        mCancelTransactionCall?.cancel()
     }
 
     /**
