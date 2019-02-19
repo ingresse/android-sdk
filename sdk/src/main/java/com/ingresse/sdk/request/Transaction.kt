@@ -9,10 +9,7 @@ interface Transaction {
      * Create transaction to get id for payment or reserve
      *
      * @param userToken - user token
-     * @param userId - user id
-     * @param eventId - event id
-     * @param passkey - passkey
-     * @param tickets - all tickets for transaction
+     * @param params - params for transaction creation
      */
     @POST("/shop")
     fun createTransaction(@Query("apikey") apikey: String,
