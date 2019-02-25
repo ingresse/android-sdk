@@ -7,6 +7,7 @@ import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.EnumConverterFactory
 import com.ingresse.sdk.model.request.*
 import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.Transaction
@@ -31,6 +32,7 @@ class TransactionService(private val client: IngresseClient) {
         val adapter = Retrofit.Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(EnumConverterFactory())
             .baseUrl(URLBuilder(host, client.environment).build())
             .build()
 
@@ -225,7 +227,11 @@ class TransactionService(private val client: IngresseClient) {
             eventId = request.eventId,
             apikey = client.key,
             userToken = request.userToken,
-            params = request.params
+            page = request.page,
+            from = request.from,
+            to = request.to,
+            term = request.term,
+            status = request.status
         )
 
         val callback = object: IngresseCallback<Response<Array<TransactionListJSON>>?> {
@@ -245,7 +251,7 @@ class TransactionService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Response<TransactionListJSON>?>() {}.type
+        val type = object : TypeToken<Response<Array<TransactionListJSON>?>>() {}.type
         mGetTransactionListCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

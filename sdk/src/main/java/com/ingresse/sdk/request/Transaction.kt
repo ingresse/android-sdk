@@ -1,7 +1,7 @@
 package com.ingresse.sdk.request
 
-import com.ingresse.sdk.model.request.TransactionListParams
 import com.ingresse.sdk.model.request.TransactionParams
+import com.ingresse.sdk.model.request.TransactionStatus
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -61,5 +61,9 @@ interface Transaction {
     fun getTransactionList(@Query("event") eventId: Int,
                            @Query("apikey") apikey: String,
                            @Query("usertoken") userToken: String,
-                           @Body params: TransactionListParams): Call<String>
+                           @Query("page") page: Int? = null,
+                           @Query("from") from: String? = null,
+                           @Query("to") to: String? = null,
+                           @Query("term") term: String? = null,
+                           @Query("status") status: TransactionStatus? = null): Call<String>
 }
