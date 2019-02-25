@@ -111,7 +111,6 @@ class TransactionService(private val client: IngresseClient) {
 
     /**
      * Get transaction details
-     * Only for Backstage calls
      *
      * @param request - all parameters used for retrieving transaction details
      * @param onSuccess - success callback
