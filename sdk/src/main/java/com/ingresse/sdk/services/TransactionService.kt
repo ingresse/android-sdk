@@ -2,19 +2,16 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
-import com.ingresse.sdk.model.request.CancelTransaction
-import com.ingresse.sdk.model.request.CreateTransaction
-import com.ingresse.sdk.model.request.TransactionDetails
-import com.ingresse.sdk.model.response.CreateTransactionJSON
-import com.ingresse.sdk.model.response.TransactionDetailsJSON
+import com.ingresse.sdk.model.request.*
+import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.Transaction
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder
-import com.ingresse.sdk.model.response.TransactionDataJSON
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,6 +24,8 @@ class TransactionService(private val client: IngresseClient) {
     private var mCreateTransactionCall: Call<String>? = null
     private var mGetTransactionDetailsCall: Call<String>? = null
     private var mCancelTransactionCall: Call<String>? = null
+    private var mGetTransactionReportCall: Call<String>? = null
+    private var mGetTransactionListCall: Call<String>? = null
 
     init {
         val adapter = Retrofit.Builder()
@@ -57,6 +56,20 @@ class TransactionService(private val client: IngresseClient) {
      */
     fun cancelCancelTransaction() {
         mCancelTransactionCall?.cancel()
+    }
+
+    /**
+     * Method to cancel a transaction report request
+     */
+    fun cancelGetTransactionReport() {
+        mGetTransactionReportCall?.cancel()
+    }
+
+    /**
+     * Method to cancel a transaction list request
+     */
+    fun cancelGetTransactionList() {
+        mGetTransactionListCall?.cancel()
     }
 
     /**
@@ -163,5 +176,76 @@ class TransactionService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<TransactionDetailsJSON>?>() {}.type
         mCancelTransactionCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get transaction report from specific event
+     *
+     * @param request - all parameters used for report request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
+    fun getTransactionReport(request: TransactionReport, onSuccess: (TransactionReportJSON) -> Unit, onError: (APIError) -> Unit) {
+        mGetTransactionReportCall = service.getTransactionReport(
+            eventId = request.eventId,
+            apikey = client.key,
+            userToken = request.userToken
+        )
+
+        val callback = object : IngresseCallback<Response<TransactionReportJSON>?> {
+            override fun onSuccess(data: Response<TransactionReportJSON>?) {
+                val response = data?.responseData
+                    ?: return onError(APIError.default)
+
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<TransactionReportJSON>?>() {}.type
+        mGetTransactionReportCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get transaction list from specific event
+     *
+     * @param request - all parameters used for transaction list request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
+    fun getTransactionList(request: TransactionList, onSuccess: (Array<TransactionListJSON>) -> Unit, onError: (APIError) -> Unit) {
+        mGetTransactionListCall = service.getTransactionList(
+            eventId = request.eventId,
+            apikey = client.key,
+            userToken = request.userToken,
+            params = request.params
+        )
+
+        val callback = object: IngresseCallback<Response<Array<TransactionListJSON>>?> {
+            override fun onSuccess(data: Response<Array<TransactionListJSON>>?) {
+                val response = data?.responseData
+                    ?: return onError(APIError.default)
+
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<TransactionListJSON>?>() {}.type
+        mGetTransactionListCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
