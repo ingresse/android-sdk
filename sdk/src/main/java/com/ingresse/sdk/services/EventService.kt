@@ -6,7 +6,6 @@ import com.ingresse.sdk.base.*
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.EventListByProducer
 import com.ingresse.sdk.model.response.EventJSON
-import com.ingresse.sdk.model.response.UserDataJSON
 import com.ingresse.sdk.request.Event
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder
