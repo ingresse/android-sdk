@@ -1,11 +1,6 @@
 package com.ingresse.sdk
 
-import com.ingresse.sdk.services.AuthService
-import com.ingresse.sdk.services.CheckinService
-import com.ingresse.sdk.services.EntranceService
-import com.ingresse.sdk.services.PermissionService
-import com.ingresse.sdk.services.SearchService
-import com.ingresse.sdk.services.UserService
+import com.ingresse.sdk.services.*
 
 class IngresseService(client: IngresseClient) {
     var auth: AuthService = AuthService(client)
@@ -14,4 +9,5 @@ class IngresseService(client: IngresseClient) {
     var permission: PermissionService = PermissionService(client)
     var search: SearchService = SearchService(client)
     var user: UserService = UserService(client)
+    var event: EventService = EventService(client)
 }
