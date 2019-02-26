@@ -9,4 +9,4 @@ class SearchResponse<T> {
 data class EventSearchJSON(val hits: Array<SearchSource>,
                            val total: Int)
 
-data class SearchSource(val _source: EventDetailsJSON)
+data class SearchSource(val _source: EventJSON)
