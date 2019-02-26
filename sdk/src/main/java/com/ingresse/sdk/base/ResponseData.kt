@@ -2,6 +2,8 @@ package com.ingresse.sdk.base
 
 class ResponseData<T> {
     val data: Data<T>? = null
+    val code: Int? = null
+    val message: String? = null
 }
 
 class Data<T> {

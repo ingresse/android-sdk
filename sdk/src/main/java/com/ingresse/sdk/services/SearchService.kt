@@ -3,12 +3,12 @@ package com.ingresse.sdk.services
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
+import com.ingresse.sdk.base.ResponseData
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.base.Source
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.EventSearch
-import com.ingresse.sdk.model.response.EventSearchJSON
-import com.ingresse.sdk.model.response.SearchResponse
-import com.ingresse.sdk.model.response.SearchSource
+import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Search
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder
@@ -35,7 +35,7 @@ class SearchService(private val client:  IngresseClient) {
         mEventSearchCall?.cancel()
     }
 
-    fun searchEventByTitle(request: EventSearch, onSuccess: (Array<SearchSource>) -> Unit, onError: (APIError) -> Unit) {
+    fun searchEventByTitle(request: EventSearch, onSuccess: (ArrayList<Source<EventJSON>>) -> Unit, onError: (APIError) -> Unit) {
         mEventSearchCall = service.getEventByTitle(
             title = request.title,
             size = request.size,
@@ -44,16 +44,15 @@ class SearchService(private val client:  IngresseClient) {
             offset = request.offset
         )
 
-        val callback = object : IngresseCallback<SearchResponse<EventSearchJSON>> {
-            override fun onSuccess(data: SearchResponse<EventSearchJSON>?) {
-                data?.data?.hits?.let {
-                    onSuccess(it)
-                }
+        val callback = object : IngresseCallback<ResponseData<EventJSON>?> {
+            override fun onSuccess(data: ResponseData<EventJSON>?) {
+                val response = data?.data?.hits
+                    ?: return onError(APIError.default)
+
+                onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
                 val apiError = APIError()
@@ -62,7 +61,7 @@ class SearchService(private val client:  IngresseClient) {
             }
         }
 
-        val type = object: TypeToken<SearchResponse<EventSearchJSON>>() {}.type
+        val type = object: TypeToken<ResponseData<EventJSON>?>() {}.type
         mEventSearchCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
