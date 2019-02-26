@@ -13,24 +13,47 @@ import com.ingresse.sdk.model.request.GuestList
 import com.ingresse.sdk.request.Entrance
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
 class EntranceService(private val client: IngresseClient) {
     private var host = Host.API
     private var service: Entrance
+    private var singleService: Entrance
 
     private var mGuestListCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val adapter = Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(URLBuilder(host, client.environment).build())
-            .build()
+        val url = URLBuilder(host, client.environment).build()
+        val builder = Retrofit.Builder()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(url)
 
+        val clientBuilder = OkHttpClient.Builder()
+
+        if (client.debug) {
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BODY
+
+            clientBuilder.addInterceptor(logging)
+        }
+
+        builder.client(clientBuilder.build())
+
+        var adapter = builder.build()
         service = adapter.create(Entrance::class.java)
+
+        clientBuilder.callTimeout(2, TimeUnit.SECONDS)
+        builder.client(clientBuilder.build())
+        adapter = builder.build()
+        singleService = adapter.create(Entrance::class.java)
     }
 
     fun cancelGuestList(concurrent: Boolean = false) {
