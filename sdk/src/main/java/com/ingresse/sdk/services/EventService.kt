@@ -43,8 +43,8 @@ class EventService(private val client: IngresseClient) {
             offset = request.offset
         )
 
-        val callback = object: IngresseCallback<ResponseData<EventJSON>?> {
-            override fun onSuccess(data: ResponseData<EventJSON>?) {
+        val callback = object: IngresseCallback<ResponseHits<EventJSON>?> {
+            override fun onSuccess(data: ResponseHits<EventJSON>?) {
                 val response = data?.data?.hits
                     ?: return onError(APIError.default)
 
@@ -60,7 +60,7 @@ class EventService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<ResponseData<EventJSON>?>() {}.type
+        val type = object : TypeToken<ResponseHits<EventJSON>?>() {}.type
         mGetEventListByProducerCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

@@ -3,7 +3,7 @@ package com.ingresse.sdk.services
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
-import com.ingresse.sdk.base.ResponseData
+import com.ingresse.sdk.base.ResponseHits
 import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.base.Source
 import com.ingresse.sdk.errors.APIError
@@ -44,8 +44,8 @@ class SearchService(private val client:  IngresseClient) {
             offset = request.offset
         )
 
-        val callback = object : IngresseCallback<ResponseData<EventJSON>?> {
-            override fun onSuccess(data: ResponseData<EventJSON>?) {
+        val callback = object : IngresseCallback<ResponseHits<EventJSON>?> {
+            override fun onSuccess(data: ResponseHits<EventJSON>?) {
                 val response = data?.data?.hits
                     ?: return onError(APIError.default)
 
@@ -61,7 +61,7 @@ class SearchService(private val client:  IngresseClient) {
             }
         }
 
-        val type = object: TypeToken<ResponseData<EventJSON>?>() {}.type
+        val type = object: TypeToken<ResponseHits<EventJSON>?>() {}.type
         mEventSearchCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
