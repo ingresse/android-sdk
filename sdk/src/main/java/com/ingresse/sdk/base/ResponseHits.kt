@@ -8,6 +8,7 @@ class ResponseHits<T> {
 
 class Data<T> {
     val hits: ArrayList<Source<T>> = ArrayList()
+    val total: Int = 0
 }
 
 class Source<T> {

@@ -30,7 +30,7 @@ class EventService(private val client: IngresseClient) {
         service = adapter.create(Event::class.java)
     }
 
-    fun getEventListByProducer(request: EventListByProducer? = EventListByProducer(), onSuccess: (ArrayList<Source<EventJSON>>) -> Unit, onError: (APIError) -> Unit) {
+    fun getEventListByProducer(request: EventListByProducer? = EventListByProducer(), onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit, onError: (APIError) -> Unit) {
         if (client.authToken.isNullOrEmpty()) return onError(APIError.default)
 
         mGetEventListByProducerCall = service.getEventListByProducer(
@@ -43,12 +43,13 @@ class EventService(private val client: IngresseClient) {
             offset = request?.offset
         )
 
+
         val callback = object: IngresseCallback<ResponseHits<EventJSON>?> {
             override fun onSuccess(data: ResponseHits<EventJSON>?) {
                 val response = data?.data?.hits
                     ?: return onError(APIError.default)
 
-                onSuccess(response)
+                onSuccess(Pair(response, data.data.total))
             }
 
             override fun onError(error: APIError) = onError(error)
