@@ -8,6 +8,7 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.CompanyLogin
 import com.ingresse.sdk.model.response.CompanyLoginJSON
+import com.ingresse.sdk.model.response.UserAuthTokenJSON
 import com.ingresse.sdk.request.Auth
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder
@@ -20,6 +21,7 @@ class AuthService(private val client: IngresseClient) {
     private var service: Auth
 
     private var mCompanyLoginCall: Call<String>? = null
+    private var mRenewAuthTokenCall: Call<String>? = null
 
     init {
         val adapter = Retrofit.Builder()
@@ -35,6 +37,13 @@ class AuthService(private val client: IngresseClient) {
      */
     fun cancelCompanyLogin() {
         mCompanyLoginCall?.cancel()
+    }
+
+    /**
+     * Method to cancel a company login request
+     */
+    fun cancelRenewAuthToken() {
+        mRenewAuthTokenCall?.cancel()
     }
 
     /**
@@ -76,5 +85,39 @@ class AuthService(private val client: IngresseClient) {
 
         val type = object: TypeToken<Response<CompanyLoginJSON>>() {}.type
         mCompanyLoginCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Renew user auth token
+     *
+     * @param userToken - Token of logged user
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
+    fun renewAuthToken(userToken: String, onSuccess: (String) -> Unit, onError: (APIError) -> Unit) {
+        mRenewAuthTokenCall = service.renewAuthToken(
+            apikey = client.key,
+            userToken = userToken
+        )
+
+        val callback = object : IngresseCallback<Response<UserAuthTokenJSON>?> {
+            override fun onSuccess(data: Response<UserAuthTokenJSON>?) {
+                val response = data?.responseData?.authToken
+                    ?: return onError(APIError.default)
+
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object: TypeToken<Response<UserAuthTokenJSON>>() {}.type
+        mRenewAuthTokenCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

@@ -25,3 +25,7 @@ data class UserPictures(
     val medium: String? = "",
     val large: String? = ""
 )
+
+data class UserAuthTokenJSON(
+    val authToken: String? = ""
+)
