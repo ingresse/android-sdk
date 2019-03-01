@@ -19,6 +19,7 @@ class EventService(private val client: IngresseClient) {
     private val service: Event
 
     private var mGetEventListByProducerCall: Call<String>? = null
+    private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
         val adapter = Retrofit.Builder()
@@ -30,10 +31,20 @@ class EventService(private val client: IngresseClient) {
         service = adapter.create(Event::class.java)
     }
 
-    fun getEventListByProducer(request: EventListByProducer? = EventListByProducer(), onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit, onError: (APIError) -> Unit) {
+    fun cancelGetEventListByProducer(concurrent: Boolean = false) {
+        if (!concurrent) {
+            mGetEventListByProducerCall?.cancel()
+            return
+        }
+
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
+
+    fun getEventListByProducer(concurrent: Boolean = false, request: EventListByProducer? = EventListByProducer(), onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit, onError: (APIError) -> Unit) {
         if (client.authToken.isNullOrEmpty()) return onError(APIError.default)
 
-        mGetEventListByProducerCall = service.getEventListByProducer(
+        val call  = service.getEventListByProducer(
             authorization = "Bearer ${client.authToken}",
             title = request?.title,
             size = request?.size,
@@ -43,18 +54,24 @@ class EventService(private val client: IngresseClient) {
             offset = request?.offset
         )
 
+        if (!concurrent) mGetEventListByProducerCall = call else mConcurrentCalls.add(call)
 
         val callback = object: IngresseCallback<ResponseHits<EventJSON>?> {
             override fun onSuccess(data: ResponseHits<EventJSON>?) {
                 val response = data?.data?.hits
                     ?: return onError(APIError.default)
 
+                if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
                 onSuccess(Pair(response, data.data.total))
             }
 
-            override fun onError(error: APIError) = onError(error)
+            override fun onError(error: APIError) {
+                if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
+                onError(error)
+            }
 
             override fun onRetrofitError(error: Throwable) {
+                if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
