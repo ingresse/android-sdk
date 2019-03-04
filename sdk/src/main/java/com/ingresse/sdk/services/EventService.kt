@@ -41,7 +41,7 @@ class EventService(private val client: IngresseClient) {
         mConcurrentCalls.clear()
     }
 
-    fun getEventListByProducer(concurrent: Boolean = false, request: EventListByProducer? = EventListByProducer(), onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit, onError: (APIError) -> Unit) {
+    fun getEventListByProducer(concurrent: Boolean = false, request: EventListByProducer? = EventListByProducer(), onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit, onError: (APIError) -> Unit, onTokenExpired: () -> Unit) {
         if (client.authToken.isNullOrEmpty()) return onError(APIError.default)
 
         val call  = service.getEventListByProducer(
@@ -67,6 +67,12 @@ class EventService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) {
                 if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
+
+                if (error.message.equals("expired")) {
+                    onTokenExpired()
+                    return
+                }
+
                 onError(error)
             }
 

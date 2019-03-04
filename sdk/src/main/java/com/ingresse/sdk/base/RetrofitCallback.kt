@@ -3,6 +3,7 @@ package com.ingresse.sdk.base
 import com.ingresse.sdk.helper.ERROR_PREFIX
 import com.ingresse.sdk.errors.APIError
 import com.google.gson.Gson
+import com.ingresse.sdk.helper.AUTHTOKEN_EXPIRED
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,6 +14,12 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
         val body = response.body()
         val errorBody = response.errorBody()?.string()
         val gson = Gson()
+
+        if (response.toString().contains(AUTHTOKEN_EXPIRED, true)){
+            val apiError = APIError.Builder().setMessage("expired")
+            callback.onError(apiError.build())
+            return
+        }
 
         if (!errorBody.isNullOrEmpty()) {
             try {
