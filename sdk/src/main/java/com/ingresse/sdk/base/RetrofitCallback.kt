@@ -11,17 +11,17 @@ import java.lang.reflect.Type
 
 class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : Callback<String> {
     override fun onResponse(call: Call<String>, response: Response<String>) {
-        val body = response.body()
         val errorBody = response.errorBody()?.string()
+        val body = response.body()
         val gson = Gson()
 
-        if (response.toString().contains(AUTHTOKEN_EXPIRED, true)){
-            val apiError = APIError.Builder().setMessage("expired")
-            callback.onError(apiError.build())
-            return
-        }
-
         if (!errorBody.isNullOrEmpty()) {
+            if (errorBody.contains(AUTHTOKEN_EXPIRED, true)){
+                val apiError = APIError.Builder().setMessage("expired")
+                callback.onError(apiError.build())
+                return
+            }
+
             try {
                 val obj = gson.fromJson(errorBody, ErrorData::class.java)
                 val apiError = APIError.Builder().setCode(obj.code ?: 0)
