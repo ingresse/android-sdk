@@ -13,6 +13,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.IOException
 
 class EventService(private val client: IngresseClient) {
     private val host = Host.EVENTS
@@ -45,7 +46,8 @@ class EventService(private val client: IngresseClient) {
                                request: EventListByProducer? = EventListByProducer(),
                                onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit,
                                onError: (APIError) -> Unit,
-                               onTokenExpired: () -> Unit) {
+                               onTokenExpired: () -> Unit,
+                               onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isNullOrEmpty()) return onError(APIError.default)
 
         val call  = service.getEventListByProducer(
@@ -82,6 +84,8 @@ class EventService(private val client: IngresseClient) {
 
             override fun onRetrofitError(error: Throwable) {
                 if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
