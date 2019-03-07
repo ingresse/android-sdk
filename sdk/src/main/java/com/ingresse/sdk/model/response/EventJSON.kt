@@ -13,4 +13,4 @@ data class EventJSON(
     val status: StatusJSON? = StatusJSON(),
     val title: String? = "",
     val updatedAt: String? = "",
-    val usersPermission: ArrayList<Int>? = ArrayList())
+    val usersPermission: Array<Int>? = emptyArray())
