@@ -73,11 +73,7 @@ class EventService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) {
                 if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
-
-                if (error.message.equals("expired")) {
-                    onTokenExpired()
-                    return
-                }
+                if (error.message == "expired") return onTokenExpired()
 
                 onError(error)
             }
