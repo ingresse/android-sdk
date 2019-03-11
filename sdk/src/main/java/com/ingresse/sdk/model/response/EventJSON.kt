@@ -8,6 +8,7 @@ data class EventJSON(
     val id: Int? = 0,
     val place: PlaceJSON? = PlaceJSON(),
     val poster: PosterJSON? = PosterJSON(),
+    val producerId: Int? = 0,
     val sessions: Array<EventSessionJSON>? = emptyArray(),
     val slug: String? = "",
     val status: StatusJSON? = StatusJSON(),
