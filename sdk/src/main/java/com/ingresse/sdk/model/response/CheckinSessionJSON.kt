@@ -5,16 +5,6 @@ data class CheckinSessionJSON(
         val owner: PersonJSON? = null,
         val lastStatus: CheckinStatusJSON? = null)
 
-data class SessionJSON(
-        val id: Long = 0,
-        val dateTime: DateTimeJSON? = null)
-
-data class DateTimeJSON(
-        val date: String = "",
-        val time: String = "",
-        val dateTime: String = "",
-        val timestamp: String = "")
-
 data class CheckinStatusJSON(
         val id: Long = 0,
         val timestamp: Long = 0,

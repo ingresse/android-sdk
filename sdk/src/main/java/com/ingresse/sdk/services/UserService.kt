@@ -118,7 +118,7 @@ class UserService(private val client: IngresseClient) {
                 if (response.status == null) return onError(APIError.default)
 
                 if (response.status) {
-                    response.data?.let { data -> onSuccess(data) }
+                    response.data?.let { obj -> onSuccess(obj) }
                     return
                 }
 
