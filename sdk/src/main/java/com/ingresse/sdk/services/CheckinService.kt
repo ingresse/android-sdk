@@ -23,26 +23,36 @@ class CheckinService(private val client: IngresseClient) {
         val adapter = RetrofitBuilder(
             client = client,
             hasGsonConverter = true,
-            hasTimeout = true)
-            .build()
+            hasTimeout = true
+        ).build()
 
         service = adapter.create(Entrance::class.java)
     }
 
-    fun cancelSingleCheckin() {
-        mCheckinCall?.cancel()
-    }
+    /**
+     * Method to cancel a single checkin request
+     */
+    fun cancelSingleCheckin() = mCheckinCall?.cancel()
 
-    fun cancelCheckin() {
-        mConcurrentCalls.forEach { it.cancel() }
-    }
+    /**
+     * Method to cancel a checkin request
+     */
+    fun cancelCheckin() = mConcurrentCalls.forEach { it.cancel() }
 
+    /**
+     * Checkin
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onFail = fail callback
+     * @param onError - error callback
+     * @param onNetworkFail - network fail callback
+     */
     fun checkin(request: CheckinRequest,
                 onSuccess: (tickets: List<GuestCheckinJSON>) -> Unit,
                 onFail: (tickets: List<GuestCheckinJSON>) -> Unit,
                 onError: (APIError) -> Unit,
                 onNetworkFail: (String) -> Unit) {
-
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call = service.checkin(
@@ -82,6 +92,15 @@ class CheckinService(private val client: IngresseClient) {
         call.enqueue(RetrofitCallback(type, callback))
     }
 
+    /**
+     * Single Checkin
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onFail = fail callback
+     * @param onError - error callback
+     * @param onTimeout - timeout callback
+     */
     fun singleCheckin(request: CheckinRequest,
                       onSuccess: (GuestCheckinJSON) -> Unit,
                       onFail: (ticket: GuestCheckinJSON, reason: CheckinStatus) -> Unit,

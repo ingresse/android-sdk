@@ -25,6 +25,9 @@ class EntranceService(private val client: IngresseClient) {
         service = adapter.create(Entrance::class.java)
     }
 
+    /**
+     * Method to cancel a guest list request
+     */
     fun cancelGuestList(concurrent: Boolean = false) {
         if (!concurrent) {
             mGuestListCall?.cancel()
@@ -35,7 +38,17 @@ class EntranceService(private val client: IngresseClient) {
         mConcurrentCalls.clear()
     }
 
+    /**
+     * Company login with email and password
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onNetworkFail -  network fail callback
+     */
     fun getGuestList(concurrent: Boolean = false, request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
         val call = service.getEventGuestList(
                 apikey = client.key,
                 eventId = request.eventId,
@@ -45,8 +58,6 @@ class EntranceService(private val client: IngresseClient) {
                 userToken = request.userToken,
                 dateFrom = request.from
         )
-
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         if (!concurrent) mGuestListCall = call else mConcurrentCalls.add(call)
 

@@ -19,21 +19,29 @@ class TicketService(private val client: IngresseClient) {
     init {
         val adapter = RetrofitBuilder(
             client = client,
-            hasGsonConverter = true)
-            .build()
+            hasGsonConverter = true
+        ).build()
 
         service = adapter.create(Ticket::class.java)
     }
 
-    fun cancelGetEventListByProducer() {
-        mGetEventTicketsCall?.cancel()
-    }
+    /**
+     * Method to cancel a event list by producer request
+     */
+    fun cancelGetEventListByProducer() = mGetEventTicketsCall?.cancel()
 
+    /**
+     * Company login with email and password
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
     fun getEventTickets(request: EventTicket = EventTicket(),
                         onSuccess: (Array<TicketGroupJSON>) -> Unit,
                         onError: (APIError) -> Unit,
                         onConnectionError: (error: Throwable) -> Unit) {
-
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mGetEventTicketsCall = service.getEventTickets(
@@ -44,8 +52,7 @@ class TicketService(private val client: IngresseClient) {
 
         val callback = object: IngresseCallback<Response<Array<TicketGroupJSON>>?> {
             override fun onSuccess(data: Response<Array<TicketGroupJSON>>?) {
-                val response = data?.responseData
-                    ?: return onError(APIError.default)
+                val response = data?.responseData ?: return onError(APIError.default)
 
                 onSuccess(response)
             }

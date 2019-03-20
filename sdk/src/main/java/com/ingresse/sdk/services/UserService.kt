@@ -24,8 +24,8 @@ class UserService(private val client: IngresseClient) {
     init {
         val adapter = RetrofitBuilder(
             client = client,
-            hasGsonConverter = true)
-            .build()
+            hasGsonConverter = true
+        ).build()
 
         service = adapter.create(User::class.java)
     }
@@ -33,16 +33,12 @@ class UserService(private val client: IngresseClient) {
     /**
      * Method to cancel user data request
      */
-    fun cancelUserData() {
-        mUserDataCall?.cancel()
-    }
+    fun cancelUserData() = mUserDataCall?.cancel()
 
     /**
      * Method to cancel user update basic infos request
      */
-    fun cancelUpdateBasicInfos() {
-        mUpdateBasicInfosCall?.cancel()
-    }
+    fun cancelUpdateBasicInfos() = mUpdateBasicInfosCall?.cancel()
 
     /**
      * Get user data
@@ -71,15 +67,11 @@ class UserService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<UserDataJSON>?> {
             override fun onSuccess(data: Response<UserDataJSON>?) {
-                val response = data?.responseData
-                        ?: return onError(APIError.default)
-
+                val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
                 val apiError = APIError()
@@ -111,25 +103,19 @@ class UserService(private val client: IngresseClient) {
             override fun onSuccess(data: Response<UserUpdatedJSON>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
 
-                if (response.status == null) return onError(APIError.default)
-
-                if (response.status) {
-                    response.data?.let { data -> onSuccess(data) }
-                    return
+                if (!response.message.isNullOrEmpty()) {
+                    val apiError = APIError()
+                    apiError.message = response.message.joinToString(", ")
+                    apiError.title = "Verifique suas informações"
+                    apiError.code = 0
+                    onError(apiError)
                 }
 
-                val messages = response.message ?: return onError(APIError.default)
-
-                val apiError = APIError()
-                apiError.message = messages.joinToString(", ")
-                apiError.title = "Verifique suas informações"
-                apiError.code = 0
-                onError(apiError)
+                val responseData = response.data ?: return onError(APIError.default)
+                onSuccess(responseData)
             }
 
-            override fun onError(error: APIError) {
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
                 val apiError = APIError()

@@ -25,9 +25,7 @@ class PermissionService(private val client: IngresseClient) {
     /**
      * Method to cancel sales group call
      */
-    fun cancelSalesGroup() {
-        mSalesGroupCall?.cancel()
-    }
+    fun cancelSalesGroup() = mSalesGroupCall?.cancel()
 
     /**
      * Method to get sales group from user
@@ -46,15 +44,11 @@ class PermissionService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<Array<SalesGroupJSON>?>> {
             override fun onSuccess(data: Response<Array<SalesGroupJSON>?>?) {
-                val response = data?.responseData
-                        ?: return onError(APIError.default)
-
+                val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
                 val apiError = APIError()

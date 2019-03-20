@@ -14,6 +14,7 @@ import java.io.IOException
 
 class EventService(private val client: IngresseClient) {
     private val service: Event
+    private var cancelAllCalled = false
 
     private var mGetEventListByProducerCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
@@ -22,12 +23,25 @@ class EventService(private val client: IngresseClient) {
         val adapter = RetrofitBuilder(
             host = Host.EVENTS,
             client = client,
-            hasGsonConverter = true)
-            .build()
+            hasGsonConverter = true
+        ).build()
 
         service = adapter.create(Event::class.java)
     }
 
+    /**
+     * Method to cancel all requests
+     */
+    fun cancelAll() {
+        cancelAllCalled = true
+        mGetEventListByProducerCall?.cancel()
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
+
+    /**
+     * Method to cancel a get event list by producer
+     */
     fun cancelGetEventListByProducer(concurrent: Boolean = false) {
         if (!concurrent) {
             mGetEventListByProducerCall?.cancel()
@@ -38,13 +52,21 @@ class EventService(private val client: IngresseClient) {
         mConcurrentCalls.clear()
     }
 
+    /**
+     * Event list by producer
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onTokenExpired - token expired callback
+     * @param onConnectionError - connection error callback
+     */
     fun getEventListByProducer(concurrent: Boolean = false,
                                request: EventListByProducer? = EventListByProducer(),
                                onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit,
                                onError: (APIError) -> Unit,
                                onTokenExpired: () -> Unit,
                                onConnectionError: (error: Throwable) -> Unit) {
-
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call  = service.getEventListByProducer(
@@ -60,8 +82,9 @@ class EventService(private val client: IngresseClient) {
 
         val callback = object: IngresseCallback<ResponseHits<EventJSON>?> {
             override fun onSuccess(data: ResponseHits<EventJSON>?) {
-                val response = data?.data?.hits
-                    ?: return onError(APIError.default)
+                if (cancelAllCalled) return
+
+                val response = data?.data?.hits ?: return onError(APIError.default)
 
                 if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
                 onSuccess(Pair(response, data.data.total))

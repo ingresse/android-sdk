@@ -20,7 +20,11 @@ class AuthService(private val client: IngresseClient) {
     private var mRenewAuthTokenCall: Call<String>? = null
 
     init {
-        val adapter = RetrofitBuilder(client = client, withHttpClient = false).build()
+        val adapter = RetrofitBuilder(
+            client = client,
+            withHttpClient = false
+        ).build()
+
         service = adapter.create(Auth::class.java)
     }
 
@@ -50,19 +54,11 @@ class AuthService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<CompanyLoginJSON>?> {
             override fun onSuccess(data: Response<CompanyLoginJSON>?) {
-                val response = data?.responseData
-
-                if (response == null) {
-                    onError(APIError.default)
-                    return
-                }
-
+                val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
                 val apiError = APIError()
@@ -90,9 +86,7 @@ class AuthService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<UserAuthTokenJSON>?> {
             override fun onSuccess(data: Response<UserAuthTokenJSON>?) {
-                val response = data?.responseData?.authToken
-                    ?: return onError(APIError.default)
-
+                val response = data?.responseData?.authToken ?: return onError(APIError.default)
                 onSuccess(response)
             }
 

@@ -22,16 +22,24 @@ class SearchService(private val client: IngresseClient) {
     init {
         val adapter = RetrofitBuilder(
             host = Host.SEARCH,
-            client = client)
-            .build()
+            client = client
+        ).build()
 
         service = adapter.create(Search::class.java)
     }
 
-    fun cancelEventSearchByTitle() {
-        mEventSearchCall?.cancel()
-    }
+    /**
+     * Method to cancel a event search request
+     */
+    fun cancelEventSearchByTitle() = mEventSearchCall?.cancel()
 
+    /**
+     * Search event by title
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
     fun searchEventByTitle(request: EventSearch, onSuccess: (ArrayList<Source<EventJSON>>) -> Unit, onError: (APIError) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
@@ -45,9 +53,7 @@ class SearchService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<ResponseHits<EventJSON>?> {
             override fun onSuccess(data: ResponseHits<EventJSON>?) {
-                val response = data?.data?.hits
-                    ?: return onError(APIError.default)
-
+                val response = data?.data?.hits ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
