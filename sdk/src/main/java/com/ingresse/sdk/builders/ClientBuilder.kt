@@ -1,5 +1,6 @@
-package com.ingresse.sdk
+package com.ingresse.sdk.builders
 
+import com.ingresse.sdk.IngresseClient
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

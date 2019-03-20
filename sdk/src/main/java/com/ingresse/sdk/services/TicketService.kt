@@ -2,21 +2,13 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.RetrofitBuilder
+import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.*
 import com.ingresse.sdk.errors.APIError
-import com.ingresse.sdk.model.request.EventListByProducer
 import com.ingresse.sdk.model.request.EventTicket
-import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.model.response.TicketGroupJSON
-import com.ingresse.sdk.request.Event
 import com.ingresse.sdk.request.Ticket
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class TicketService(private val client: IngresseClient) {
@@ -41,6 +33,8 @@ class TicketService(private val client: IngresseClient) {
                         onSuccess: (Array<TicketGroupJSON>) -> Unit,
                         onError: (APIError) -> Unit,
                         onConnectionError: (error: Throwable) -> Unit) {
+
+        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mGetEventTicketsCall = service.getEventTickets(
             apikey = client.key,

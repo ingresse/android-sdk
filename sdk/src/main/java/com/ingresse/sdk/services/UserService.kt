@@ -2,7 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.RetrofitBuilder
+import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -13,12 +13,7 @@ import com.ingresse.sdk.model.response.UserDataJSON
 import com.ingresse.sdk.model.response.UserUpdatedDataJSON
 import com.ingresse.sdk.model.response.UserUpdatedJSON
 import com.ingresse.sdk.request.User
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class UserService(private val client: IngresseClient) {
     private var service: User
@@ -57,6 +52,8 @@ class UserService(private val client: IngresseClient) {
      * @param onError - error callback
      */
     fun getUserData(request: UserData, onSuccess: (UserDataJSON) -> Unit, onError: (APIError) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
         val fields = listOf("id", "name", "lastname",
                 "document", "email", "zip",
                 "number", "complement", "city",

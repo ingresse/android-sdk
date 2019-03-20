@@ -2,20 +2,14 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.RetrofitBuilder
+import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.*
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.EventListByProducer
 import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Event
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.ingresse.sdk.builders.Host
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class EventService(private val client: IngresseClient) {
@@ -50,10 +44,10 @@ class EventService(private val client: IngresseClient) {
                                onError: (APIError) -> Unit,
                                onTokenExpired: () -> Unit,
                                onConnectionError: (error: Throwable) -> Unit) {
-        if (client.authToken.isNullOrEmpty()) return onError(APIError.default)
+
+        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call  = service.getEventListByProducer(
-            authorization = "Bearer ${client.authToken}",
             title = request?.title,
             size = request?.size,
             orderBy = request?.orderBy,

@@ -2,7 +2,6 @@ package com.ingresse.sdk.request
 
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface Event {
@@ -17,8 +16,7 @@ interface Event {
      * @param offset - Get from specific page
      */
     @GET("/search/producer")
-    fun getEventListByProducer(@Header("Authorization") authorization: String,
-                               @Query("title") title: String? = null,
+    fun getEventListByProducer(@Query("title") title: String? = null,
                                @Query("size") size: Int? = null,
                                @Query("orderBy") orderBy: String? = null,
                                @Query("from") from: String? = null,

@@ -2,7 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.RetrofitBuilder
+import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -42,6 +42,8 @@ class CheckinService(private val client: IngresseClient) {
                 onFail: (tickets: List<GuestCheckinJSON>) -> Unit,
                 onError: (APIError) -> Unit,
                 onNetworkFail: (String) -> Unit) {
+
+        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call = service.checkin(
                 apiKey = client.key,
@@ -85,6 +87,8 @@ class CheckinService(private val client: IngresseClient) {
                       onFail: (ticket: GuestCheckinJSON, reason: CheckinStatus) -> Unit,
                       onError: (APIError) -> Unit,
                       onTimeout: () -> Unit) {
+
+        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mCheckinCall = service.checkin(
                 apiKey = client.key,

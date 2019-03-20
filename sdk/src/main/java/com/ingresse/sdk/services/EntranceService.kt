@@ -2,7 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.RetrofitBuilder
+import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
@@ -12,11 +12,7 @@ import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.guard
 import com.ingresse.sdk.model.request.GuestList
 import com.ingresse.sdk.request.Entrance
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class EntranceService(private val client: IngresseClient) {
     private var service: Entrance
@@ -49,6 +45,8 @@ class EntranceService(private val client: IngresseClient) {
                 userToken = request.userToken,
                 dateFrom = request.from
         )
+
+        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         if (!concurrent) mGuestListCall = call else mConcurrentCalls.add(call)
 

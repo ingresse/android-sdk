@@ -2,7 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.RetrofitBuilder
+import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.ResponseHits
 import com.ingresse.sdk.base.RetrofitCallback
@@ -11,11 +11,8 @@ import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.EventSearch
 import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Search
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
+import com.ingresse.sdk.builders.Host
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class SearchService(private val client: IngresseClient) {
     private var service: Search
@@ -36,6 +33,8 @@ class SearchService(private val client: IngresseClient) {
     }
 
     fun searchEventByTitle(request: EventSearch, onSuccess: (ArrayList<Source<EventJSON>>) -> Unit, onError: (APIError) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
         mEventSearchCall = service.getEventByTitle(
             title = request.title,
             size = request.size,

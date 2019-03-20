@@ -2,7 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.RetrofitBuilder
+import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -10,11 +10,7 @@ import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.SalesGroup
 import com.ingresse.sdk.model.response.SalesGroupJSON
 import com.ingresse.sdk.request.Permission
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class PermissionService(private val client: IngresseClient) {
     private var service: Permission
@@ -41,6 +37,8 @@ class PermissionService(private val client: IngresseClient) {
      * @param onError - error callback
      */
     fun getSalesGroup(request: SalesGroup, onSuccess: (Array<SalesGroupJSON>) -> Unit, onError: (APIError) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
         mSalesGroupCall = service.getSalesGroup(
                 apikey = client.key,
                 userToken = request.userToken

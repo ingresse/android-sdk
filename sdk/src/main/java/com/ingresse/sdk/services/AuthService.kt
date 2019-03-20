@@ -2,7 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.RetrofitBuilder
+import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -11,11 +11,7 @@ import com.ingresse.sdk.model.request.CompanyLogin
 import com.ingresse.sdk.model.response.CompanyLoginJSON
 import com.ingresse.sdk.model.response.UserAuthTokenJSON
 import com.ingresse.sdk.request.Auth
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class AuthService(private val client: IngresseClient) {
     private var service: Auth
@@ -31,16 +27,12 @@ class AuthService(private val client: IngresseClient) {
     /**
      * Method to cancel a company login request
      */
-    fun cancelCompanyLogin() {
-        mCompanyLoginCall?.cancel()
-    }
+    fun cancelCompanyLogin() = mCompanyLoginCall?.cancel()
 
     /**
      * Method to cancel a company login request
      */
-    fun cancelRenewAuthToken() {
-        mRenewAuthTokenCall?.cancel()
-    }
+    fun cancelRenewAuthToken() = mRenewAuthTokenCall?.cancel()
 
     /**
      * Company login with email and password

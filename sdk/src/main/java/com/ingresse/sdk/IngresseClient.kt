@@ -1,6 +1,6 @@
 package com.ingresse.sdk
 
-import com.ingresse.sdk.url.builder.Environment
+import com.ingresse.sdk.builders.Environment
 
 class IngresseClient(val key: String,
                      val authToken: String,
