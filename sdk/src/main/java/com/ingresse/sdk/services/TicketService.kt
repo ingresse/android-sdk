@@ -2,6 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.RetrofitBuilder
 import com.ingresse.sdk.base.*
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.EventListByProducer
@@ -19,16 +20,14 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class TicketService(private val client: IngresseClient) {
-    private val host = Host.API
     private val service: Ticket
 
     private var mGetEventTicketsCall: Call<String>? = null
 
     init {
-        val adapter = Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(URLBuilder(host, client.environment).build())
+        val adapter = RetrofitBuilder(
+            client = client,
+            hasGsonConverter = true)
             .build()
 
         service = adapter.create(Ticket::class.java)

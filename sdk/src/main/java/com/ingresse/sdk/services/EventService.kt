@@ -2,6 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.RetrofitBuilder
 import com.ingresse.sdk.base.*
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.EventListByProducer
@@ -18,33 +19,19 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class EventService(private val client: IngresseClient) {
-    private val httpClient: OkHttpClient
-    private val host = Host.EVENTS
     private val service: Event
 
     private var mGetEventListByProducerCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val interceptor =  HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-
-        httpClient = OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .build()
-
-        val adapter = Retrofit.Builder()
-                .client(httpClient)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(URLBuilder(host, client.environment).build())
-                .build()
+        val adapter = RetrofitBuilder(
+            host = Host.EVENTS,
+            client = client,
+            hasGsonConverter = true)
+            .build()
 
         service = adapter.create(Event::class.java)
-    }
-
-    fun cancelAll() {
-        httpClient.dispatcher().cancelAll()
     }
 
     fun cancelGetEventListByProducer(concurrent: Boolean = false) {

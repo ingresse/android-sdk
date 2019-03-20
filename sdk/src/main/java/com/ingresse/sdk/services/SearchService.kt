@@ -2,6 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.ResponseHits
 import com.ingresse.sdk.base.RetrofitCallback
@@ -16,16 +17,15 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-class SearchService(private val client:  IngresseClient) {
-    private var host = Host.SEARCH
+class SearchService(private val client: IngresseClient) {
     private var service: Search
 
     private var mEventSearchCall: Call<String>? = null
 
     init {
-        val adapter = Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(URLBuilder(host, client.environment).build())
+        val adapter = RetrofitBuilder(
+            host = Host.SEARCH,
+            client = client)
             .build()
 
         service = adapter.create(Search::class.java)

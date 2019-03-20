@@ -2,6 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -16,17 +17,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class PermissionService(private val client: IngresseClient) {
-    private var host = Host.API
     private var service: Permission
 
     private var mSalesGroupCall: Call<String>? = null
 
     init {
-        val adapter = Retrofit.Builder()
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .baseUrl(URLBuilder(host, client.environment).build())
-                .build()
-
+        val adapter = RetrofitBuilder(client = client).build()
         service = adapter.create(Permission::class.java)
     }
 
