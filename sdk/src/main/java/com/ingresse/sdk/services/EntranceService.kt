@@ -2,6 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.RetrofitBuilder
 import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
@@ -18,18 +19,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class EntranceService(private val client: IngresseClient) {
-    private var host = Host.API
     private var service: Entrance
 
     private var mGuestListCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val adapter = Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(URLBuilder(host, client.environment).build())
-            .build()
-
+        val adapter = RetrofitBuilder(client = client).build()
         service = adapter.create(Entrance::class.java)
     }
 

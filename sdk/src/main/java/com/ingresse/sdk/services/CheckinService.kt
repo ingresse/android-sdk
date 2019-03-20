@@ -2,6 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -10,14 +11,7 @@ import com.ingresse.sdk.model.request.CheckinRequest
 import com.ingresse.sdk.model.response.CheckinStatus
 import com.ingresse.sdk.model.response.GuestCheckinJSON
 import com.ingresse.sdk.request.Entrance
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 
 class CheckinService(private val client: IngresseClient) {
     private var service: Entrance
@@ -26,24 +20,12 @@ class CheckinService(private val client: IngresseClient) {
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val url = URLBuilder(Host.API, client.environment).build()
-        val builder = Retrofit.Builder()
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(url)
+        val adapter = RetrofitBuilder(
+            client = client,
+            hasGsonConverter = true,
+            hasTimeout = true)
+            .build()
 
-        if (client.debug) {
-            val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BODY
-
-            val httpClient = OkHttpClient.Builder()
-                    .addInterceptor(logging)
-                    .build()
-
-            builder.client(httpClient)
-        }
-
-        val adapter = builder.build()
         service = adapter.create(Entrance::class.java)
     }
 
