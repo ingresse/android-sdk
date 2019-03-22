@@ -2,10 +2,10 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.*
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.UserBasicInfos
 import com.ingresse.sdk.model.request.UserData
@@ -14,18 +14,24 @@ import com.ingresse.sdk.model.response.UserUpdatedDataJSON
 import com.ingresse.sdk.model.response.UserUpdatedJSON
 import com.ingresse.sdk.request.User
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class UserService(private val client: IngresseClient) {
+    private var host = Host.API
     private var service: User
 
     private var mUserDataCall: Call<String>? = null
     private var mUpdateBasicInfosCall: Call<String>? = null
 
     init {
-        val adapter = RetrofitBuilder(
-            client = client,
-            hasGsonConverter = true
-        ).build()
+        val adapter = Retrofit.Builder()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(ClientBuilder(client).build())
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
         service = adapter.create(User::class.java)
     }

@@ -17,7 +17,7 @@ data class UserDataJSON(
     val state: String? = "",
     val zip: String? = "",
     val verified: Boolean? = false,
-    val pictures: Any? = null
+    val pictures: ArrayList<UserPictures> = arrayListOf()
 )
 
 data class UserPictures(

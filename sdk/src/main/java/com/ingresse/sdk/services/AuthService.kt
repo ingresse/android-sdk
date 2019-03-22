@@ -2,28 +2,32 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.Host
+import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.CompanyLogin
 import com.ingresse.sdk.model.response.CompanyLoginJSON
 import com.ingresse.sdk.model.response.UserAuthTokenJSON
 import com.ingresse.sdk.request.Auth
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class AuthService(private val client: IngresseClient) {
+    private var host = Host.API
     private var service: Auth
 
     private var mCompanyLoginCall: Call<String>? = null
     private var mRenewAuthTokenCall: Call<String>? = null
 
     init {
-        val adapter = RetrofitBuilder(
-            client = client,
-            withHttpClient = false
-        ).build()
+        val adapter = Retrofit.Builder()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
         service = adapter.create(Auth::class.java)
     }

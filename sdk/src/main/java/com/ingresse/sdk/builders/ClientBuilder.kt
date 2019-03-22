@@ -40,7 +40,7 @@ class ClientBuilder(private val client: IngresseClient, private val hasTimeout: 
     }
 
     /**
-     * Header insertion with Authorization and User Agent
+     * Header creation with Authorization and User Agent
      */
     private fun createRequestInterceptor(): Interceptor {
         val jwt = "Bearer ${client.authToken}"

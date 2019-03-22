@@ -2,29 +2,36 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.ClientBuilder
+import com.ingresse.sdk.builders.Host
+import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.CheckinRequest
 import com.ingresse.sdk.model.response.CheckinStatus
 import com.ingresse.sdk.model.response.GuestCheckinJSON
 import com.ingresse.sdk.request.Entrance
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class CheckinService(private val client: IngresseClient) {
+    private var host = Host.API
     private var service: Entrance
 
     private var mCheckinCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val adapter = RetrofitBuilder(
-            client = client,
-            hasGsonConverter = true,
-            hasTimeout = true
-        ).build()
+        val adapter = Retrofit.Builder()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(ClientBuilder(client, true).build())
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
         service = adapter.create(Entrance::class.java)
     }

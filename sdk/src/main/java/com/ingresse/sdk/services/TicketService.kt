@@ -2,33 +2,41 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.builders.RetrofitBuilder
 import com.ingresse.sdk.base.*
+import com.ingresse.sdk.builders.ClientBuilder
+import com.ingresse.sdk.builders.Host
+import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.EventTicket
 import com.ingresse.sdk.model.response.TicketGroupJSON
 import com.ingresse.sdk.request.Ticket
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class TicketService(private val client: IngresseClient) {
+    private var host = Host.API
     private val service: Ticket
 
     private var mGetEventTicketsCall: Call<String>? = null
 
     init {
-        val adapter = RetrofitBuilder(
-            client = client,
-            hasGsonConverter = true
-        ).build()
+        val adapter = Retrofit.Builder()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(ClientBuilder(client).build())
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
         service = adapter.create(Ticket::class.java)
     }
 
     /**
-     * Method to cancel a event list by producer request
+     * Method to cancel a event tickets request
      */
-    fun cancelGetEventListByProducer() = mGetEventTicketsCall?.cancel()
+    fun cancelGetEventTickets() = mGetEventTicketsCall?.cancel()
 
     /**
      * Company login with email and password
