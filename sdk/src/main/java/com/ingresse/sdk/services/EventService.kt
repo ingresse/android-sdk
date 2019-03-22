@@ -9,8 +9,6 @@ import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Event
 import com.ingresse.sdk.url.builder.Host
 import com.ingresse.sdk.url.builder.URLBuilder
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,23 +16,16 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class EventService(private val client: IngresseClient) {
-    private val httpClient: OkHttpClient
     private val host = Host.EVENTS
     private val service: Event
 
     private var mGetEventListByProducerCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
+    private var cancelAllCalled = false
+
     init {
-        val interceptor =  HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-
-        httpClient = OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .build()
-
         val adapter = Retrofit.Builder()
-                .client(httpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(URLBuilder(host, client.environment).build())
@@ -44,7 +35,10 @@ class EventService(private val client: IngresseClient) {
     }
 
     fun cancelAll() {
-        httpClient.dispatcher().cancelAll()
+        cancelAllCalled = true
+        mGetEventListByProducerCall?.cancel()
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
     }
 
     fun cancelGetEventListByProducer(concurrent: Boolean = false) {
@@ -79,6 +73,8 @@ class EventService(private val client: IngresseClient) {
 
         val callback = object: IngresseCallback<ResponseHits<EventJSON>?> {
             override fun onSuccess(data: ResponseHits<EventJSON>?) {
+                if (cancelAllCalled) return
+
                 val response = data?.data?.hits
                     ?: return onError(APIError.default)
 
