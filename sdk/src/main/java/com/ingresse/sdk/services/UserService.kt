@@ -26,10 +26,14 @@ class UserService(private val client: IngresseClient) {
     private var mUpdateBasicInfosCall: Call<String>? = null
 
     init {
+        val httpClient = ClientBuilder(client)
+            .addRequestHeaders()
+            .build()
+
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(ClientBuilder(client).build())
+                .client(httpClient)
                 .baseUrl(URLBuilder(host, client.environment).build())
                 .build()
 
@@ -115,6 +119,7 @@ class UserService(private val client: IngresseClient) {
                     apiError.title = "Verifique suas informações"
                     apiError.code = 0
                     onError(apiError)
+                    return
                 }
 
                 val responseData = response.data ?: return onError(APIError.default)

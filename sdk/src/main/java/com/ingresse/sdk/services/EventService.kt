@@ -23,8 +23,12 @@ class EventService(private val client: IngresseClient) {
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
+        val httpClient = ClientBuilder(client)
+            .addRequestHeaders()
+            .build()
+
         val adapter = Retrofit.Builder()
-                .client(ClientBuilder(client).build())
+                .client(httpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .baseUrl(URLBuilder(Host.EVENTS, client.environment).build())
                 .build()

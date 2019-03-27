@@ -10,23 +10,33 @@ import java.util.concurrent.TimeUnit
  * Client Builder
  *
  * @param client - Ingresse Client
- * @param hasTimeout - add timeout if's true
  */
-class ClientBuilder(private val client: IngresseClient, private val hasTimeout: Boolean = false) {
-    var httpClient = OkHttpClient.Builder()
+class ClientBuilder(private val client: IngresseClient) {
+    private val httpClient = OkHttpClient.Builder()
+
+    /**
+     * Initiate http client with logging interceptor if debug is on
+     */
+    init { if(client.debug) httpClient.addInterceptor(createLoggingInterceptor()) }
 
     /**
      * OkHttpClient build
      */
-    fun build(): OkHttpClient { return httpClient.getHttpClient().build() }
+    fun build(): OkHttpClient { return httpClient.build() }
 
     /**
-     * Creation of OkHttpClient
+     * Add specif timeout to request
      */
-    private fun OkHttpClient.Builder.getHttpClient(): OkHttpClient.Builder {
-        if (client.debug) addInterceptor(createLoggingInterceptor())
-        if (hasTimeout) callTimeout(2, TimeUnit.SECONDS)
-        addInterceptor(createRequestInterceptor())
+    fun addTimeout(timeInSeconds: Long = 2): ClientBuilder {
+        httpClient.callTimeout(timeInSeconds, TimeUnit.SECONDS)
+        return this
+    }
+
+    /**
+     * Add request interceptor with mandatory headers
+     */
+    fun addRequestHeaders(): ClientBuilder  {
+        httpClient.addInterceptor(createRequestInterceptor())
         return this
     }
 

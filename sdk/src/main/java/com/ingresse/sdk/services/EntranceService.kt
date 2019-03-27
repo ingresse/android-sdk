@@ -26,9 +26,13 @@ class EntranceService(private val client: IngresseClient) {
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
+        val httpClient = ClientBuilder(client)
+            .addRequestHeaders()
+            .build()
+
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
-                .client(ClientBuilder(client).build())
+                .client(httpClient)
                 .baseUrl(URLBuilder(host, client.environment).build())
                 .build()
 

@@ -26,10 +26,15 @@ class CheckinService(private val client: IngresseClient) {
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
+        val httpClient = ClientBuilder(client)
+            .addRequestHeaders()
+            .addTimeout()
+            .build()
+
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(ClientBuilder(client, true).build())
+                .client(httpClient)
                 .baseUrl(URLBuilder(host, client.environment).build())
                 .build()
 

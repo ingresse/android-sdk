@@ -17,16 +17,20 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class TicketService(private val client: IngresseClient) {
-    private var host = Host.API
+    private val host = Host.API
     private val service: Ticket
 
     private var mGetEventTicketsCall: Call<String>? = null
 
     init {
+        val httpClient = ClientBuilder(client)
+            .addRequestHeaders()
+            .build()
+
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(ClientBuilder(client).build())
+                .client(httpClient)
                 .baseUrl(URLBuilder(host, client.environment).build())
                 .build()
 

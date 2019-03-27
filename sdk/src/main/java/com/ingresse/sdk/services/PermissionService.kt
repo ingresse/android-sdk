@@ -23,9 +23,13 @@ class PermissionService(private val client: IngresseClient) {
     private var mSalesGroupCall: Call<String>? = null
 
     init {
+        val httpClient = ClientBuilder(client)
+            .addRequestHeaders()
+            .build()
+
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
-                .client(ClientBuilder(client).build())
+                .client(httpClient)
                 .baseUrl(URLBuilder(host, client.environment).build())
                 .build()
 
