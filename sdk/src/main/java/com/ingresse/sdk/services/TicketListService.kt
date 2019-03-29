@@ -2,7 +2,6 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -46,7 +45,7 @@ class TicketListService(private val client: IngresseClient) {
 
     fun cancel() = mTicketListCall?.cancel()
 
-    fun getTicketList(request: Requests.TicketList, onSuccess: (Array<Responses.GroupJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFailure: (String) -> Unit) {
+    fun getTicketList(request: Requests.TicketList, onSuccess: (ArrayList<Responses.GroupJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFailure: (String) -> Unit) {
         val call = service.getTicketList(
                 eventId = request.eventId,
                 sessionId = request.sessionId,
@@ -58,8 +57,8 @@ class TicketListService(private val client: IngresseClient) {
                 apikey = client.key)
 
         mTicketListCall = call
-        val callback = object: IngresseCallback<Response<Array<Responses.GroupJSON>>> {
-            override fun onSuccess(data: Response<Array<Responses.GroupJSON>>?) {
+        val callback = object: IngresseCallback<Response<ArrayList<Responses.GroupJSON>>> {
+            override fun onSuccess(data: Response<ArrayList<Responses.GroupJSON>>?) {
                 val results = data?.responseData ?: return onError(APIError.default)
                 onSuccess(results)
             }
@@ -68,7 +67,7 @@ class TicketListService(private val client: IngresseClient) {
             override fun onRetrofitError(error: Throwable) = onNetworkFailure(error.localizedMessage)
         }
 
-        val type = object: TypeToken<Response<Array<Responses.GroupJSON>>>() {}.type
+        val type = object: TypeToken<Response<ArrayList<Responses.GroupJSON>>>() {}.type
         mTicketListCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
