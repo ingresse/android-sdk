@@ -7,6 +7,7 @@ class IngresseService(client: IngresseClient) {
     var checkin = CheckinService(client)
     var entrance = EntranceService(client)
     var permission = PermissionService(client)
+    var pos = POSService(client)
     var search = SearchService(client)
     var ticketList = TicketListService(client)
     var ticketStatus = TicketStatusService(client)
