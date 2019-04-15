@@ -62,7 +62,7 @@ class AttributesService(private val client: IngresseClient) {
     fun getEventAttributes(request: EventAttributes, onSuccess: (EventAttributesJSON) -> Unit, onError: (APIError) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        val customFields = request.filters?.let { it.joinToString(",") } ?: ""
+        val customFields = request.filters?.let { it.joinToString(",") }
 
         mGetEventAttributesCall = service.getEventAttributes(
             eventId = request.eventId,
@@ -98,16 +98,9 @@ class AttributesService(private val client: IngresseClient) {
     fun getPlannerAttributes(request: PlannerAttributes, onSuccess: (PlannerAttributesJSON) -> Unit, onError: (APIError) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        val fields = listOf("planner","posImage","aiddp",
-            "formalName","cnpj","cpf","obs2",
-            "cityNumber","address","title")
-
-        val customFields = request.fields?.let { it } ?: fields.joinToString(",")
-
         mGetPlannerAttributesCall = service.getPlannerAttributes(
             eventId = request.eventId,
-            apikey = client.key,
-            fields = customFields)
+            apikey = client.key)
 
         val callback = object : IngresseCallback<Response<PlannerAttributesJSON>?> {
             override fun onSuccess(data: Response<PlannerAttributesJSON>?) {

@@ -16,7 +16,7 @@ interface Attributes {
     @GET("/event/{eventId}/attributes")
     fun getEventAttributes(@Path("eventId") eventId: String,
                            @Query("apikey") apikey: String,
-                           @Query("filters") filters: String): Call<String>
+                           @Query("filters") filters: String?): Call<String>
 
     /**
      * Get planner attributes
@@ -27,5 +27,5 @@ interface Attributes {
     @GET("/event/{eventId}")
     fun getPlannerAttributes(@Path("eventId") eventId: String,
                              @Query("apikey") apikey: String,
-                             @Query("fields") fields: String): Call<String>
+                             @Query("fields") fields: String = "planner,posImage,aiddp,formalName,cnpj,cpf,obs2,cityNumber,address,title"): Call<String>
 }

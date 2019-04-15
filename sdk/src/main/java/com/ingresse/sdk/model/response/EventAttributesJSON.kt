@@ -14,20 +14,18 @@ data class EventAttributesJSON(
     var ticketTransferRequired: Boolean)
 
 data class Advertisement(
-    var mobile: AdvertisementType?,
-    var web: AdvertisementType?)
+    var mobile: AdData?,
+    var web: AdData?)
 
-data class AdvertisementType(
-    var background: AdvertisementBackground?,
-    var cover: AdvertisementCover?,
-    var filter: String,
-    var ticket: String)
+data class AdData(
+    var background: AdBackground?,
+    var cover: AdCover?)
 
-data class AdvertisementBackground(
+data class AdBackground(
     var image: String?,
     var backgroundColor: String?,
     var textColor: String?)
 
-data class AdvertisementCover(
+data class AdCover(
     var image: String?,
     var url: String?)
