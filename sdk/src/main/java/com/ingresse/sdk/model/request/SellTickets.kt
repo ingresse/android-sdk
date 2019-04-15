@@ -6,10 +6,8 @@ data class SellTickets(
     var userEmail: String? = null,
     var payment: String = "",
     var installments: String? = null,
-    var tickets: Array<TicketsToSell> = emptyArray()
-)
+    var tickets: Array<TicketsToSell> = emptyArray())
 
 data class TicketsToSell(
     var guestTypeId: String = "",
-    var quantity: Int = -1
-)
+    var quantity: Int = -1)
