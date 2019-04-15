@@ -1,8 +1,7 @@
 package com.ingresse.sdk.model.response
 
 data class PrintTicketsJSON(
-    var data: Array<TicketToPrint> = emptyArray()
-)
+    var data: Array<TicketToPrint> = emptyArray())
 
 data class TicketToPrint(
     var eventAddress: String = "",
@@ -30,5 +29,4 @@ data class TicketToPrint(
     var ticketIngresseTax: String = "",
     var ticketDescription: String = "",
     var ticketCode: String = "",
-    var ticketSequence: String = ""
-)
+    var ticketSequence: String = "")
