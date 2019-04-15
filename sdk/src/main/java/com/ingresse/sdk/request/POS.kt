@@ -2,18 +2,19 @@ package com.ingresse.sdk.request
 
 import com.ingresse.sdk.model.request.SellTickets
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface POS {
 
     @POST("/ticketbooth")
-    fun sellTickets(
-        @Query("apikey") apikey: String,
-        @Query("usertoken") userToken: String,
-        @Query("method") method: String = "sell",
-        @Body params: SellTickets
-    ): Call<String>
+    fun sellTickets(@Query("apikey") apikey: String,
+                    @Query("usertoken") userToken: String,
+                    @Query("method") method: String = "sell",
+                    @Body params: SellTickets): Call<String>
+
+    @GET("/ticketbooth/{transactionId}")
+    fun printTickets(@Path("transactionId") transactionId: String,
+                     @Query("apikey") apikey: String,
+                     @Query("usertoken") userToken: String,
+                     @Query("method") method: String = "print"): Call<String>
 }
