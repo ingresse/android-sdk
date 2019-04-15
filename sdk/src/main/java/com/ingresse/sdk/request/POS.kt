@@ -17,4 +17,9 @@ interface POS {
                      @Query("apikey") apikey: String,
                      @Query("usertoken") userToken: String,
                      @Query("method") method: String = "print"): Call<String>
+
+    @GET("/event/{eventId}")
+    fun getPlannerAttributes(@Path("eventId") eventId: String,
+                             @Query("apikey") apikey: String,
+                             @Query("fields") fields: String): Call<String>
 }

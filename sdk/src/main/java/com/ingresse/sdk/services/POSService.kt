@@ -9,11 +9,12 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.model.request.PlannerAttributes
 import com.ingresse.sdk.model.request.PrintTickets
 import com.ingresse.sdk.model.request.SellTickets
+import com.ingresse.sdk.model.response.PlannerAttributesJSON
 import com.ingresse.sdk.model.response.PrintTicketsJSON
 import com.ingresse.sdk.model.response.SellTicketsJSON
-import com.ingresse.sdk.model.response.UserDataJSON
 import com.ingresse.sdk.request.POS
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -26,6 +27,7 @@ class POSService(private val client: IngresseClient) {
 
     private var mSellTicketsCall: Call<String>? = null
     private var mPrintTicketsCall: Call<String>? = null
+    private var mGetPlannerAttributesCall: Call<String>? = null
 
     init {
         val httpClient = ClientBuilder(client)
@@ -45,6 +47,8 @@ class POSService(private val client: IngresseClient) {
     fun cancelSellTickets() = mSellTicketsCall?.cancel()
 
     fun cancelprintTickets() = mPrintTicketsCall?.cancel()
+
+    fun cancelGetPlannerAttributes() = mGetPlannerAttributesCall?.cancel()
 
     fun sellTickets(request: SellTickets, onSuccess: (SellTicketsJSON) -> Unit, onError: (APIError) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
@@ -98,5 +102,38 @@ class POSService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<PrintTicketsJSON>>() {}.type
         mPrintTicketsCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    fun getPlannerAttributes(request: PlannerAttributes, onSuccess: (PlannerAttributesJSON) -> Unit, onError: (APIError) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
+        val fields = listOf("planner","posImage","aiddp",
+            "formalName","cnpj","cpf","obs2",
+            "cityNumber","address","title")
+
+        val customFields = request.fields?.let { it } ?: fields.joinToString(",")
+
+        mGetPlannerAttributesCall = service.getPlannerAttributes(
+            eventId = request.eventId,
+            apikey = client.key,
+            fields = customFields)
+
+        val callback = object : IngresseCallback<Response<PlannerAttributesJSON>?> {
+            override fun onSuccess(data: Response<PlannerAttributesJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<PlannerAttributesJSON>>() {}.type
+        mGetPlannerAttributesCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
