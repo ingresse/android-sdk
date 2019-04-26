@@ -3,13 +3,14 @@ package com.ingresse.sdk
 import com.ingresse.sdk.services.*
 
 class IngresseService(client: IngresseClient) {
-    var auth: AuthService = AuthService(client)
-    var checkin: CheckinService = CheckinService(client)
-    var entrance: EntranceService = EntranceService(client)
-    var permission: PermissionService = PermissionService(client)
-    var search: SearchService = SearchService(client)
-    var user: UserService = UserService(client)
-    var transaction: TransactionService = TransactionService(client)
-    var event: EventService = EventService(client)
-    var ticket: TicketService = TicketService(client)
+    var auth = AuthService(client)
+    var checkin = CheckinService(client)
+    var entrance = EntranceService(client)
+    var permission = PermissionService(client)
+    var search = SearchService(client)
+    var ticketStatus = TicketStatusService(client)
+    var transaction = TransactionService(client)
+    var user = UserService(client)
+    var event = EventService(client)
+    var ticket = TicketService(client)
 }

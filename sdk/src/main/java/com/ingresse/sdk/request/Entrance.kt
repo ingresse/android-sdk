@@ -25,6 +25,17 @@ interface Entrance {
                           @Query("from") dateFrom: Long?) : Call<String>
 
     /**
+     * Get ticket checkin history
+     *
+     * @param code - Ticket code (00.00000.?000000?.000000.00)
+     * @param token - UserToken required
+     */
+    @GET("/ticket/{code}/status")
+    fun getCheckinStatus(@Path("code") code: String,
+                         @Query("apikey") apikey: String,
+                         @Query("usertoken") token: String): Call<String>
+
+    /**
      * Update ticket status
      *
      * @param eventId - Event id

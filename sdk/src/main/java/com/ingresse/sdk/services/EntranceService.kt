@@ -6,7 +6,6 @@ import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
-import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.model.response.GuestJSON
@@ -14,34 +13,49 @@ import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.guard
 import com.ingresse.sdk.model.request.GuestList
 import com.ingresse.sdk.request.Entrance
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
 class EntranceService(private val client: IngresseClient) {
     private var host = Host.API
     private var service: Entrance
+    private var singleService: Entrance
 
     private var mGuestListCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val httpClient = ClientBuilder(client)
-            .addRequestHeaders()
-            .build()
-
-        val adapter = Retrofit.Builder()
+        val url = URLBuilder(host, client.environment).build()
+        val builder = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
-                .client(httpClient)
-                .baseUrl(URLBuilder(host, client.environment).build())
-                .build()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(url)
 
+        val clientBuilder = OkHttpClient.Builder()
+
+        if (client.debug) {
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BODY
+
+            clientBuilder.addInterceptor(logging)
+        }
+
+        builder.client(clientBuilder.build())
+
+        var adapter = builder.build()
         service = adapter.create(Entrance::class.java)
+
+        clientBuilder.callTimeout(2, TimeUnit.SECONDS)
+        builder.client(clientBuilder.build())
+        adapter = builder.build()
+        singleService = adapter.create(Entrance::class.java)
     }
 
-    /**
-     * Method to cancel a guest list request
-     */
     fun cancelGuestList(concurrent: Boolean = false) {
         if (!concurrent) {
             mGuestListCall?.cancel()
@@ -52,17 +66,7 @@ class EntranceService(private val client: IngresseClient) {
         mConcurrentCalls.clear()
     }
 
-    /**
-     * Company login with email and password
-     *
-     * @param request - parameters required to request
-     * @param onSuccess - success callback
-     * @param onError - error callback
-     * @param onNetworkFail -  network fail callback
-     */
     fun getGuestList(concurrent: Boolean = false, request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
-
         val call = service.getEventGuestList(
                 apikey = client.key,
                 eventId = request.eventId,
