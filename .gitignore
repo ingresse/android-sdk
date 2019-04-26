@@ -20,7 +20,12 @@ build/
 local.properties
 *.DS_Store
 .idea/*
+.project
+
 *.iml
+*.classpath
+*.project
+*.settings/
 
 # Test Application
 app/

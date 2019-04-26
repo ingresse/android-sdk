@@ -1,4 +1,4 @@
-# Ingresse Android SDK
+# Ingresse Android SDK ![JitPack](https://img.shields.io/jitpack/v/github/ingresse/android-sdk.svg?style=flat-square)
 
 ## Installation
 ### Root build.gradle at the end of repositories:
@@ -13,6 +13,6 @@ allprojects {
 ### Dependency
 ```gradle
 dependencies {
-    implementation 'com.github.ingresse:android-sdk:0.1.0'
+    implementation 'com.github.ingresse:android-sdk:<jitpack-version>'
 }
 ```
