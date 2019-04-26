@@ -1,4 +1,4 @@
-package com.ingresse.sdk.url.builder
+package com.ingresse.sdk.builders
 
 enum class Host(val address: String) {
     EVENTS("event.ingresse.com"),

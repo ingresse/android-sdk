@@ -5,61 +5,67 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.ClientBuilder
+import com.ingresse.sdk.builders.Host
+import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.CheckinRequest
 import com.ingresse.sdk.model.response.CheckinStatus
 import com.ingresse.sdk.model.response.GuestCheckinJSON
 import com.ingresse.sdk.request.Entrance
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class CheckinService(private val client: IngresseClient) {
+    private var host = Host.API
     private var service: Entrance
 
     private var mCheckinCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val url = URLBuilder(Host.API, client.environment).build()
-        val builder = Retrofit.Builder()
+        val httpClient = ClientBuilder(client)
+            .addRequestHeaders()
+            .addTimeout()
+            .build()
+
+        val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(url)
+                .client(httpClient)
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
-        if (client.debug) {
-            val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BODY
-
-            val httpClient = OkHttpClient.Builder()
-                    .addInterceptor(logging)
-                    .build()
-
-            builder.client(httpClient)
-        }
-
-        val adapter = builder.build()
         service = adapter.create(Entrance::class.java)
     }
 
-    fun cancelSingleCheckin() {
-        mCheckinCall?.cancel()
-    }
+    /**
+     * Method to cancel a single checkin request
+     */
+    fun cancelSingleCheckin() = mCheckinCall?.cancel()
 
-    fun cancelCheckin() {
-        mConcurrentCalls.forEach { it.cancel() }
-    }
+    /**
+     * Method to cancel a checkin request
+     */
+    fun cancelCheckin() = mConcurrentCalls.forEach { it.cancel() }
 
+    /**
+     * Checkin
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onFail = fail callback
+     * @param onError - error callback
+     * @param onNetworkFail - network fail callback
+     */
     fun checkin(request: CheckinRequest,
                 onSuccess: (tickets: List<GuestCheckinJSON>) -> Unit,
                 onFail: (tickets: List<GuestCheckinJSON>) -> Unit,
                 onError: (APIError) -> Unit,
                 onNetworkFail: (String) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call = service.checkin(
                 apiKey = client.key,
@@ -98,11 +104,22 @@ class CheckinService(private val client: IngresseClient) {
         call.enqueue(RetrofitCallback(type, callback))
     }
 
+    /**
+     * Single Checkin
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onFail = fail callback
+     * @param onError - error callback
+     * @param onTimeout - timeout callback
+     */
     fun singleCheckin(request: CheckinRequest,
                       onSuccess: (GuestCheckinJSON) -> Unit,
                       onFail: (ticket: GuestCheckinJSON, reason: CheckinStatus) -> Unit,
                       onError: (APIError) -> Unit,
                       onTimeout: () -> Unit) {
+
+        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mCheckinCall = service.checkin(
                 apiKey = client.key,

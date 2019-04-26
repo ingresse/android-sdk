@@ -6,13 +6,14 @@ import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.ClientBuilder
+import com.ingresse.sdk.builders.Host
+import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.model.response.GuestJSON
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.guard
 import com.ingresse.sdk.model.request.GuestList
 import com.ingresse.sdk.request.Entrance
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -25,14 +26,22 @@ class EntranceService(private val client: IngresseClient) {
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val adapter = Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(URLBuilder(host, client.environment).build())
+        val httpClient = ClientBuilder(client)
+            .addRequestHeaders()
             .build()
+
+        val adapter = Retrofit.Builder()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .client(httpClient)
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
         service = adapter.create(Entrance::class.java)
     }
 
+    /**
+     * Method to cancel a guest list request
+     */
     fun cancelGuestList(concurrent: Boolean = false) {
         if (!concurrent) {
             mGuestListCall?.cancel()
@@ -43,7 +52,17 @@ class EntranceService(private val client: IngresseClient) {
         mConcurrentCalls.clear()
     }
 
+    /**
+     * Company login with email and password
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onNetworkFail -  network fail callback
+     */
     fun getGuestList(concurrent: Boolean = false, request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
         val call = service.getEventGuestList(
                 apikey = client.key,
                 eventId = request.eventId,
