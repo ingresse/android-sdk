@@ -5,46 +5,54 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.Host
+import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.CheckinRequest
 import com.ingresse.sdk.model.response.CheckinStatus
 import com.ingresse.sdk.model.response.GuestCheckinJSON
 import com.ingresse.sdk.request.Entrance
-import com.ingresse.sdk.url.builder.Host
-import com.ingresse.sdk.url.builder.URLBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class CheckinService(private val client: IngresseClient) {
+    private var host = Host.API
     private var service: Entrance
+    private var singleService: Entrance
 
     private var mCheckinCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
-        val url = URLBuilder(Host.API, client.environment).build()
+        val url = URLBuilder(host, client.environment).build()
         val builder = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(url)
 
+        val clientBuilder = OkHttpClient.Builder()
+
         if (client.debug) {
             val logging = HttpLoggingInterceptor()
             logging.level = HttpLoggingInterceptor.Level.BODY
 
-            val httpClient = OkHttpClient.Builder()
-                    .addInterceptor(logging)
-                    .build()
-
-            builder.client(httpClient)
+            clientBuilder.addInterceptor(logging)
         }
 
-        val adapter = builder.build()
+        builder.client(clientBuilder.build())
+
+        var adapter = builder.build()
         service = adapter.create(Entrance::class.java)
+
+        clientBuilder.callTimeout(2, TimeUnit.SECONDS)
+        builder.client(clientBuilder.build())
+        adapter = builder.build()
+        singleService = adapter.create(Entrance::class.java)
     }
 
     fun cancelSingleCheckin() {
@@ -104,10 +112,25 @@ class CheckinService(private val client: IngresseClient) {
                       onError: (APIError) -> Unit,
                       onTimeout: () -> Unit) {
 
-        mCheckinCall = service.checkin(
+        mCheckinCall = singleService.checkin(
                 apiKey = client.key,
                 eventId = request.eventId,
                 userToken = request.userToken,
                 request = request)
+
+        val callback = object: IngresseCallback<Response<ArrayList<GuestCheckinJSON>>> {
+            override fun onSuccess(data: Response<ArrayList<GuestCheckinJSON>>?) {
+                val ticket = data?.responseData?.firstOrNull() ?: return onTimeout()
+                if (ticket.getStatus() == CheckinStatus.UPDATED) return onSuccess(ticket)
+
+                onFail(ticket, ticket.getStatus())
+            }
+
+            override fun onError(error: APIError) = onError(error)
+            override fun onRetrofitError(error: Throwable) = onTimeout()
+        }
+
+        val type = object: TypeToken<Response<ArrayList<GuestCheckinJSON>>>() {}.type
+        mCheckinCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

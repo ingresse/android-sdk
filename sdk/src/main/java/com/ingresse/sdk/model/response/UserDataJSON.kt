@@ -28,3 +28,5 @@ data class UserPicturesJSON(
 data class SocialAccountJSON(
     val id: String? = "",
     val network: String? = "")
+
+data class UserAuthTokenJSON(val authToken: String? = "")
