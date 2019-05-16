@@ -15,6 +15,7 @@ import com.ingresse.sdk.request.Auth
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.IOException
 
 class AuthService(private val client: IngresseClient) {
     private var host = Host.API
@@ -49,7 +50,7 @@ class AuthService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun companyLoginWithEmail(request: CompanyLogin, onSuccess: (CompanyLoginJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun companyLoginWithEmail(request: CompanyLogin, onSuccess: (CompanyLoginJSON) -> Unit, onError: (APIError) -> Unit, onConnectionError: (Throwable) -> Unit) {
         mCompanyLoginCall = service.companyLoginWithEmail(
             apikey = client.key,
             email = request.email,
@@ -65,6 +66,8 @@ class AuthService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
