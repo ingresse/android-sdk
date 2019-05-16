@@ -8,14 +8,14 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
-import com.ingresse.sdk.model.request.Sale as Requests
-import com.ingresse.sdk.model.response.Sale as Responses
-import com.ingresse.sdk.request.Sale as Service
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import com.ingresse.sdk.model.request.Sale as Requests
+import com.ingresse.sdk.model.response.Sale as Responses
+import com.ingresse.sdk.request.Sale as Service
 
 class TicketListService(private val client: IngresseClient) {
     private var host = Host.API
