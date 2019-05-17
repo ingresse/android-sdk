@@ -58,7 +58,7 @@ interface Transaction {
      * @param params - params for custom filter
      */
     @GET("/sale")
-    fun getTransactionList(@Query("event") eventId: Int,
+    fun getTransactionList(@Query("event") eventId: String,
                            @Query("apikey") apikey: String,
                            @Query("usertoken") userToken: String,
                            @Query("page") page: Int? = null,

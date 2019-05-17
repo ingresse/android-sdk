@@ -1,7 +1,7 @@
 package com.ingresse.sdk.model.request
 
 data class TransactionList(
-    var eventId: Int,
+    var eventId: String,
     var userToken: String,
     var page: Int? = null,
     var from: String? = null,
