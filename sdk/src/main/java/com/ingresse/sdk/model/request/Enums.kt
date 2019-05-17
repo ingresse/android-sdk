@@ -5,14 +5,20 @@ import com.google.gson.annotations.SerializedName
 enum class TransactionStatus {
     @SerializedName("approved")
     APPROVED,
-    @SerializedName("declined")
-    DECLINED,
+    @SerializedName("authorized")
+    AUTHORIZED,
     @SerializedName("cancelled")
     CANCELLED,
-    @SerializedName("refund")
-    REFUND,
+    @SerializedName("declined")
+    DECLINED,
+    @SerializedName("error")
+    ERROR,
+    @SerializedName("limitExceeded")
+    LIMIT_EXCEEDED,
+    @SerializedName("manual review")
+    MANUAL_REVIEW,
     @SerializedName("pending")
     PENDING,
-    @SerializedName("limitExceeded")
-    LIMIT_EXCEEDED
+    @SerializedName("refund")
+    REFUND
 }
