@@ -89,7 +89,7 @@ interface Transaction {
      * @param pageSize - results size
      * @param order - order transactions by date of creation by ASC or DESC
      */
-    @GET("/transaction")
+    @GET("/transactions")
     fun getTransactions(@Query("apikey") apikey: String,
                         @Query("usertoken") userToken: String,
                         @Query("event") eventId: String? = null,

@@ -6,6 +6,7 @@ import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
@@ -27,14 +28,20 @@ class TransactionService(private val client: IngresseClient) {
     private var mCancelTransactionCall: Call<String>? = null
     private var mGetTransactionReportCall: Call<String>? = null
     private var mGetTransactionListCall: Call<String>? = null
+    private var mGetTransactionsCall: Call<String>? = null
 
     init {
+        val httpClient = ClientBuilder(client)
+                .addRequestHeaders()
+                .build()
+
         val adapter = Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .addConverterFactory(EnumConverterFactory())
-            .baseUrl(URLBuilder(host, client.environment).build())
-            .build()
+                .client(httpClient)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(EnumConverterFactory())
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
         service = adapter.create(Transaction::class.java)
     }
@@ -42,37 +49,33 @@ class TransactionService(private val client: IngresseClient) {
     /**
      * Method to cancel a transaction creation
      */
-    fun cancelCreateTransactionCall() {
-        mCreateTransactionCall?.cancel()
-    }
+    fun cancelCreateTransactionCall() = mCreateTransactionCall?.cancel()
 
     /**
      * Method to cancel transaction details request
      */
-    fun cancelGetTransactionDetails() {
-        mGetTransactionDetailsCall?.cancel()
-    }
+    fun cancelGetTransactionDetails() = mGetTransactionDetailsCall?.cancel()
 
     /**
      * Method to cancel a transaction cancelment call
      */
-    fun cancelCancelTransaction() {
-        mCancelTransactionCall?.cancel()
-    }
+    fun cancelCancelTransaction() = mCancelTransactionCall?.cancel()
 
     /**
      * Method to cancel a transaction report request
      */
-    fun cancelGetTransactionReport() {
-        mGetTransactionReportCall?.cancel()
-    }
+    fun cancelGetTransactionReport() = mGetTransactionReportCall?.cancel()
 
     /**
      * Method to cancel a transaction list request
      */
-    fun cancelGetTransactionList() {
-        mGetTransactionListCall?.cancel()
-    }
+    fun cancelGetTransactionList() = mGetTransactionListCall?.cancel()
+
+    /**
+     * Method to cancel a transactions request
+     */
+    fun cancelGetTransactionsCall() = mGetTransactionsCall?.cancel()
+
 
     /**
      * Create transaction to get id for payment or reserve
@@ -90,9 +93,7 @@ class TransactionService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<CreateTransactionJSON>?> {
             override fun onSuccess(data: Response<CreateTransactionJSON>?) {
-                val response = data?.responseData?.data
-                    ?: return onError(APIError.default)
-
+                val response = data?.responseData?.data ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
@@ -125,9 +126,7 @@ class TransactionService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<TransactionDetailsJSON>?> {
             override fun onSuccess(data: Response<TransactionDetailsJSON>?) {
-                val response = data?.responseData
-                    ?: return onError(APIError.default)
-
+                val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
@@ -160,9 +159,7 @@ class TransactionService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<TransactionDetailsJSON>> {
             override fun onSuccess(data: Response<TransactionDetailsJSON>?) {
-                val response = data?.responseData
-                    ?: return onError(APIError.default)
-
+                val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
@@ -195,9 +192,7 @@ class TransactionService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Response<TransactionReportJSON>?> {
             override fun onSuccess(data: Response<TransactionReportJSON>?) {
-                val response = data?.responseData
-                    ?: return onError(APIError.default)
-
+                val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
@@ -235,9 +230,7 @@ class TransactionService(private val client: IngresseClient) {
 
         val callback = object: IngresseCallback<Response<Array<TransactionListJSON>>?> {
             override fun onSuccess(data: Response<Array<TransactionListJSON>>?) {
-                val response = data?.responseData
-                    ?: return onError(APIError.default)
-
+                val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
@@ -252,5 +245,50 @@ class TransactionService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<Array<TransactionListJSON>?>>() {}.type
         mGetTransactionListCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get transactions
+     *
+     * @param request - all parameters used for transactions request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
+    fun getTransactions(request: Transactions, onSuccess: (Array<TransactionsJSON>) -> Unit, onError: (APIError) -> Unit) {
+        mGetTransactionsCall = service.getTransactions(
+                apikey = client.key,
+                userToken = request.userToken,
+                eventId = request.eventId,
+                term = request.term,
+                from = request.from,
+                to = request.to,
+                acquirer = request.acquirer,
+                nsu = request.nsu,
+                amount = request.amount,
+                cardFirstDigits = request.cardFirstDigits,
+                cardLastDigits = request.cardLastDigits,
+                status = request.status,
+                page = request.page,
+                pageSize = request.pageSize,
+                order = request.order
+        )
+
+        val callback = object : IngresseCallback<Response<Array<TransactionsJSON>>?> {
+            override fun onSuccess(data: Response<Array<TransactionsJSON>>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<Array<TransactionsJSON>>?>() {}.type
+        mGetTransactionsCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
