@@ -18,6 +18,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.IOException
 
 class TransactionService(private val client: IngresseClient) {
     private val host = Host.API
@@ -254,7 +255,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getTransactions(request: Transactions, onSuccess: (Array<TransactionsJSON>) -> Unit, onError: (APIError) -> Unit) {
+    fun getTransactions(request: Transactions, onSuccess: (Array<TransactionsJSON>) -> Unit, onError: (APIError) -> Unit, onConnectionError: (Throwable) -> Unit) {
         mGetTransactionsCall = service.getTransactions(
                 apikey = client.key,
                 userToken = request.userToken,
@@ -282,6 +283,8 @@ class TransactionService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
