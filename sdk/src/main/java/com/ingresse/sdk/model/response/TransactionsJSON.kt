@@ -15,6 +15,7 @@ data class TransactionsJSON(
         var refund: TransactionsRefundJSON?,
         var passkey: TransactionsPasskeyJSON?)
 
+// EVENT
 data class TransactionsEventJSON(
         var id: String? = "",
         var title: String? = "",
@@ -31,6 +32,7 @@ data class TransactionsEventAddressJSON(
         var city: String? = "",
         var state: String? = "")
 
+// USER
 data class TransactionsUserJSON(
         var id: Int? = 0,
         var name: String? = "",
@@ -49,6 +51,7 @@ data class TransactionsUserAddressJSON(
         var complement: String? = "",
         var city: String? = "")
 
+// PAYMENT
 data class TransactionsPaymentJSON(
         var type: String? = "",
         var creditCard: TransactionsPaymentCreditCardJSON?,
@@ -83,6 +86,7 @@ data class TransactionsPaymentReasonJSON(
         var declinedBy: String? = "",
         var code: String? = "")
 
+// STATUS
 data class TransactionsStatusJSON(
         var current: TransactionsStatusCurrentJSON?,
         var history: Array<TransactionsStatusHistoryJSON>?)
@@ -96,6 +100,7 @@ data class TransactionsStatusHistoryJSON(
         var createdAt: String? = "",
         var order: Int? = 0)
 
+// TICKETS
 data class TransactionsTicketsJSON(
         var id: Int? = 0,
         var name: String? = "",
@@ -111,12 +116,14 @@ data class TransactionsTicketsTypeJSON(
         var id: Int? = 0,
         var name: String? = "")
 
+// EXTRAS
 data class TransactionsExtrasJSON(
         var name: String? = "",
         var price: Int? = 0,
         var quantity: Int? = 0,
         var unitPrice: Int? = 0)
 
+// REFUND
 data class TransactionsRefundJSON(
         var date: String? = "",
         var reason: String? = "",
@@ -127,6 +134,7 @@ data class TransactionsRefundUserJSON(
         var name: String? = "",
         var email: String? = "")
 
+// PASSKEY
 data class TransactionsPasskeyJSON(
         var id: Int? = 0,
         var code: String? = "")
