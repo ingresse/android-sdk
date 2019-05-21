@@ -13,5 +13,6 @@ class IngresseService(client: IngresseClient) {
     var transaction = TransactionService(client)
     var user = UserService(client)
     var event = EventService(client)
+    var eventDetails = EventDetailsService(client)
     var ticket = TicketService(client)
 }
