@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.CANCELED_CALL
 import com.ingresse.sdk.helper.EnumConverterFactory
 import com.ingresse.sdk.model.request.*
 import com.ingresse.sdk.model.response.*
@@ -255,7 +256,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getTransactions(request: Transactions, onSuccess: (Array<TransactionsJSON>) -> Unit, onError: (APIError) -> Unit, onConnectionError: (Throwable) -> Unit) {
+    fun getTransactions(request: Transactions, onSuccess: (Array<TransactionsJSON>) -> Unit, onError: (APIError) -> Unit, onCanceledCall: (() -> Unit)? = null, onConnectionError: (Throwable) -> Unit) {
         mGetTransactionsCall = service.getTransactions(
                 apikey = client.key,
                 userToken = request.userToken,
@@ -283,7 +284,12 @@ class TransactionService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
-                if (error is IOException) return onConnectionError(error)
+                if (error is IOException) {
+                    return when (error.localizedMessage) {
+                        CANCELED_CALL -> if (onCanceledCall != null) onCanceledCall() else return
+                        else -> onConnectionError(error)
+                    }
+                }
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
