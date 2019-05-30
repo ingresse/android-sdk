@@ -46,4 +46,20 @@ interface User {
                        @Query("pageSize") pageSize: Int? = null,
                        @Query("usertoken") token: String): Call<String>
 
+    /**
+     * Gets user sessions.
+     *
+     * @param userId id of the transaction.
+     * @param page - page from user ticket
+     * @param pageSize - size of user ticket page
+     * @param usertoken - token from user
+     * @param status - user transfers status
+     */
+    @GET("/user/{userId}/transfers")
+    fun getUserTransfers(@Path("userId") userId: String,
+                         @Query("page") page: Int? = null,
+                         @Query("pageSize") pageSize: Int? = null,
+                         @Query("usertoken") token: String,
+                         @Query("status") status: String): Call<String>
+
 }

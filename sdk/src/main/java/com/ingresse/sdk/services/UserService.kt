@@ -5,9 +5,7 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.*
 import com.ingresse.sdk.builders.*
 import com.ingresse.sdk.errors.APIError
-import com.ingresse.sdk.model.request.UserBasicInfos
-import com.ingresse.sdk.model.request.UserData
-import com.ingresse.sdk.model.request.UserTicketsData
+import com.ingresse.sdk.model.request.*
 import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.User
 import retrofit2.Call
@@ -23,6 +21,7 @@ class UserService(private val client: IngresseClient) {
     private var mUserDataCall: Call<String>? = null
     private var mUpdateBasicInfosCall: Call<String>? = null
     private var mUserTicketsCall: Call<String>? = null
+    private var mUserTransfersCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
@@ -56,6 +55,7 @@ class UserService(private val client: IngresseClient) {
     fun cancelUserTicketsData(concurrent: Boolean = false) {
         if(!concurrent) {
             mUserTicketsCall?.cancel()
+            mUserTransfersCall?.cancel()
             return
         }
 
@@ -162,6 +162,7 @@ class UserService(private val client: IngresseClient) {
     /**
      * Get user tickets data
      *
+     * @param concurrent - parameters to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
@@ -175,8 +176,8 @@ class UserService(private val client: IngresseClient) {
 
         val call = service.getUserTickets(
             userId = request.userId,
-            page = request?.page,
-            pageSize = request?.pageSize,
+            page = request.page,
+            pageSize = request.pageSize,
             token = request.userToken
         )
 
@@ -207,6 +208,60 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseHits<UserTicketsJSON>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get user transfers data
+     *
+     * @param concurrent - parameters to concurrent request
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun getUserTransfersData(concurrent: Boolean = false,
+                             request: UserTransfersData = UserTransfersData(),
+                             onSuccess: (Pair<ArrayList<Source<UserTransfersJSON>>, Int>) -> Unit,
+                             onError: (APIError) -> Unit,
+                             onConnectionError: (error: Throwable) -> Unit) {
+
+        var call = service.getUserTransfers(
+            userId = request.userId,
+            page = request.page,
+            pageSize = request.pageSize,
+            token = request.usertoken,
+            status = request.status
+        )
+
+        if (!concurrent) mUserTransfersCall = call else mConcurrentCalls.add(call)
+
+        val callback = object: IngresseCallback<ResponseHits<UserTransfersJSON>?> {
+            override fun onSuccess(data: ResponseHits<UserTransfersJSON>?) {
+                val response = data?.data?.hits ?: return onError(APIError.default)
+
+                if(!concurrent) mUserTransfersCall = null else mConcurrentCalls.remove(call)
+                onSuccess(Pair(response, data.data.total))
+            }
+
+            override fun onError(error: APIError) {
+                if (!concurrent) mUserTransfersCall = null else mConcurrentCalls.remove(call)
+
+                onError(error)
+            }
+
+            override fun onRetrofitError(error: Throwable) {
+                if (!concurrent) mUserTransfersCall = null else mConcurrentCalls.remove(call)
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+        }
+
+        val type = object : TypeToken<ResponseHits<UserTransfersJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }
