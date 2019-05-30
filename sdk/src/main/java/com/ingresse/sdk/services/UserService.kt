@@ -2,21 +2,19 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.IngresseCallback
-import com.ingresse.sdk.base.Response
-import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.base.*
 import com.ingresse.sdk.builders.*
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.UserBasicInfos
 import com.ingresse.sdk.model.request.UserData
-import com.ingresse.sdk.model.response.UserDataJSON
-import com.ingresse.sdk.model.response.UserUpdatedDataJSON
-import com.ingresse.sdk.model.response.UserUpdatedJSON
+import com.ingresse.sdk.model.request.UserTicketsData
+import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.User
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.IOException
 
 class UserService(private val client: IngresseClient) {
     private var host = Host.API
@@ -24,6 +22,8 @@ class UserService(private val client: IngresseClient) {
 
     private var mUserDataCall: Call<String>? = null
     private var mUpdateBasicInfosCall: Call<String>? = null
+    private var mUserTicketsCall: Call<String>? = null
+    private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
         val httpClient = ClientBuilder(client)
@@ -49,6 +49,19 @@ class UserService(private val client: IngresseClient) {
      * Method to cancel user update basic infos request
      */
     fun cancelUpdateBasicInfos() = mUpdateBasicInfosCall?.cancel()
+
+    /**
+     * Method to cancel user tickets data request
+     */
+    fun cancelUserTicketsData(concurrent: Boolean = false) {
+        if(!concurrent) {
+            mUserTicketsCall?.cancel()
+            return
+        }
+
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
 
     /**
      * Get user data
@@ -144,5 +157,56 @@ class UserService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<UserUpdatedJSON>>() {}.type
         mUpdateBasicInfosCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get user tickets data
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun getUserTicketsData(concurrent: Boolean = false,
+                           request: UserTicketsData = UserTicketsData(),
+                           onSuccess: (Pair<ArrayList<Source<UserTicketsJSON>>, Int>) -> Unit,
+                           onError: (APIError) -> Unit,
+                           onConnectionError: (error: Throwable) -> Unit) {
+
+        val call = service.getUserTickets(
+            userId = request.userId,
+            page = request?.page,
+            pageSize = request?.pageSize,
+            token = request.userToken
+        )
+
+        if (!concurrent) mUserTicketsCall = call else mConcurrentCalls.add(call)
+
+        val callback = object: IngresseCallback<ResponseHits<UserTicketsJSON>?> {
+            override fun onSuccess(data: ResponseHits<UserTicketsJSON>?) {
+                val response = data?.data?.hits ?: return onError(APIError.default)
+
+                if(!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
+                onSuccess(Pair(response, data.data.total))
+            }
+
+            override fun onError(error: APIError) {
+                if (!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
+
+                onError(error)
+            }
+
+            override fun onRetrofitError(error: Throwable) {
+                if (!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<ResponseHits<UserTicketsJSON>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
     }
 }

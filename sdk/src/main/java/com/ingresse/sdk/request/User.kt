@@ -30,4 +30,20 @@ interface User {
                          @Query("apikey") apikey: String,
                          @Query("usertoken") userToken: String,
                          @Body params: UserBasicInfos): Call<String>
+
+    /**
+     *
+     * Gets user tickets. 
+     *
+     * @param userId - id of the transaction.
+     * @param page - page from user ticket
+     * @param pageSize - size of user ticket page
+     * @param userToken - token from user
+     */
+    @GET("/user/{userId}/tickets")
+    fun getUserTickets(@Path("userId") userId: String,
+                       @Query("page") page: Int? = null,
+                       @Query("pageSize") pageSize: Int? = null,
+                       @Query("usertoken") token: String): Call<String>
+
 }
