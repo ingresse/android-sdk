@@ -56,6 +56,18 @@ class UserService(private val client: IngresseClient) {
     fun cancelUserTicketsData(concurrent: Boolean = false) {
         if(!concurrent) {
             mUserTicketsCall?.cancel()
+            return
+        }
+
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
+
+    /**
+     * Method to cancel transfers data request
+     */
+    fun cancelUserTransfersData(concurrent: Boolean = false) {
+        if(!concurrent) {
             mUserTransfersCall?.cancel()
             return
         }
@@ -163,14 +175,14 @@ class UserService(private val client: IngresseClient) {
     /**
      * Get user tickets data
      *
-     * @param concurrent - parameters to concurrent request
+     * @param concurrent - parameter to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
      */
     fun getUserTicketsData(concurrent: Boolean = false,
-                           request: UserTicketsData = UserTicketsData(),
+                           request: UserTicketsData,
                            onSuccess: (Array<UserTicketsJSON>) -> Unit,
                            onError: (APIError) -> Unit,
                            onConnectionError: (error: Throwable) -> Unit) {
@@ -222,7 +234,7 @@ class UserService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      */
     fun getUserTransfersData(concurrent: Boolean = false,
-                             request: UserTransfersData = UserTransfersData(),
+                             request: UserTransfersData,
                              onSuccess: (Array<UserTransfersJSON>) -> Unit,
                              onError: (APIError) -> Unit,
                              onConnectionError: (error: Throwable) -> Unit) {

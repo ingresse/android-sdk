@@ -34,7 +34,7 @@ interface User {
     /**
      * Gets user tickets. 
      *
-     * @param userId - id of the transaction.
+     * @param userId - id from user
      * @param page - page from user ticket
      * @param pageSize - size of user ticket page
      * @param userToken - token from user
@@ -49,7 +49,7 @@ interface User {
     /**
      * Gets user sessions.
      *
-     * @param userId id of the transaction.
+     * @param userId id from user
      * @param page - page from user ticket
      * @param pageSize - size of user ticket page
      * @param usertoken - token from user
