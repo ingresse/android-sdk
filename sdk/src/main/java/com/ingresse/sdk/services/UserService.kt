@@ -231,6 +231,8 @@ class UserService(private val client: IngresseClient) {
         var call = service.getUserTransfers(
             userId = request.userId,
             apikey = client.key,
+            page = request.page,
+            pageSize = request.pageSize,
             token = request.usertoken,
             status = request.status
         )
