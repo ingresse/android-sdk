@@ -7,7 +7,7 @@ data class UserTicketsJSON(
     val itemType: String? = "",
     val price: Double? = 0.0,
     val tax: Double? = 0.0,
-    val sessions: Array<EventSession>? = emptyArray(),
+    val sessions: EventSession = EventSession(),
     val title: String? = "",
     val type: String? = "",
     val eventId: Int? = 0,
@@ -24,6 +24,10 @@ data class UserTicketsJSON(
 )
 
 data class EventSession(
+    val data: Array<EventSessionData>? = emptyArray()
+)
+
+data class EventSessionData(
     val id: Int? = 0,
     val dateTime: String? = ""
 )
@@ -37,8 +41,8 @@ data class EventVenue(
     val city: String? = "",
     val state: String? = "",
     val country: String? = "",
-    val latitude: Int? = 0,
-    val longitude: Int? = 0,
+    val latitude: Double? = 0.0,
+    val longitude: Double? = 0.0,
     val hidden: Boolean = false,
     val complement: String = ""
 )

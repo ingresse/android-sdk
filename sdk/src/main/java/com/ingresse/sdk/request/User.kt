@@ -16,7 +16,7 @@ interface User {
     fun getUserData(@Path("userId") userId: Int,
                     @Query("apikey") apikey: String,
                     @Query("usertoken") userToken: String,
-                    @Query("fields") fields: String) : Call<String>
+                    @Query("fields") fields: String): Call<String>
 
     /**
      * Update user basic infos
@@ -32,7 +32,6 @@ interface User {
                          @Body params: UserBasicInfos): Call<String>
 
     /**
-     *
      * Gets user tickets. 
      *
      * @param userId - id of the transaction.
@@ -42,6 +41,7 @@ interface User {
      */
     @GET("/user/{userId}/tickets")
     fun getUserTickets(@Path("userId") userId: String,
+                       @Query("apikey") apikey: String,
                        @Query("page") page: Int? = null,
                        @Query("pageSize") pageSize: Int? = null,
                        @Query("usertoken") token: String): Call<String>
@@ -57,6 +57,7 @@ interface User {
      */
     @GET("/user/{userId}/transfers")
     fun getUserTransfers(@Path("userId") userId: String,
+                         @Query("apikey") apikey: String,
                          @Query("page") page: Int? = null,
                          @Query("pageSize") pageSize: Int? = null,
                          @Query("usertoken") token: String,

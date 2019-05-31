@@ -34,8 +34,8 @@ data class Venue(
     val city: String? = "",
     val state: String? = "",
     val country: String? = "",
-    val latitude: Int? = 0,
-    val longitude: Int? = 0,
+    val latitude: Double? = 0.0,
+    val longitude: Double? = 0.0,
     val hidden: Boolean = false,
     val complement: String? = ""
 )
