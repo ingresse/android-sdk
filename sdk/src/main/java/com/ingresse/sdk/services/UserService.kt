@@ -195,7 +195,6 @@ class UserService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) {
                 if (!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
-
                 onError(error)
             }
 
