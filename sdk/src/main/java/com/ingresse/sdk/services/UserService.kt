@@ -271,7 +271,6 @@ class UserService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
-
         }
 
         val type = object : TypeToken<Response<Array<UserTransfersJSON>>?>() {}.type

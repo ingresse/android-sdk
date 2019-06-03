@@ -2,12 +2,12 @@ package com.ingresse.sdk.model.response
 
 data class UserTransfersJSON(
     val id: Int? = 0,
-    val event: Event? = Event(),
-    val session: Session? = Session(),
-    val venue: Venue? = Venue(),
-    val ticket: Ticket? = Ticket(),
-    val receivedFrom: Receiver? = Receiver(),
-    val sessions: Sessions? = Sessions()
+    val event: Event? = null,
+    val session: Session? = null,
+    val venue: Venue? = null,
+    val ticket: Ticket? = null,
+    val receivedFrom: Receiver? = null,
+    val sessions: Sessions? = null
 )
 
 data class Event(
@@ -15,7 +15,7 @@ data class Event(
     val title: String? = "",
     val type: String? = "",
     val status: String? = "",
-    val saleEnabled: Boolean = false,
+    val saleEnabled: Boolean? = false,
     val link: String? = "",
     val poster: String? = ""
 )
@@ -36,7 +36,7 @@ data class Venue(
     val country: String? = "",
     val latitude: Double? = 0.0,
     val longitude: Double? = 0.0,
-    val hidden: Boolean = false,
+    val hidden: Boolean? = false,
     val complement: String? = ""
 )
 
@@ -68,7 +68,7 @@ data class TransfersHistory(
 
 data class UserSocialTransfers(
     val id: String? = "",
-    val network: String = ""
+    val network: String? = ""
 )
 
 data class Sessions(

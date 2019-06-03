@@ -7,24 +7,24 @@ data class UserTicketsJSON(
     val itemType: String? = "",
     val price: Double? = 0.0,
     val tax: Double? = 0.0,
-    val sessions: EventSession = EventSession(),
+    val sessions: EventSession? = null,
     val title: String? = "",
     val type: String? = "",
     val eventId: Int? = 0,
     val eventTitle: String? = "",
-    val eventVenue: EventVenue? = EventVenue(),
+    val eventVenue: EventVenue? = null,
     val transactionId: String? = "",
     val description: String? = "",
     val sequence: String? = "",
     val code: String? = "",
-    val checked: Boolean = false,
-    val receivedFrom: Holder? = Holder(),
-    val transferedTo: Holder? = Holder(),
-    val currentHolder: Holder? = Holder()
+    val checked: Boolean? = false,
+    val receivedFrom: Holder? = null,
+    val transferedTo: Holder? = null,
+    val currentHolder: Holder? = null
 )
 
 data class EventSession(
-    val data: Array<EventSessionData>? = emptyArray()
+    val data: List<EventSessionData> = emptyList()
 )
 
 data class EventSessionData(
@@ -43,8 +43,8 @@ data class EventVenue(
     val country: String? = "",
     val latitude: Double? = 0.0,
     val longitude: Double? = 0.0,
-    val hidden: Boolean = false,
-    val complement: String = ""
+    val hidden: Boolean? = false,
+    val complement: String? = ""
 )
 
 data class Holder(
@@ -54,14 +54,14 @@ data class Holder(
     val name: String? = "",
     val type: String? = "",
     val status: String? = "",
-    val history: Array<TransferHistory>? = emptyArray(),
+    val history: List<TransferHistory>? = emptyList(),
     val socialId: Array<UserSocial>? = emptyArray(),
     val picture: String? = ""
 )
 
 data class UserSocial(
     val id: String? = "",
-    val network: String = ""
+    val network: String? = ""
 )
 
 data class TransferHistory(
