@@ -1,8 +1,7 @@
 package com.ingresse.sdk.request
 
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface Event {
     /**
@@ -22,4 +21,14 @@ interface Event {
                                @Query("from") from: String? = null,
                                @Query("to") to: String? = null,
                                @Query("offset") offset: Int? = null): Call<String>
+
+    /**
+     * Get event attributes
+     *
+     * @param eventId - id from event
+     */
+    @GET("/event/{id}/attributes")
+    fun getEventAttributes(@Path("eventId") eventId: String,
+                           @Query("apikey") apikey: String): Call<String>
+
 }
