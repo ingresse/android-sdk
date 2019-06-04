@@ -29,6 +29,10 @@ interface Event {
      */
     @GET("/event/{id}/attributes")
     fun getEventAttributes(@Path("eventId") eventId: String,
-                           @Query("apikey") apikey: String): Call<String>
+                           @Query("apikey") apikey: String,
+                           @Query("usertoken") userToken: String? = null,
+                           @Query("signature") signature: String? = null,
+                           @Query("timestamp") timestamp: String? = null,
+                           @Query("filters") filters: String? = null): Call<String>
 
 }

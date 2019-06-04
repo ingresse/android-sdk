@@ -154,7 +154,11 @@ class EventService(private val client: IngresseClient) {
 
         var call = service.getEventAttributes(
             eventId = request.eventId,
-            apikey = client.key
+            apikey = client.key,
+            userToken = request.usertoken,
+            signature = request.signature,
+            timestamp = request.timestamp,
+            filters = request.filters
         )
 
         if (!concurrent) mGetEventAttributesCall = call else mConcurrentCalls.add(call)
