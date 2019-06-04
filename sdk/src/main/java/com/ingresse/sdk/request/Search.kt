@@ -20,4 +20,17 @@ interface Search {
                         @Query("from") from: String,
                         @Query("orderBy") orderBy: String,
                         @Query("offset") offset: String) : Call<String>
+
+    /**
+     * Search friends by name
+     *
+     * @param term - String term to search for
+     * @param size - Number of results
+     * @param userToken - User token
+     */
+    @GET("/search/transfer/user")
+    fun getFriendsFromSearch(@Query("term") term: String,
+                             @Query("size") size: String?,
+                             @Query("usertoken") userToken: String): Call<String>
+
 }

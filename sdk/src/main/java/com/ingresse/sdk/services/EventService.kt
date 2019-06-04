@@ -47,6 +47,7 @@ class EventService(private val client: IngresseClient) {
     fun cancelAll() {
         cancelAllCalled = true
         mGetEventListByProducerCall?.cancel()
+        mGetEventAttributesCall?.cancel()
         mConcurrentCalls.forEach { it.cancel() }
         mConcurrentCalls.clear()
     }
