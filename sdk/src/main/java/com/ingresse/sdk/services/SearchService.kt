@@ -10,9 +10,7 @@ import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Search
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
-import com.ingresse.sdk.model.request.EventAttributes
 import com.ingresse.sdk.model.request.FriendsFromSearch
-import com.ingresse.sdk.model.response.EventAttributesJSON
 import com.ingresse.sdk.model.response.FriendsFromSearchJSON
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -119,13 +117,14 @@ class SearchService(private val client: IngresseClient) {
      */
     fun getFriendsFromSearch(concurrent: Boolean = false,
                              request: FriendsFromSearch,
-                             onSuccess: (FriendsFromSearchJSON) -> Unit,
+                             onSuccess: (Array<FriendsFromSearchJSON>) -> Unit,
                              onError: (APIError) -> Unit,
                              onConnectionError: (error: Throwable) -> Unit) {
 
         var call = service.getFriendsFromSearch(
             term = request.term,
             size = request.size,
+            apikey = client.key,
             userToken = request.usertoken
         )
 
@@ -133,7 +132,7 @@ class SearchService(private val client: IngresseClient) {
 
         val callback = object: IngresseCallback<Response<Array<FriendsFromSearchJSON>>?> {
             override fun onSuccess(data: Response<Array<FriendsFromSearchJSON>>?) {
-                val response = data ?: return onError(APIError.default)
+                val response = data?.responseData ?: return onError(APIError.default)
 
                 if (!concurrent) mFriendsFromSearchCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response)

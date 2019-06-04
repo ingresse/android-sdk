@@ -1,9 +1,7 @@
 package com.ingresse.sdk.request
 
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface Ticket {
     /**
@@ -16,4 +14,20 @@ interface Ticket {
     fun getEventTickets(@Path("eventId") eventId: String,
                         @Path("sessionId") sessionId: String,
                         @Query("apikey") apikey: String): Call<String>
+
+    /**
+     * Create or Refuse a transfer
+     *
+     * @param ticketId - User id to get data
+     * @param userToken - User token
+     * @param user - User id or email to transfer
+     * @param isReturn - flag for return
+     */
+    @POST("/ticket/{ticketId}/transfer")
+    fun createTransfer(@Path("ticketId") ticketId: Long,
+                       @Query("apikey") apikey: String,
+                       @Query("usertoken") userToken: String,
+                       @Field("user") user: String? = null,
+                       @Field("isReturn") isReturn: Boolean? = false): Call<String>
+
 }

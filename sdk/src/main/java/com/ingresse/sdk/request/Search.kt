@@ -31,6 +31,7 @@ interface Search {
     @GET("/search/transfer/user")
     fun getFriendsFromSearch(@Query("term") term: String,
                              @Query("size") size: String?,
+                             @Query("apikey") apikey: String,
                              @Query("usertoken") userToken: String): Call<String>
 
 }
