@@ -1,0 +1,51 @@
+package com.ingresse.sdk.request
+
+import retrofit2.Call
+import retrofit2.http.*
+
+interface Transfer {
+    /**
+     * Gets user transfers.
+     *
+     * @param userId id from user
+     * @param page - page from user ticket
+     * @param pageSize - size of user ticket page
+     * @param usertoken - token from user
+     * @param status - user transfers status
+     */
+    @GET("/user/{userId}/transfers")
+    fun getUserTransfers(@Path("userId") userId: String,
+                         @Query("apikey") apikey: String,
+                         @Query("page") page: Int? = null,
+                         @Query("pageSize") pageSize: Int? = null,
+                         @Query("usertoken") token: String,
+                         @Query("status") status: String): Call<String>
+
+    /**
+     * Gets user recent transfers.
+     *
+     * @param userId id of the user.
+     * @param userToken - User token
+     * @param order - order control for the result
+     * @param size - result page size
+     */
+    @GET("/user/{userId}/last-transfers")
+    fun getRecentTransfers(@Path("userId") userId: String,
+                           @Query("apikey") apikey: String,
+                           @Query("usertoken") userToken: String,
+                           @Query("order") order: String?,
+                           @Query("size") size: Int?): Call<String>
+
+    /**
+     * Search friends by name
+     *
+     * @param term - String term to search for
+     * @param size - Number of results
+     * @param userToken - User token
+     */
+    @GET("/search/transfer/user")
+    fun getFriendsFromSearch(@Query("term") term: String,
+                             @Query("size") size: String?,
+                             @Query("apikey") apikey: String,
+                             @Query("usertoken") userToken: String): Call<String>
+}

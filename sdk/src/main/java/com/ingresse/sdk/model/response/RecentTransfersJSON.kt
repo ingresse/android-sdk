@@ -18,6 +18,6 @@ data class RecentTransfersHistory(
 )
 
 data class RecentTransfersSocialId(
-    val id: Int? = 0,
+    val id: Long? = 0,
     val network: String? = ""
 )
