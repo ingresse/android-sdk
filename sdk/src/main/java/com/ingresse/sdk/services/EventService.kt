@@ -24,7 +24,6 @@ class EventService(private val client: IngresseClient) {
     private var cancelAllCalled = false
 
     private var mGetEventListByProducerCall: Call<String>? = null
-    private var mGetEventAttributesCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
@@ -47,7 +46,6 @@ class EventService(private val client: IngresseClient) {
     fun cancelAll() {
         cancelAllCalled = true
         mGetEventListByProducerCall?.cancel()
-        mGetEventAttributesCall?.cancel()
         mConcurrentCalls.forEach { it.cancel() }
         mConcurrentCalls.clear()
     }
@@ -58,19 +56,6 @@ class EventService(private val client: IngresseClient) {
     fun cancelGetEventListByProducer(concurrent: Boolean = false) {
         if (!concurrent) {
             mGetEventListByProducerCall?.cancel()
-            return
-        }
-
-        mConcurrentCalls.forEach { it.cancel() }
-        mConcurrentCalls.clear()
-    }
-
-    /**
-     * Method to cancel a get event attributes
-     */
-    fun cancelGetEventAttributes(concurrent: Boolean = false) {
-        if (!concurrent) {
-            mGetEventAttributesCall?.cancel()
             return
         }
 
@@ -135,59 +120,6 @@ class EventService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseHits<EventJSON>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
-    }
-
-    /**
-     * Event attributes
-     *
-     * @param concurrent - parameters to concurrent request
-     * @param request - parameters required to request
-     * @param onSuccess - success callback
-     * @param onError - error callback
-     * @param onConnectionError - connection error callback
-     */
-    fun getEventAttributes(concurrent: Boolean = false,
-                           request: EventAttributes,
-                           onSuccess: (EventAttributesJSON) -> Unit,
-                           onError: (APIError) -> Unit,
-                           onConnectionError: (error: Throwable) -> Unit) {
-
-        var call = service.getEventAttributes(
-            eventId = request.eventId,
-            apikey = client.key,
-            userToken = request.usertoken,
-            signature = request.signature,
-            timestamp = request.timestamp,
-            filters = request.filters
-        )
-
-        if (!concurrent) mGetEventAttributesCall = call else mConcurrentCalls.add(call)
-
-        val callback = object: IngresseCallback<Response<EventAttributesJSON>?> {
-            override fun onSuccess(data: Response<EventAttributesJSON>?) {
-                val response = data?.responseData ?: return onError(APIError.default)
-
-                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
-                onSuccess(response)
-            }
-
-            override fun onError(error: APIError) {
-                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
-                onError(error)
-            }
-
-            override fun onRetrofitError(error: Throwable) {
-                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
-                if (error is IOException) return onConnectionError(error)
-
-                val apiError = APIError()
-                apiError.message = error.localizedMessage
-                onError(apiError)
-            }
-        }
-
-        val type = object : TypeToken<Response<EventAttributesJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }

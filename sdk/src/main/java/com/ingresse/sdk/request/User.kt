@@ -45,4 +45,17 @@ interface User {
                        @Query("page") page: Int? = null,
                        @Query("pageSize") pageSize: Int? = null,
                        @Query("usertoken") token: String): Call<String>
+
+    /**
+     * Get user event attributes
+     *
+     * @param eventId - id from event
+     */
+    @GET("/event/{eventId}/attributes")
+    fun getEventAttributes(@Path("eventId") eventId: String,
+                           @Query("apikey") apikey: String,
+                           @Query("usertoken") userToken: String? = null,
+                           @Query("signature") signature: String? = null,
+                           @Query("timestamp") timestamp: String? = null,
+                           @Query("filters") filters: String? = null): Call<String>
 }

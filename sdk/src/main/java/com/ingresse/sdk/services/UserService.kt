@@ -18,10 +18,12 @@ import java.io.IOException
 class UserService(private val client: IngresseClient) {
     private var host = Host.API
     private var service: User
+    private var cancelAllCalled = false
 
     private var mUserDataCall: Call<String>? = null
     private var mUpdateBasicInfosCall: Call<String>? = null
     private var mUserTicketsCall: Call<String>? = null
+    private var mGetEventAttributesCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
@@ -40,6 +42,17 @@ class UserService(private val client: IngresseClient) {
     }
 
     /**
+     * Method to cancel all requests
+     */
+    fun cancelAll() {
+        cancelAllCalled = true
+        mUserTicketsCall?.cancel()
+        mGetEventAttributesCall?.cancel()
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
+
+    /**
      * Method to cancel user data request
      */
     fun cancelUserData() = mUserDataCall?.cancel()
@@ -55,6 +68,19 @@ class UserService(private val client: IngresseClient) {
     fun cancelUserTicketsData(concurrent: Boolean = false) {
         if(!concurrent) {
             mUserTicketsCall?.cancel()
+            return
+        }
+
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
+
+    /**
+     * Method to cancel a get event attributes
+     */
+    fun cancelGetEventAttributes(concurrent: Boolean = false) {
+        if (!concurrent) {
+            mGetEventAttributesCall?.cancel()
             return
         }
 
@@ -207,6 +233,64 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<Array<UserTicketsJSON>>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Event attributes
+     *
+     * @param concurrent - parameters to concurrent request
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun getEventAttributes(concurrent: Boolean = false,
+                           request: EventAttributes,
+                           onSuccess: (EventAttributesJSON) -> Unit,
+                           onError: (APIError) -> Unit,
+                           onConnectionError: (error: Throwable) -> Unit) {
+
+        val filters = listOf("accepted_apps", "advertisement", "custom_code",
+            "ticket_transfer_enabled", "ticket_transfer_required")
+
+        val customFilters = request.filters?.let { it } ?: filters.joinToString(",")
+
+        var call = service.getEventAttributes(
+            eventId = request.eventId,
+            apikey = client.key,
+            userToken = request.usertoken,
+            signature = request.signature,
+            timestamp = request.timestamp,
+            filters = customFilters
+        )
+
+        if (!concurrent) mGetEventAttributesCall = call else mConcurrentCalls.add(call)
+
+        val callback = object: IngresseCallback<Response<EventAttributesJSON>?> {
+            override fun onSuccess(data: Response<EventAttributesJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) {
+                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
+                onError(error)
+            }
+
+            override fun onRetrofitError(error: Throwable) {
+                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<EventAttributesJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }

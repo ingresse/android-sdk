@@ -21,18 +21,4 @@ interface Event {
                                @Query("from") from: String? = null,
                                @Query("to") to: String? = null,
                                @Query("offset") offset: Int? = null): Call<String>
-
-    /**
-     * Get event attributes
-     *
-     * @param eventId - id from event
-     */
-    @GET("/event/{id}/attributes")
-    fun getEventAttributes(@Path("eventId") eventId: String,
-                           @Query("apikey") apikey: String,
-                           @Query("usertoken") userToken: String? = null,
-                           @Query("signature") signature: String? = null,
-                           @Query("timestamp") timestamp: String? = null,
-                           @Query("filters") filters: String? = null): Call<String>
-
 }
