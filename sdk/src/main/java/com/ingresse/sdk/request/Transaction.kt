@@ -1,5 +1,6 @@
 package com.ingresse.sdk.request
 
+import com.ingresse.sdk.helper.REFUND_METHOD_KEY
 import com.ingresse.sdk.model.request.TransactionParams
 import com.ingresse.sdk.model.request.TransactionStatus
 import retrofit2.Call
@@ -116,4 +117,26 @@ interface Transaction {
     fun getDetails(@Path("transactionId") transactionId: String,
                    @Query("apikey") apikey: String,
                    @Query("usertoken") userToken: String): Call<String>
+
+    /**
+     * Get refund reasons
+     */
+    @GET("/refundReasons")
+    fun getRefundReasons(@Query("apikey") apikey: String) : Call<String>
+
+    /**
+     * Refund a specific transaction (Ticket refund)
+     *
+     * @param transactionId - id from some transaction
+     * @param userToken - user token
+     * @param method - fixed method: refund
+     * @param reason - refund reason
+     */
+    @FormUrlEncoded
+    @POST("/transaction/{transactionId}")
+    fun refundTransaction(@Path("transactionId") transactionId: String,
+                          @Query("apikey") apikey: String,
+                          @Query("usertoken") userToken: String,
+                          @Query("method") method: String = REFUND_METHOD_KEY,
+                          @Field("reason") reason: String): Call<String>
 }
