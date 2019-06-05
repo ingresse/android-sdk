@@ -140,7 +140,7 @@ class TicketService(private val client: IngresseClient) {
      */
     fun createTransfer(concurrent: Boolean = false,
                        request: CreateTransfer,
-                       onSuccess: (Array<CreateTransferJSON>) -> Unit,
+                       onSuccess: (CreateTransferJSON) -> Unit,
                        onError: (APIError) -> Unit,
                        onConnectionError: (error: Throwable) -> Unit) {
 
@@ -154,8 +154,8 @@ class TicketService(private val client: IngresseClient) {
 
         if (!concurrent) mCreateTransferCall = call else mConcurrentCalls.add(call)
 
-        val callback = object: IngresseCallback<Response<Array<CreateTransferJSON>>?> {
-            override fun onSuccess(data: Response<Array<CreateTransferJSON>>?) {
+        val callback = object: IngresseCallback<Response<CreateTransferJSON>?> {
+            override fun onSuccess(data: Response<CreateTransferJSON>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
 
                 if (!concurrent) mCreateTransferCall = null else mConcurrentCalls.remove(call)
@@ -177,7 +177,7 @@ class TicketService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Response<Array<CreateTransferJSON>>?>() {}.type
+        val type = object : TypeToken<Response<CreateTransferJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 
@@ -200,7 +200,7 @@ class TicketService(private val client: IngresseClient) {
             ticketId = request.ticketId,
             transferId = request.transferId,
             apikey = client.key,
-            userToken = request.usertoken,
+            userToken = request.userToken,
             params = request.params
         )
 

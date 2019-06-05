@@ -4,10 +4,10 @@ data class UpdateTransfer(
     var ticketId: Long = 0,
     var transferId: Long = 0,
     var apikey: String = "",
-    var usertoken: String = "",
+    var userToken: String = "",
     val params: TransferActionParams
 )
 
 data class TransferActionParams(
-    var action: String? = ""
+    var action: String = ""
 )

@@ -24,11 +24,12 @@ interface Ticket {
      * @param user - User id or email to transfer
      * @param isReturn - flag for return
      */
+    @FormUrlEncoded
     @POST("/ticket/{ticketId}/transfer")
     fun createTransfer(@Path("ticketId") ticketId: Long,
                        @Query("apikey") apikey: String,
                        @Query("usertoken") userToken: String,
-                       @Field("user") user: String? = null,
+                       @Field("user") user: String,
                        @Field("isReturn") isReturn: Boolean? = false): Call<String>
 
     /**

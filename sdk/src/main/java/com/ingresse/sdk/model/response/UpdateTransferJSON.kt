@@ -12,11 +12,11 @@ data class User(
     val email: String? = "",
     val name: String? = "",
     val type: String? = "",
-    val social: SocialUpdateTransfer? = null,
+    val social: Array<SocialUpdateTransfer>? = emptyArray(),
     val picture: String? = ""
 )
 
 data class SocialUpdateTransfer(
-    val id:Int? = 0,
+    val id:Long? = 0,
     val network: String? = ""
 )
