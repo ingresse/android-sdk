@@ -259,7 +259,7 @@ class UserService(private val client: IngresseClient) {
         var call = service.getEventAttributes(
             eventId = request.eventId,
             apikey = client.key,
-            userToken = request.usertoken,
+            userToken = request.userToken,
             signature = request.signature,
             timestamp = request.timestamp,
             filters = customFilters
