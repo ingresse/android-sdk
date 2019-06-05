@@ -31,6 +31,7 @@ class TransactionService(private val client: IngresseClient) {
     private var mGetTransactionReportCall: Call<String>? = null
     private var mGetTransactionListCall: Call<String>? = null
     private var mGetTransactionsCall: Call<String>? = null
+    private var mGetDetailsCall: Call<String>? = null
 
     init {
         val httpClient = ClientBuilder(client)
@@ -78,6 +79,10 @@ class TransactionService(private val client: IngresseClient) {
      */
     fun cancelGetTransactionsCall() = mGetTransactionsCall?.cancel()
 
+    /**
+     * Method to cancel a details request
+     */
+    fun cancelGetDetailsCall() = mGetDetailsCall?.cancel()
 
     /**
      * Create transaction to get id for payment or reserve
@@ -301,5 +306,33 @@ class TransactionService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<Array<TransactionsJSON>>?>() {}.type
         mGetTransactionsCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    fun getDetails(request: TransactionDetails,onSuccess: (TransactionsJSON) -> Unit, onError: (APIError) -> Unit, onConnectionError: (Throwable) -> Unit) {
+        mGetDetailsCall = service.getDetails(
+                transactionId = request.transactionId,
+                userToken = request.userToken,
+                apikey = client.key
+        )
+
+        val callback = object : IngresseCallback<Response<TransactionsJSON>?> {
+            override fun onSuccess(data: Response<TransactionsJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<TransactionsJSON>?>() {}.type
+        mGetDetailsCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

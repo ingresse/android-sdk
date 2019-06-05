@@ -105,4 +105,15 @@ interface Transaction {
                         @Query("page") page: Int? = null,
                         @Query("pageSize") pageSize: Int? = null,
                         @Query("order") order: String? = null): Call<String>
+
+    /**
+     * Get details from a specific transaction
+     *
+     * @param transactionId - id from some transaction
+     * @param userToken - user token
+     */
+    @GET("/transaction/{transactionId}")
+    fun getDetails(@Path("transactionId") transactionId: String,
+                   @Query("apikey") apikey: String,
+                   @Query("usertoken") userToken: String): Call<String>
 }

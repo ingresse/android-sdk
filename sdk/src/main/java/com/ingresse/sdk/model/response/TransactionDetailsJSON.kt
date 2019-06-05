@@ -22,7 +22,8 @@ data class TransactionDetailsJSON(
     val operatorId: String? = "",
     val salesgroupId: Int? = 0,
     val creditCard: PaymentCardJSON?,
-    val customer: TransactionCustomerJSON?,
+    val customer: TransactionUserJSON?,
+    val operator: TransactionUserJSON?,
     val event: TransactionEventJSON?,
     val session: TransactionSessionJSON?,
     val basket: TransactionBasketJSON?,
@@ -32,14 +33,6 @@ data class TransactionDetailsJSON(
 data class PaymentCardJSON(
         val firstDigits: String? = "",
         val lastDigits: String? = "")
-
-data class TransactionCustomerJSON(
-        val id: Int? = 0,
-        val email: String? = "",
-        val username: String? = "",
-        val name: String? = "",
-        val phone: String? = "",
-        val picture: String? = "")
 
 data class TransactionBasketJSON(
         val tickets: Array<TransactionTicketJSON>?)
