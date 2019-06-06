@@ -7,17 +7,17 @@ data class RecentTransfersJSON(
     val name: String? = "",
     val type: String? = "",
     val status: String? = "",
-    val history: Array<RecentTransfersHistory>? = emptyArray(),
-    val socialId: Array<RecentTransfersSocialId>? = emptyArray(),
+    val history: Array<RecentTransfersHistoryJSON>? = emptyArray(),
+    val socialId: Array<RecentTransfersSocialIdJSON>? = emptyArray(),
     val picture: String? = ""
 )
 
-data class RecentTransfersHistory(
+data class RecentTransfersHistoryJSON(
     val status: String? = "",
     val creationDate: String? = ""
 )
 
-data class RecentTransfersSocialId(
+data class RecentTransfersSocialIdJSON(
     val id: Long? = 0,
     val network: String? = ""
 )

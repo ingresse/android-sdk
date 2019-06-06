@@ -2,31 +2,31 @@ package com.ingresse.sdk.model.response
 
 data class EventAttributesJSON(
     val accepted_apps: ArrayList<String>? = null,
-    val advertisement: Advertisement? = null,
+    val advertisement: AdvertisementJSON? = null,
     val custom_code: Boolean? = false,
     val ticket_transfer_enabled: Boolean? = false,
     val ticket_transfer_required: Boolean? = false
 )
 
-data class Advertisement(
-    val mobile: Mobile? = null
+data class AdvertisementJSON(
+    val mobile: MobileJSON? = null
 )
 
-data class Mobile(
-    val background: Background? = null,
-    val cover: Cover? = null
+data class MobileJSON(
+    val background: BackgroundJSON? = null,
+    val cover: CoverJSON? = null
 )
 
-data class Background(
+data class BackgroundJSON(
     val image: String? = ""
 )
 
-data class Cover(
+data class CoverJSON(
     val image: String? = "",
     val url: String? = ""
 )
 
 data class Web(
-    val background: Background? = null,
-    val cover: Cover? = null
+    val background: BackgroundJSON? = null,
+    val cover: CoverJSON? = null
 )

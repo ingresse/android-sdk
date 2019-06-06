@@ -2,15 +2,15 @@ package com.ingresse.sdk.model.response
 
 data class UserTransfersJSON(
     val id: Int? = 0,
-    val event: Event? = null,
-    val session: Session? = null,
-    val venue: Venue? = null,
-    val ticket: Ticket? = null,
-    val receivedFrom: Receiver? = null,
-    val sessions: Sessions? = null
+    val event: EventUserTransfersJSON? = null,
+    val session: SessionUserTransfersJSON? = null,
+    val venue: VenueUserTransfersJSON? = null,
+    val ticket: TicketUserTransfersJSON? = null,
+    val receivedFrom: ReceiverUserTransfersJSON? = null,
+    val sessions: SessionsJSON? = null
 )
 
-data class Event(
+data class EventUserTransfersJSON(
     val id: Int? = 0,
     val title: String? = "",
     val type: String? = "",
@@ -20,12 +20,12 @@ data class Event(
     val poster: String? = ""
 )
 
-data class Session(
+data class SessionUserTransfersJSON(
     val id: Int? = 0,
     val datetime: String? = ""
 )
 
-data class Venue(
+data class VenueUserTransfersJSON(
     val id: Int? = 0,
     val name: String? = "",
     val street: String? = "",
@@ -40,7 +40,7 @@ data class Venue(
     val complement: String? = ""
 )
 
-data class Ticket(
+data class TicketUserTransfersJSON(
     val id: Int? = 0,
     val guestTypeId: Int? = 0,
     val ticketTypeId: Int? = 0,
@@ -49,33 +49,33 @@ data class Ticket(
     val description: String? = ""
 )
 
-data class Receiver(
+data class ReceiverUserTransfersJSON(
     val transferId: Int? = 0,
     val userId: Int? = 0,
     val email: String? = "",
     val name: String? = "",
     val type: String? = "",
     val status: String? = "",
-    val history: Array<TransfersHistory>? = emptyArray(),
-    val socialId: Array<UserSocialTransfers>? = emptyArray(),
+    val history: Array<TransfersHistoryJSON>? = emptyArray(),
+    val socialId: Array<UserSocialTransfersJSON>? = emptyArray(),
     val picture: String? = ""
 )
 
-data class TransfersHistory(
+data class TransfersHistoryJSON(
     val status: String? = "",
     val creationDate: String? = ""
 )
 
-data class UserSocialTransfers(
+data class UserSocialTransfersJSON(
     val id: String? = "",
     val network: String? = ""
 )
 
-data class Sessions(
-    val data: Array<Data>? = emptyArray()
+data class SessionsJSON(
+    val data: Array<DataJSON>? = emptyArray()
 )
 
-data class Data(
+data class DataJSON(
     val id: Int? = 0,
     val datetime: String? = ""
 )

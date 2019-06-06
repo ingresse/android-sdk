@@ -2,21 +2,21 @@ package com.ingresse.sdk.model.response
 
 data class CreateTransferJSON(
     val saleTicketId: Int? = 0,
-    val user: UserCreateTransfer? = null,
+    val user: UserCreateTransferJSON? = null,
     val id: Int? = 0,
     val status: String? = ""
 )
 
-data class UserCreateTransfer(
+data class UserCreateTransferJSON(
     val id: Int? = 0,
     val email: String? = "",
     val name: String? = "",
     val type: String? = "",
-    val social: Array<UserSocialCreateTransfers>? = emptyArray(),
+    val social: Array<UserSocialCreateTransfersJSON>? = emptyArray(),
     val picture: String? = ""
 )
 
-data class UserSocialCreateTransfers(
+data class UserSocialCreateTransfersJSON(
     val id: String? = "",
     val network: String? = ""
 )

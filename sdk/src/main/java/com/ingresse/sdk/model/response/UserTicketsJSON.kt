@@ -7,32 +7,32 @@ data class UserTicketsJSON(
     val itemType: String? = "",
     val price: Double? = 0.0,
     val tax: Double? = 0.0,
-    val sessions: EventSession? = null,
+    val sessions: EventSessionUserTicketsJSON? = null,
     val title: String? = "",
     val type: String? = "",
     val eventId: Int? = 0,
     val eventTitle: String? = "",
-    val eventVenue: EventVenue? = null,
+    val eventVenue: EventVenueJSON? = null,
     val transactionId: String? = "",
     val description: String? = "",
     val sequence: String? = "",
     val code: String? = "",
     val checked: Boolean? = false,
-    val receivedFrom: Holder? = null,
-    val transferedTo: Holder? = null,
-    val currentHolder: Holder? = null
+    val receivedFrom: HolderJSON? = null,
+    val transferedTo: HolderJSON? = null,
+    val currentHolder: HolderJSON? = null
 )
 
-data class EventSession(
-    val data: List<EventSessionData>? = emptyList()
+data class EventSessionUserTicketsJSON(
+    val data: List<EventSessionDataJSON> = emptyList()
 )
 
-data class EventSessionData(
+data class EventSessionDataJSON(
     val id: Int? = 0,
     val dateTime: String? = ""
 )
 
-data class EventVenue(
+data class EventVenueJSON(
     val id: Int? = 0,
     val name: String? = "",
     val street: String? = "",
@@ -47,24 +47,24 @@ data class EventVenue(
     val complement: String? = ""
 )
 
-data class Holder(
+data class HolderJSON(
     val transferId: Int? = 0,
     val userId: Int? = 0,
     val email: String? = "",
     val name: String? = "",
     val type: String? = "",
     val status: String? = "",
-    val history: List<TransferHistory>? = emptyList(),
-    val socialId: Array<UserSocial>? = emptyArray(),
+    val history: List<TransferHistoryJSON>? = emptyList(),
+    val socialId: Array<UserSocialJSON>? = emptyArray(),
     val picture: String? = ""
 )
 
-data class UserSocial(
+data class UserSocialJSON(
     val id: String? = "",
     val network: String? = ""
 )
 
-data class TransferHistory(
+data class TransferHistoryJSON(
     val status: String? = "",
     val creationDate: String? = ""
 )
