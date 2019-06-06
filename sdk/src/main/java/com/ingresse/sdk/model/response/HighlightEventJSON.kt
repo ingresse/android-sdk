@@ -10,12 +10,12 @@ data class HighlightEventJSON(
     val link: String? = "",
     val poster: String? = "",
     val date: List<HighlightEventDateJSON>? = emptyList(),
-    val addedBy: HighlightAddedByJSON? = HighlightAddedByJSON(),
-    val venue: HighlightVenueJSON? = HighlightVenueJSON()
+    val addedBy: HighlightAddedByJSON? = null,
+    val venue: HighlightVenueJSON? = null
 )
 
 data class HighlightEventDateJSON(
-    val dateTime: HighlightDateTimeJSON? = HighlightDateTimeJSON(),
+    val dateTime: HighlightDateTimeJSON? = null,
     val status: String? = "",
     val id: Int? = -1
 )
