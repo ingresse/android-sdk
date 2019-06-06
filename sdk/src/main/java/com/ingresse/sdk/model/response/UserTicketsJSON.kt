@@ -24,7 +24,7 @@ data class UserTicketsJSON(
 )
 
 data class EventSession(
-    val data: List<EventSessionData> = emptyList()
+    val data: List<EventSessionData>? = emptyList()
 )
 
 data class EventSessionData(
