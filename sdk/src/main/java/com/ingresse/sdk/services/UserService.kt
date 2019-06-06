@@ -18,7 +18,6 @@ import java.io.IOException
 class UserService(private val client: IngresseClient) {
     private var host = Host.API
     private var service: User
-    private var cancelAllCalled = false
 
     private var mUserDataCall: Call<String>? = null
     private var mUpdateBasicInfosCall: Call<String>? = null
@@ -39,17 +38,6 @@ class UserService(private val client: IngresseClient) {
                 .build()
 
         service = adapter.create(User::class.java)
-    }
-
-    /**
-     * Method to cancel all requests
-     */
-    fun cancelAll() {
-        cancelAllCalled = true
-        mUserTicketsCall?.cancel()
-        mGetEventAttributesCall?.cancel()
-        mConcurrentCalls.forEach { it.cancel() }
-        mConcurrentCalls.clear()
     }
 
     /**
@@ -78,15 +66,7 @@ class UserService(private val client: IngresseClient) {
     /**
      * Method to cancel a get event attributes
      */
-    fun cancelGetEventAttributes(concurrent: Boolean = false) {
-        if (!concurrent) {
-            mGetEventAttributesCall?.cancel()
-            return
-        }
-
-        mConcurrentCalls.forEach { it.cancel() }
-        mConcurrentCalls.clear()
-    }
+    fun cancelGetEventAttributes() = mGetEventAttributesCall?.cancel()
 
     /**
      * Get user data
@@ -265,23 +245,15 @@ class UserService(private val client: IngresseClient) {
             filters = customFilters
         )
 
-        if (!concurrent) mGetEventAttributesCall = call else mConcurrentCalls.add(call)
-
         val callback = object: IngresseCallback<Response<EventAttributesJSON>?> {
             override fun onSuccess(data: Response<EventAttributesJSON>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
-
-                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
-                if (!concurrent) mGetEventAttributesCall = null else mConcurrentCalls.remove(call)
                 if (error is IOException) return onConnectionError(error)
 
                 val apiError = APIError()

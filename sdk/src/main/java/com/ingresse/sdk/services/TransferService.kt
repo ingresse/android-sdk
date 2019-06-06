@@ -25,7 +25,6 @@ import java.io.IOException
 class TransferService(private val client: IngresseClient) {
     private var host = Host.API
     private var service: Transfer
-    private var cancelAllCalled = false
 
     private var mUserTransfersCall: Call<String>? = null
     private var mRecentTransfersCall: Call<String>? = null
@@ -48,18 +47,6 @@ class TransferService(private val client: IngresseClient) {
     }
 
     /**
-     * Method to cancel all requests
-     */
-    fun cancelAll() {
-        cancelAllCalled = true
-        mUserTransfersCall?.cancel()
-        mRecentTransfersCall?.cancel()
-        mFriendsFromSearchCall?.cancel()
-        mConcurrentCalls.forEach { it.cancel() }
-        mConcurrentCalls.clear()
-    }
-
-    /**
      * Method to cancel user transfers data request
      */
     fun cancelUserTransfersData(concurrent: Boolean = false) {
@@ -75,28 +62,12 @@ class TransferService(private val client: IngresseClient) {
     /**
      * Method to cancel recent transfers data request
      */
-    fun cancelRecentTransfersData(concurrent: Boolean = false) {
-        if(!concurrent) {
-            mRecentTransfersCall?.cancel()
-            return
-        }
-
-        mConcurrentCalls.forEach { it.cancel() }
-        mConcurrentCalls.clear()
-    }
+    fun cancelRecentTransfersData() = mRecentTransfersCall?.cancel()
 
     /**
      * Method to cancel a get friends from search
      */
-    fun cancelFriendsFromSearch(concurrent: Boolean = false) {
-        if (!concurrent) {
-            mFriendsFromSearchCall?.cancel()
-            return
-        }
-
-        mConcurrentCalls.forEach { it.cancel() }
-        mConcurrentCalls.clear()
-    }
+    fun cancelFriendsFromSearch() = mFriendsFromSearchCall?.cancel()
 
     /**
      * Get user transfers data
@@ -174,23 +145,15 @@ class TransferService(private val client: IngresseClient) {
             size = request.size
         )
 
-        if (!concurrent) mRecentTransfersCall = call else mConcurrentCalls.add(call)
-
         val callback = object: IngresseCallback<Response<List<RecentTransfersJSON>>?> {
             override fun onSuccess(data: Response<List<RecentTransfersJSON>>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
-
-                if(!concurrent) mRecentTransfersCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                if (!concurrent) mRecentTransfersCall = null else mConcurrentCalls.remove(call)
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
-                if (!concurrent) mRecentTransfersCall = null else mConcurrentCalls.remove(call)
                 if (error is IOException) return onConnectionError(error)
 
                 val apiError = APIError()
@@ -225,23 +188,15 @@ class TransferService(private val client: IngresseClient) {
             userToken = request.usertoken
         )
 
-        if (!concurrent) mFriendsFromSearchCall = call else mConcurrentCalls.add(call)
-
         val callback = object: IngresseCallback<Response<Array<FriendsFromSearchJSON>>?> {
             override fun onSuccess(data: Response<Array<FriendsFromSearchJSON>>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
-
-                if (!concurrent) mFriendsFromSearchCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) {
-                if (!concurrent) mFriendsFromSearchCall = null else mConcurrentCalls.remove(call)
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
-                if (!concurrent) mFriendsFromSearchCall = null else mConcurrentCalls.remove(call)
                 if (error is IOException) return onConnectionError(error)
 
                 val apiError = APIError()
