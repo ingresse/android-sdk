@@ -3,13 +3,13 @@ package com.ingresse.sdk.model.response
 data class HighlightEventJSON(
     val id: Int? = -1,
     val title: String? = "",
-    val description: String = "",
+    val description: String? = "",
     val type: String? = "",
     val status: String? = "",
     val saleEnabled: Boolean? = false,
     val link: String? = "",
     val poster: String? = "",
-    val date: List<HighlightEventDateJSON> = emptyList(),
+    val date: List<HighlightEventDateJSON>? = emptyList(),
     val addedBy: HighlightAddedByJSON? = HighlightAddedByJSON(),
     val venue: HighlightVenueJSON? = HighlightVenueJSON()
 )
