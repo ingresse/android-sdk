@@ -6,14 +6,11 @@ import retrofit2.http.Query
 
 interface Highlight {
     /**
-     * Get event list by producer
+     * Get highlight events
      *
-     * @param title - Event's title to filter
-     * @param size - Size of total results in page
-     * @param orderBy - Order results
-     * @param from - Get from specific date or moment
-     * @param to - Get to specific date or moment
-     * @param offset - Get from specific page
+     * @param state - Event's state to filter
+     * @param pageSize - Size of total results in page
+     * @param page - search page
      */
     @GET("/featured")
     fun getHighlightEvents(@Query("apikey") apikey: String,
