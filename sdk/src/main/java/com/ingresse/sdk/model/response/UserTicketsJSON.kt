@@ -24,10 +24,10 @@ data class UserTicketsJSON(
 )
 
 data class EventSessionUserTicketsJSON(
-    val data: List<EventSessionDataJSON> = emptyList()
+    val data: List<EventSessionDateJSON> = emptyList()
 )
 
-data class EventSessionDataJSON(
+data class EventSessionDateJSON(
     val id: Int? = 0,
     val dateTime: String? = ""
 )

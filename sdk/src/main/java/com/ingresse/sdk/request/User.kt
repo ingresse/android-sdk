@@ -50,12 +50,12 @@ interface User {
      * Get user event attributes
      *
      * @param eventId - id from event
+     * @param usertoken - token from user
+     * @param filters - event filter
      */
     @GET("/event/{eventId}/attributes")
     fun getEventAttributes(@Path("eventId") eventId: String,
                            @Query("apikey") apikey: String,
                            @Query("usertoken") userToken: String? = null,
-                           @Query("signature") signature: String? = null,
-                           @Query("timestamp") timestamp: String? = null,
                            @Query("filters") filters: String? = null): Call<String>
 }

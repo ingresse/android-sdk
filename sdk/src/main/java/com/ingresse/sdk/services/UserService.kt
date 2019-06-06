@@ -233,8 +233,6 @@ class UserService(private val client: IngresseClient) {
             eventId = request.eventId,
             apikey = client.key,
             userToken = request.userToken,
-            signature = request.signature,
-            timestamp = request.timestamp,
             filters = request.filters
         )
 

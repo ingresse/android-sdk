@@ -72,10 +72,10 @@ data class UserSocialTransfersJSON(
 )
 
 data class SessionsJSON(
-    val data: Array<DataJSON>? = emptyArray()
+    val data: Array<DateJSON>? = emptyArray()
 )
 
-data class DataJSON(
+data class DateJSON(
     val id: Int? = 0,
     val datetime: String? = ""
 )
