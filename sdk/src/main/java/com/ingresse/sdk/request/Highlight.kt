@@ -15,7 +15,7 @@ interface Highlight {
      * @param to - Get to specific date or moment
      * @param offset - Get from specific page
      */
-    @GET("/search/producer")
+    @GET("/featured")
     fun getHighlightEvents(@Query("apikey") apikey: String,
                            @Query("state") state: String? = null,
                            @Query("page") page: Int,

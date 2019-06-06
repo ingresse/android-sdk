@@ -2,11 +2,8 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.base.*
 import com.ingresse.sdk.base.Array
-import com.ingresse.sdk.base.IngresseCallback
-import com.ingresse.sdk.base.ResponseHits
-import com.ingresse.sdk.base.RetrofitCallback
-import com.ingresse.sdk.base.Source
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
@@ -74,10 +71,9 @@ class HighlightsService(private val client: IngresseClient) {
      */
     fun getHighlightEvents(concurrent: Boolean = false,
                                request: HighlightEvents,
-                               onSuccess: (List<HighlightEventJSON>) -> Unit,
+                               onSuccess: (Array<HighlightEventJSON>) -> Unit,
                                onError: (APIError) -> Unit,
                                onConnectionError: (error: Throwable) -> Unit) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call  = service.getHighlightEvents(
             apikey = client.key,
@@ -88,11 +84,11 @@ class HighlightsService(private val client: IngresseClient) {
 
         if (!concurrent) mGetHighlightEventsCall = call else mConcurrentCalls.add(call)
 
-        val callback = object: IngresseCallback<Array<HighlightEventJSON>?> {
-            override fun onSuccess(data: Array<HighlightEventJSON>?) {
+        val callback = object: IngresseCallback<Response<Array<HighlightEventJSON>>?> {
+            override fun onSuccess(data: Response<Array<HighlightEventJSON>>?) {
                 if (cancelAllCalled) return
 
-                val response = data?.data?: return onError(APIError.default)
+                val response = data?.responseData ?: return onError(APIError.default)
 
                 if (!concurrent) mGetHighlightEventsCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response)
@@ -113,7 +109,7 @@ class HighlightsService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Array<HighlightEventJSON>?>() {}.type
+        val type = object : TypeToken<Response<Array<HighlightEventJSON>>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }
