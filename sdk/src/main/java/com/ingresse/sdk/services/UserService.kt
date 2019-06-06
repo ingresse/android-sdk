@@ -167,7 +167,7 @@ class UserService(private val client: IngresseClient) {
     /**
      * Get user tickets data
      *
-     * @param concurrent - parameter to concurrent request
+     * @param concurrent - flag to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
@@ -219,14 +219,12 @@ class UserService(private val client: IngresseClient) {
     /**
      * Event attributes
      *
-     * @param concurrent - flag to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
      */
-    fun getEventAttributes(concurrent: Boolean = false,
-                           request: EventAttributes,
+    fun getEventAttributes(request: EventAttributes,
                            onSuccess: (EventAttributesJSON) -> Unit,
                            onError: (APIError) -> Unit,
                            onConnectionError: (error: Throwable) -> Unit) {

@@ -73,7 +73,7 @@ class TransferService(private val client: IngresseClient) {
     /**
      * Get user transfers data
      *
-     * @param concurrent - parameters to concurrent request
+     * @param concurrent - flag to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
@@ -126,14 +126,12 @@ class TransferService(private val client: IngresseClient) {
     /**
      * Gets user recent transfers data
      *
-     * @param concurrent - parameters to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
      */
-    fun getRecentTransfersData(concurrent: Boolean = false,
-                               request: RecentTransfers,
+    fun getRecentTransfersData(request: RecentTransfers,
                                onSuccess: (List<RecentTransfersJSON>) -> Unit,
                                onError: (APIError) -> Unit,
                                onConnectionError: (error: Throwable) -> Unit) {
@@ -170,14 +168,12 @@ class TransferService(private val client: IngresseClient) {
     /**
      * Search friends by name
      *
-     * @param concurrent - parameters to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
      */
-    fun getFriendsFromSearch(concurrent: Boolean = false,
-                             request: FriendsFromSearch,
+    fun getFriendsFromSearch(request: FriendsFromSearch,
                              onSuccess: (List<FriendsFromSearchJSON>) -> Unit,
                              onError: (APIError) -> Unit,
                              onConnectionError: (error: Throwable) -> Unit) {

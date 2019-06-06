@@ -66,7 +66,7 @@ class EventService(private val client: IngresseClient) {
     /**
      * Event list by producer
      *
-     * @param concurrent - parameters to concurrent request
+     * @param concurrent - flag to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback

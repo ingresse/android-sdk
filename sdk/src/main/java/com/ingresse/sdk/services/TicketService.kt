@@ -103,14 +103,12 @@ class TicketService(private val client: IngresseClient) {
     /**
      * Create ticket transfer
      *
-     * @param concurrent - parameters to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
      */
-    fun createTransfer(concurrent: Boolean = false,
-                       request: CreateTransfer,
+    fun createTransfer(request: CreateTransfer,
                        onSuccess: (CreateTransferJSON) -> Unit,
                        onError: (APIError) -> Unit,
                        onConnectionError: (error: Throwable) -> Unit) {
@@ -147,14 +145,12 @@ class TicketService(private val client: IngresseClient) {
     /**
      * Update ticket transfer
      *
-     * @param concurrent - parameters to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
      */
-    fun updateTransfer(concurrent: Boolean = false,
-                       request: UpdateTransfer,
+    fun updateTransfer(request: UpdateTransfer,
                        onSuccess: (UpdateTransferJSON) -> Unit,
                        onError: (APIError) -> Unit,
                        onConnectionError: (error: Throwable) -> Unit) {
