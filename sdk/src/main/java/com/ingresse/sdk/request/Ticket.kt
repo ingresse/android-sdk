@@ -19,7 +19,7 @@ interface Ticket {
     /**
      * Create or Refuse a ticket transfer
      *
-     * @param ticketId - User id to get data
+     * @param ticketId - Ticket id to transfer
      * @param userToken - User token
      * @param user - User id or email to transfer
      * @param isReturn - flag for return
@@ -35,10 +35,10 @@ interface Ticket {
     /**
      * Update a ticket transfer
      *
-     * @param ticketId - Ticket id
+     * @param ticketId - Ticket id to update transfer
      * @param transferId - Transfer id
      * @param userToken - User token
-     * @param action - Actions to update a transfer
+     * @param params - Param with action to update a transfer
      */
     @POST("/ticket/{ticketId}/transfer/{transferId}")
     fun updateTransfer(@Path("ticketId") ticketId: Long,
@@ -46,5 +46,4 @@ interface Ticket {
                        @Query("apikey") apikey: String,
                        @Query("usertoken") userToken: String,
                        @Body params: TransferActionParams): Call<String>
-
 }

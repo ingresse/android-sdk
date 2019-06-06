@@ -2,6 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -80,7 +81,7 @@ class TransferService(private val client: IngresseClient) {
      */
     fun getUserTransfersData(concurrent: Boolean = false,
                              request: UserTransfersData,
-                             onSuccess: (com.ingresse.sdk.base.Array<UserTransfersJSON>) -> Unit,
+                             onSuccess: (Array<UserTransfersJSON>) -> Unit,
                              onError: (APIError) -> Unit,
                              onConnectionError: (error: Throwable) -> Unit) {
 
@@ -95,8 +96,8 @@ class TransferService(private val client: IngresseClient) {
 
         if (!concurrent) mUserTransfersCall = call else mConcurrentCalls.add(call)
 
-        val callback = object: IngresseCallback<Response<com.ingresse.sdk.base.Array<UserTransfersJSON>>?> {
-            override fun onSuccess(data: Response<com.ingresse.sdk.base.Array<UserTransfersJSON>>?) {
+        val callback = object: IngresseCallback<Response<Array<UserTransfersJSON>>?> {
+            override fun onSuccess(data: Response<Array<UserTransfersJSON>>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
 
                 if(!concurrent) mUserTransfersCall = null else mConcurrentCalls.remove(call)
@@ -118,7 +119,7 @@ class TransferService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Response<com.ingresse.sdk.base.Array<UserTransfersJSON>>?>() {}.type
+        val type = object : TypeToken<Response<Array<UserTransfersJSON>>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 
@@ -177,7 +178,7 @@ class TransferService(private val client: IngresseClient) {
      */
     fun getFriendsFromSearch(concurrent: Boolean = false,
                              request: FriendsFromSearch,
-                             onSuccess: (Array<FriendsFromSearchJSON>) -> Unit,
+                             onSuccess: (List<FriendsFromSearchJSON>) -> Unit,
                              onError: (APIError) -> Unit,
                              onConnectionError: (error: Throwable) -> Unit) {
 
@@ -188,8 +189,8 @@ class TransferService(private val client: IngresseClient) {
             userToken = request.usertoken
         )
 
-        val callback = object: IngresseCallback<Response<Array<FriendsFromSearchJSON>>?> {
-            override fun onSuccess(data: Response<Array<FriendsFromSearchJSON>>?) {
+        val callback = object: IngresseCallback<Response<List<FriendsFromSearchJSON>>?> {
+            override fun onSuccess(data: Response<List<FriendsFromSearchJSON>>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -205,7 +206,7 @@ class TransferService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Response<Array<FriendsFromSearchJSON>>?>() {}.type
+        val type = object : TypeToken<Response<List<FriendsFromSearchJSON>>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }

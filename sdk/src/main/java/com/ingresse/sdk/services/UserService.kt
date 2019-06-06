@@ -219,7 +219,7 @@ class UserService(private val client: IngresseClient) {
     /**
      * Event attributes
      *
-     * @param concurrent - parameters to concurrent request
+     * @param concurrent - flag to concurrent request
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
@@ -231,18 +231,13 @@ class UserService(private val client: IngresseClient) {
                            onError: (APIError) -> Unit,
                            onConnectionError: (error: Throwable) -> Unit) {
 
-        val filters = listOf("accepted_apps", "advertisement", "custom_code",
-            "ticket_transfer_enabled", "ticket_transfer_required")
-
-        val customFilters = request.filters?.let { it } ?: filters.joinToString(",")
-
         var call = service.getEventAttributes(
             eventId = request.eventId,
             apikey = client.key,
             userToken = request.userToken,
             signature = request.signature,
             timestamp = request.timestamp,
-            filters = customFilters
+            filters = request.filters
         )
 
         val callback = object: IngresseCallback<Response<EventAttributesJSON>?> {
