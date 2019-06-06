@@ -2,11 +2,8 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.base.*
 import com.ingresse.sdk.base.Array
-import com.ingresse.sdk.base.IngresseCallback
-import com.ingresse.sdk.base.ResponseHits
-import com.ingresse.sdk.base.RetrofitCallback
-import com.ingresse.sdk.base.Source
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
