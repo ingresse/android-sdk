@@ -26,7 +26,7 @@ data class CoverJSON(
     val url: String? = ""
 )
 
-data class Web(
+data class WebJSON(
     val background: BackgroundJSON? = null,
     val cover: CoverJSON? = null
 )
