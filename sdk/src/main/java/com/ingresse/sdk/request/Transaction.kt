@@ -133,7 +133,7 @@ interface Transaction {
      * @param reason - refund reason
      */
     @FormUrlEncoded
-    @POST("/transaction/{transactionId}")
+    @POST("/sale/{transactionId}")
     fun refundTransaction(@Path("transactionId") transactionId: String,
                           @Query("apikey") apikey: String,
                           @Query("usertoken") userToken: String,
