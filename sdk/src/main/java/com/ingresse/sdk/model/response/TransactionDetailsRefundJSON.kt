@@ -1,6 +1,6 @@
 package com.ingresse.sdk.model.response
 
-import com.ingresse.sdk.base.SimpleArray
+import com.ingresse.sdk.base.DataArray
 
 data class TransactionDetailsRefundJSON(
         val id: String? = "",
@@ -28,6 +28,6 @@ data class TransactionDetailsRefundJSON(
         val operator: TransactionUserJSON?,
         val event: TransactionEventJSON?,
         val session: TransactionSessionJSON?,
-        val basket: SimpleArray<TransactionBasketJSON>?,
+        val basket: DataArray<TransactionBasketJSON>?,
         val refund: RefundJSON?,
         val hasRefund: Boolean? = refund != null)

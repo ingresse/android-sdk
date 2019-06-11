@@ -378,8 +378,8 @@ class TransactionService(private val client: IngresseClient) {
                          onConnectionError: (Throwable) -> Unit) {
         mGetRefundReasonsCall = service.getRefundReasons(apikey = client.key)
 
-        val callback = object : IngresseCallback<Response<SimpleArray<String>>?> {
-            override fun onSuccess(data: Response<SimpleArray<String>>?) {
+        val callback = object : IngresseCallback<Response<DataArray<String>>?> {
+            override fun onSuccess(data: Response<DataArray<String>>?) {
                 val response = data?.responseData?.data ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -395,7 +395,7 @@ class TransactionService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Response<SimpleArray<String>>?>() {}.type
+        val type = object : TypeToken<Response<DataArray<String>>?>() {}.type
         mGetRefundReasonsCall?.enqueue(RetrofitCallback(type, callback))
     }
 
