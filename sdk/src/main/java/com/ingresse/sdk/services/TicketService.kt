@@ -133,6 +133,5 @@ class TicketService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<AuthenticationUserDeviceJSON>?>() {}.type
         mAuthenticationUserDeviceCall?.enqueue(RetrofitCallback(type, callback))
-
     }
 }
