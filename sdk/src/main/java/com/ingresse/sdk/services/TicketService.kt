@@ -7,7 +7,9 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.model.request.AuthenticationUserDevice
 import com.ingresse.sdk.model.request.EventTicket
+import com.ingresse.sdk.model.response.AuthenticationUserDeviceJSON
 import com.ingresse.sdk.model.response.TicketGroupJSON
 import com.ingresse.sdk.request.Ticket
 import retrofit2.Call
@@ -21,6 +23,7 @@ class TicketService(private val client: IngresseClient) {
     private val service: Ticket
 
     private var mGetEventTicketsCall: Call<String>? = null
+    private var mAuthenticationUserDeviceCall: Call<String>? = null
 
     init {
         val httpClient = ClientBuilder(client)
@@ -41,6 +44,11 @@ class TicketService(private val client: IngresseClient) {
      * Method to cancel a event tickets request
      */
     fun cancelGetEventTickets() = mGetEventTicketsCall?.cancel()
+
+    /**
+     * Method to cancel a authentication user device request
+     */
+    fun cancelAuthenticationUserDevice() = mAuthenticationUserDeviceCall?.cancel()
 
     /**
      * Company login with email and password
@@ -82,5 +90,49 @@ class TicketService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<Array<TicketGroupJSON>>?>() {}.type
         mGetEventTicketsCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * 2FA Authentication User Device
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun authenticationUserDevice(request: AuthenticationUserDevice,
+                                 onSuccess: (AuthenticationUserDeviceJSON) -> Unit,
+                                 onError: (APIError) -> Unit,
+                                 onConnectionError: (error: Throwable) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
+        mAuthenticationUserDeviceCall = service.authenticationUserDevice(
+                apikey = client.key,
+                userToken = request.userToken,
+                code = request.code,
+                uuid = request.uuid
+        )
+
+        val callback = object: IngresseCallback<Response<AuthenticationUserDeviceJSON>?> {
+            override fun onSuccess(data: Response<AuthenticationUserDeviceJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<AuthenticationUserDeviceJSON>?>() {}.type
+        mAuthenticationUserDeviceCall?.enqueue(RetrofitCallback(type, callback))
+
     }
 }
