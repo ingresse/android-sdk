@@ -6,9 +6,6 @@ data class PlannerAttributesJSON(
     var planner: PlannerData?,
     var aiddp: String?,
     var formalName: String?,
-    var cnpj: String?,
-    var cpf: String?,
-    var obs2: String?,
     var cityNumber: String?,
     var address: String?)
 
