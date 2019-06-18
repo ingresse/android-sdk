@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
-import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.base.RetrofitObserver
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
@@ -12,27 +12,31 @@ import com.ingresse.sdk.model.request.CheckinRequest
 import com.ingresse.sdk.model.response.CheckinStatus
 import com.ingresse.sdk.model.response.GuestCheckinJSON
 import com.ingresse.sdk.request.Entrance
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+
+private typealias CheckinResponse = Response<List<GuestCheckinJSON>>
 
 class CheckinService(private val client: IngresseClient) {
     private var host = Host.API
     private var service: Entrance
-    private var singleService: Entrance
 
-    private var mCheckinCall: Call<String>? = null
-    private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
+    private var mCheckinCall: RetrofitObserver<CheckinResponse>? = null
+    private var mConcurrentCalls: ArrayList<RetrofitObserver<CheckinResponse>> = ArrayList()
 
     init {
         val url = URLBuilder(host, client.environment).build()
         val builder = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(url)
 
         val clientBuilder = OkHttpClient.Builder()
@@ -46,13 +50,8 @@ class CheckinService(private val client: IngresseClient) {
 
         builder.client(clientBuilder.build())
 
-        var adapter = builder.build()
+        val adapter = builder.build()
         service = adapter.create(Entrance::class.java)
-
-        clientBuilder.callTimeout(2, TimeUnit.SECONDS)
-        builder.client(clientBuilder.build())
-        adapter = builder.build()
-        singleService = adapter.create(Entrance::class.java)
     }
 
     fun cancelSingleCheckin() {
@@ -74,36 +73,32 @@ class CheckinService(private val client: IngresseClient) {
                 eventId = request.eventId,
                 userToken = request.userToken,
                 request = request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
 
-        mConcurrentCalls.add(call)
-
-        val callback = object : IngresseCallback<Response<ArrayList<GuestCheckinJSON>>> {
-            override fun onSuccess(data: Response<ArrayList<GuestCheckinJSON>>?) {
+        val type = object: TypeToken<CheckinResponse>() {}.type
+        val observer = call.subscribeWith(RetrofitObserver(type, object : IngresseCallback<CheckinResponse> {
+            override fun onSuccess(data: CheckinResponse?) {
                 if (data?.responseData == null) return onError(APIError.default)
 
                 val response = data.responseData
                 val success = response?.filter { it.getStatus() == CheckinStatus.UPDATED } ?: emptyList()
                 val fail = response?.filter { it.getStatus() != CheckinStatus.UPDATED } ?: emptyList()
 
-                mConcurrentCalls.remove(call)
-
                 onFail(fail)
                 onSuccess(success)
             }
 
             override fun onError(error: APIError) {
-                mConcurrentCalls.remove(call)
                 onError(error)
             }
 
             override fun onRetrofitError(error: Throwable) {
-                mConcurrentCalls.remove(call)
                 onNetworkFail(error.localizedMessage)
             }
-        }
+        }))
 
-        val type = object: TypeToken<Response<ArrayList<GuestCheckinJSON>>>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        mConcurrentCalls.add(observer)
     }
 
     fun singleCheckin(request: CheckinRequest,
@@ -112,14 +107,18 @@ class CheckinService(private val client: IngresseClient) {
                       onError: (APIError) -> Unit,
                       onTimeout: () -> Unit) {
 
-        mCheckinCall = singleService.checkin(
+        val call = service.checkin(
                 apiKey = client.key,
                 eventId = request.eventId,
                 userToken = request.userToken,
                 request = request)
+                .timeout(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
 
-        val callback = object: IngresseCallback<Response<ArrayList<GuestCheckinJSON>>> {
-            override fun onSuccess(data: Response<ArrayList<GuestCheckinJSON>>?) {
+        val type = object: TypeToken<CheckinResponse>() {}.type
+        mCheckinCall = call.subscribeWith(RetrofitObserver(type, object: IngresseCallback<CheckinResponse> {
+            override fun onSuccess(data: CheckinResponse?) {
                 val ticket = data?.responseData?.firstOrNull() ?: return onTimeout()
                 if (ticket.getStatus() == CheckinStatus.UPDATED) return onSuccess(ticket)
 
@@ -128,9 +127,6 @@ class CheckinService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) = onError(error)
             override fun onRetrofitError(error: Throwable) = onTimeout()
-        }
-
-        val type = object: TypeToken<Response<ArrayList<GuestCheckinJSON>>>() {}.type
-        mCheckinCall?.enqueue(RetrofitCallback(type, callback))
+        }))
     }
 }

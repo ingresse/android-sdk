@@ -1,6 +1,7 @@
 package com.ingresse.sdk.request
 
 import com.ingresse.sdk.model.request.CheckinRequest
+import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -22,7 +23,7 @@ interface Entrance {
                           @Query("usertoken") userToken: String,
                           @Query("page") page: Int,
                           @Query("pageSize") pageSize: Int,
-                          @Query("from") dateFrom: Long?) : Call<String>
+                          @Query("from") dateFrom: Long?): Call<String>
 
     /**
      * Get ticket checkin history
@@ -48,5 +49,5 @@ interface Entrance {
     fun checkin(@Path("eventId") eventId: String,
                 @Query("apikey") apiKey: String,
                 @Query("usertoken") userToken: String,
-                @Body request: CheckinRequest) : Call<String>
+                @Body request: CheckinRequest): Single<String>
 }
