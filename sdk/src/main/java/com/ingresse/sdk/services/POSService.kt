@@ -5,6 +5,7 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.base.StatusJSON
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
@@ -18,6 +19,10 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+
+private typealias ResponseSellTickets = Response<SellTicketsJSON>
+private typealias ResponsePrintTickets = Response<PrintTicketsJSON>
+private typealias ResponsePrintLog = Response<StatusJSON>
 
 class POSService(private val client: IngresseClient) {
     private var host = Host.API
@@ -66,8 +71,8 @@ class POSService(private val client: IngresseClient) {
             userToken = request.userToken,
             params = request)
 
-        val callback = object : IngresseCallback<Response<SellTicketsJSON>?> {
-            override fun onSuccess(data: Response<SellTicketsJSON>?) {
+        val callback = object : IngresseCallback<ResponseSellTickets?> {
+            override fun onSuccess(data: ResponseSellTickets?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -81,7 +86,7 @@ class POSService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Response<SellTicketsJSON>>() {}.type
+        val type = object : TypeToken<ResponseSellTickets>() {}.type
         mSellTicketsCall?.enqueue(RetrofitCallback(type, callback))
     }
 
@@ -100,8 +105,8 @@ class POSService(private val client: IngresseClient) {
             apikey = client.key,
             userToken = request.userToken)
 
-        val callback = object : IngresseCallback<Response<PrintTicketsJSON>?> {
-            override fun onSuccess(data: Response<PrintTicketsJSON>?) {
+        val callback = object : IngresseCallback<ResponsePrintTickets?> {
+            override fun onSuccess(data: ResponsePrintTickets?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -115,7 +120,36 @@ class POSService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Response<PrintTicketsJSON>>() {}.type
+        val type = object : TypeToken<ResponsePrintTickets>() {}.type
+        mPrintTicketsCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Post print Log
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
+    fun postPrintLog(request: PrintTickets, onSuccess: () -> Unit = {}, onError: (APIError) -> Unit = {}) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
+        mPrintTicketsCall = service.postPrintHistoryLog(
+                transactionId = request.transactionId,
+                apikey = client.key,
+                userToken = request.userToken)
+
+        val callback = object : IngresseCallback<ResponsePrintLog?> {
+            override fun onSuccess(data: ResponsePrintLog?) = onSuccess()
+            override fun onError(error: APIError) = onError(error)
+            override fun onRetrofitError(error: Throwable) {
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<ResponsePrintLog>() {}.type
         mPrintTicketsCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

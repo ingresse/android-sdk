@@ -30,4 +30,18 @@ interface POS {
                      @Query("apikey") apikey: String,
                      @Query("usertoken") userToken: String,
                      @Query("method") method: String = "print"): Call<String>
+
+    /**
+     * Post log informing API that tickets were printed
+     *
+     * @param transactionId - id from transaction
+     * @param userToken - token from user
+     * @param printer - type of the printer used to print tickets
+     */
+    @FormUrlEncoded
+    @POST("/ticketbooth/{transactionId}/history")
+    fun postPrintHistoryLog(@Path("transactionId") transactionId: String,
+                            @Query("apikey") apikey: String,
+                            @Query("usertoken") userToken: String,
+                            @Field("printer") printer: String = "thermal"): Call<String>
 }
