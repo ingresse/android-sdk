@@ -26,9 +26,9 @@ enum class TransactionStatus {
 }
 
 enum class EventsCategory(val slug: String?) {
-    FESTAS_E_BALADAS("festas-e-baladas"),
-    SHOWS_E_FESTIVAIS("shows-e-festivais"),
-    TEATRO_E_CULTURA("teatro-e-cultura"),
-    UNIVERSITARIO("universitario"),
-    GASTRONOMIA("gastronomia")
+    PARTY("festas-e-baladas"),
+    SHOWS("shows-e-festivais"),
+    THEATER("teatro-e-cultura"),
+    UNIVERSITY("universitario"),
+    GASTRONOMY("gastronomia")
 }
