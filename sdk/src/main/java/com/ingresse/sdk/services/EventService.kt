@@ -2,10 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.IngresseCallback
-import com.ingresse.sdk.base.ResponseHits
-import com.ingresse.sdk.base.RetrofitCallback
-import com.ingresse.sdk.base.Source
+import com.ingresse.sdk.base.*
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
@@ -23,6 +20,7 @@ class EventService(private val client: IngresseClient) {
     private var cancelAllCalled = false
 
     private var mGetEventListByProducerCall: Call<String>? = null
+    private var mGetEventDescriptionCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
@@ -45,6 +43,7 @@ class EventService(private val client: IngresseClient) {
     fun cancelAll() {
         cancelAllCalled = true
         mGetEventListByProducerCall?.cancel()
+        mGetEventDescriptionCall?.cancel()
         mConcurrentCalls.forEach { it.cancel() }
         mConcurrentCalls.clear()
     }
@@ -118,6 +117,53 @@ class EventService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseHits<EventJSON>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Event description
+     *
+     * @param eventId - id of the event to fetch
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onTokenExpired - token expired callback
+     * @param onConnectionError - connection error callback
+     */
+    fun getEventDescription(eventId: String,
+                            onSuccess: (String) -> Unit,
+                            onError: (APIError) -> Unit,
+                            onTokenExpired: () -> Unit,
+                            onConnectionError: (error: Throwable) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
+        val call  = service.getEventDescription(eventId)
+
+        val callback = object: IngresseCallback<DataJSON<EventJSON>?> {
+            override fun onSuccess(data: DataJSON<EventJSON>?) {
+                if (cancelAllCalled) return
+                val response = data?.data?.description ?: return onError(APIError.default)
+                onSuccess(response)
+                mGetEventDescriptionCall = null
+            }
+
+            override fun onError(error: APIError) {
+                mGetEventDescriptionCall = null
+                if (error.message == "expired") return onTokenExpired()
+
+                onError(error)
+            }
+
+            override fun onRetrofitError(error: Throwable) {
+                mGetEventDescriptionCall = null
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<DataJSON<EventJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }
