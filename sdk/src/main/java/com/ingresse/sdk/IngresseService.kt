@@ -5,6 +5,7 @@ import com.ingresse.sdk.services.*
 class IngresseService(client: IngresseClient) {
     var attributes = AttributesService(client)
     var auth = AuthService(client)
+    var balance = BalanceService(client)
     var checkin = CheckinService(client)
     var entrance = EntranceService(client)
     var permission = PermissionService(client)

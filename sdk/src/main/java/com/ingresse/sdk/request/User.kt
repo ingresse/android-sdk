@@ -30,4 +30,19 @@ interface User {
                          @Query("apikey") apikey: String,
                          @Query("usertoken") userToken: String,
                          @Body params: UserBasicInfos): Call<String>
+
+    /**
+     * Get cash closing for specified date offset
+     *
+     * @param userId - id of the operator to get info
+     * @param from - start date
+     * @param to - end date
+     * @param userToken - token from user
+     */
+    @GET("/balance")
+    fun getCashClosing(@Query("apikey") apikey: String,
+                       @Query("operator") userId: String,
+                       @Query("from") from: String,
+                       @Query("to") to: String,
+                       @Query("usertoken") userToken: String): Call<String>
 }
