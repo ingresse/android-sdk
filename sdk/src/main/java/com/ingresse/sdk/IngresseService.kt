@@ -17,4 +17,5 @@ class IngresseService(client: IngresseClient) {
     var user = UserService(client)
     var event = EventService(client)
     var ticket = TicketService(client)
+    var report = ReportService(client)
 }
