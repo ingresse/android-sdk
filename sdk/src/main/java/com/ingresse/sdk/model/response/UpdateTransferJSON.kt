@@ -8,15 +8,15 @@ data class UpdateTransferJSON(
 )
 
 data class UserJSON(
-    val id: Int? = 0,
-    val email: String? = "",
-    val name: String? = "",
-    val type: String? = "",
-    val social: Array<SocialUpdateTransferJSON>? = emptyArray(),
-    val picture: String? = ""
+        val id: Int? = 0,
+        val email: String? = "",
+        val name: String? = "",
+        val type: String? = "",
+        val social: List<SocialUpdateTransferJSON>? = emptyList(),
+        val picture: String? = ""
 )
 
 data class SocialUpdateTransferJSON(
-    val id:Long? = 0,
+    val id: Long? = 0,
     val network: String? = ""
 )

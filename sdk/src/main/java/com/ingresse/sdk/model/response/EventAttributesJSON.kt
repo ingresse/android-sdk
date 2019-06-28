@@ -1,7 +1,7 @@
 package com.ingresse.sdk.model.response
 
 data class EventAttributesJSON(
-    val accepted_apps: ArrayList<String>? = null,
+    val accepted_apps: List<String>? = null,
     val advertisement: AdvertisementJSON? = null,
     val custom_code: Boolean? = false,
     val ticket_transfer_enabled: Boolean? = false,
