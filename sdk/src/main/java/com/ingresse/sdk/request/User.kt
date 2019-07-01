@@ -16,7 +16,7 @@ interface User {
     fun getUserData(@Path("userId") userId: Int,
                     @Query("apikey") apikey: String,
                     @Query("usertoken") userToken: String,
-                    @Query("fields") fields: String) : Call<String>
+                    @Query("fields") fields: String): Call<String>
 
     /**
      * Update user basic infos
@@ -45,4 +45,32 @@ interface User {
                        @Query("from") from: String,
                        @Query("to") to: String,
                        @Query("usertoken") userToken: String): Call<String>
+
+    /**
+     * Gets user tickets
+     *
+     * @param userId - id from user
+     * @param page - page from user ticket
+     * @param pageSize - size of user ticket page
+     * @param userToken - token from user
+     */
+    @GET("/user/{userId}/tickets")
+    fun getUserTickets(@Path("userId") userId: String,
+                       @Query("apikey") apikey: String,
+                       @Query("page") page: Int? = null,
+                       @Query("pageSize") pageSize: Int? = null,
+                       @Query("usertoken") token: String): Call<String>
+
+    /**
+     * Get user event attributes
+     *
+     * @param eventId - id from event
+     * @param usertoken - token from user
+     * @param filters - event filter
+     */
+    @GET("/event/{eventId}/attributes")
+    fun getEventAttributes(@Path("eventId") eventId: String,
+                           @Query("apikey") apikey: String,
+                           @Query("usertoken") userToken: String? = null,
+                           @Query("filters") filters: String? = null): Call<String>
 }

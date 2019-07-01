@@ -2,21 +2,18 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.IngresseCallback
-import com.ingresse.sdk.base.Response
-import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.base.*
+import com.ingresse.sdk.base.Array
 import com.ingresse.sdk.builders.*
 import com.ingresse.sdk.errors.APIError
-import com.ingresse.sdk.model.request.UserBasicInfos
-import com.ingresse.sdk.model.request.UserData
-import com.ingresse.sdk.model.response.UserDataJSON
-import com.ingresse.sdk.model.response.UserUpdatedDataJSON
-import com.ingresse.sdk.model.response.UserUpdatedJSON
+import com.ingresse.sdk.model.request.*
+import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.User
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.IOException
 
 class UserService(private val client: IngresseClient) {
     private var host = Host.API
@@ -24,6 +21,9 @@ class UserService(private val client: IngresseClient) {
 
     private var mUserDataCall: Call<String>? = null
     private var mUpdateBasicInfosCall: Call<String>? = null
+    private var mUserTicketsCall: Call<String>? = null
+    private var mGetEventAttributesCall: Call<String>? = null
+    private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
         val httpClient = ClientBuilder(client)
@@ -49,6 +49,24 @@ class UserService(private val client: IngresseClient) {
      * Method to cancel user update basic infos request
      */
     fun cancelUpdateBasicInfos() = mUpdateBasicInfosCall?.cancel()
+
+    /**
+     * Method to cancel user tickets data request
+     */
+    fun cancelUserTicketsData(concurrent: Boolean = false) {
+        if(!concurrent) {
+            mUserTicketsCall?.cancel()
+            return
+        }
+
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
+
+    /**
+     * Method to cancel a get event attributes
+     */
+    fun cancelGetEventAttributes() = mGetEventAttributesCall?.cancel()
 
     /**
      * Get user data
@@ -144,5 +162,98 @@ class UserService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<UserUpdatedJSON>>() {}.type
         mUpdateBasicInfosCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get user tickets data
+     *
+     * @param concurrent - flag to concurrent request
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun getUserTicketsData(concurrent: Boolean = false,
+                           request: UserTicketsData,
+                           onSuccess: (Array<UserTicketsJSON>) -> Unit,
+                           onError: (APIError) -> Unit,
+                           onConnectionError: (error: Throwable) -> Unit) {
+
+        val call = service.getUserTickets(
+            userId = request.userId,
+            apikey = client.key,
+            page = request.page,
+            pageSize = request.pageSize,
+            token = request.userToken
+        )
+
+        if (!concurrent) mUserTicketsCall = call else mConcurrentCalls.add(call)
+
+        val callback = object: IngresseCallback<Response<Array<UserTicketsJSON>>?> {
+            override fun onSuccess(data: Response<Array<UserTicketsJSON>>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                if(!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) {
+                if (!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
+                onError(error)
+            }
+
+            override fun onRetrofitError(error: Throwable) {
+                if (!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<Array<UserTicketsJSON>>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Event attributes
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun getEventAttributes(request: EventAttributes,
+                           onSuccess: (EventAttributesJSON) -> Unit,
+                           onError: (APIError) -> Unit,
+                           onConnectionError: (error: Throwable) -> Unit) {
+
+        var call = service.getEventAttributes(
+            eventId = request.eventId,
+            apikey = client.key,
+            userToken = request.userToken,
+            filters = request.filters?.joinToString(",")
+        )
+
+        val callback = object: IngresseCallback<Response<EventAttributesJSON>?> {
+            override fun onSuccess(data: Response<EventAttributesJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<EventAttributesJSON>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
     }
 }

@@ -1,9 +1,8 @@
 package com.ingresse.sdk.request
 
+import com.ingresse.sdk.model.request.TransferActionParams
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface Ticket {
     /**
@@ -16,4 +15,35 @@ interface Ticket {
     fun getEventTickets(@Path("eventId") eventId: String,
                         @Path("sessionId") sessionId: String,
                         @Query("apikey") apikey: String): Call<String>
+
+    /**
+     * Create or Refuse a ticket transfer
+     *
+     * @param ticketId - Ticket id to transfer
+     * @param userToken - User token
+     * @param user - User id or email to transfer
+     * @param isReturn - flag for return
+     */
+    @FormUrlEncoded
+    @POST("/ticket/{ticketId}/transfer")
+    fun createTransfer(@Path("ticketId") ticketId: Long,
+                       @Query("apikey") apikey: String,
+                       @Query("usertoken") userToken: String,
+                       @Field("user") user: String,
+                       @Field("isReturn") isReturn: Boolean? = false): Call<String>
+
+    /**
+     * Update a ticket transfer
+     *
+     * @param ticketId - Ticket id to update transfer
+     * @param transferId - Transfer id
+     * @param userToken - User token
+     * @param params - Param with action to update a transfer
+     */
+    @POST("/ticket/{ticketId}/transfer/{transferId}")
+    fun updateTransfer(@Path("ticketId") ticketId: Long,
+                       @Path("transferId") transferId: Long,
+                       @Query("apikey") apikey: String,
+                       @Query("usertoken") userToken: String,
+                       @Body params: TransferActionParams): Call<String>
 }
