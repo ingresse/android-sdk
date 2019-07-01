@@ -205,7 +205,10 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getTransactionReport(request: TransactionReport, onSuccess: (TransactionReportJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun getTransactionReport(request: TransactionReport,
+                             onSuccess: (TransactionReportJSON) -> Unit,
+                             onError: (APIError) -> Unit,
+                             onConnectionError: (Throwable) -> Unit) {
         mGetTransactionReportCall = service.getTransactionReport(
                 eventId = request.eventId,
                 apikey = client.key,
@@ -221,6 +224,8 @@ class TransactionService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
