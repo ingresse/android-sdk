@@ -133,6 +133,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param request - all parameters used for retrieving transaction details
      * @param onSuccess - success callback
      * @param onError - error callback
+     * @param onConnectionError - connection error callback
      */
     fun getTransactionDetails(request: TransactionDetails,
                               onSuccess: (TransactionDetailsJSON) -> Unit,
