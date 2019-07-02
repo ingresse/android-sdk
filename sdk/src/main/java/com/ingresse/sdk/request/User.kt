@@ -16,7 +16,7 @@ interface User {
     fun getUserData(@Path("userId") userId: Int,
                     @Query("apikey") apikey: String,
                     @Query("usertoken") userToken: String,
-                    @Query("fields") fields: String) : Call<String>
+                    @Query("fields") fields: String): Call<String>
 
     /**
      * Update user basic infos
@@ -30,4 +30,64 @@ interface User {
                          @Query("apikey") apikey: String,
                          @Query("usertoken") userToken: String,
                          @Body params: UserBasicInfos): Call<String>
+
+    /**
+     * Get cash closing for specified date offset
+     *
+     * @param userId - id of the operator to get info
+     * @param from - start date
+     * @param to - end date
+     * @param userToken - token from user
+     */
+    @GET("/balance")
+    fun getCashClosing(@Query("apikey") apikey: String,
+                       @Query("operator") userId: String,
+                       @Query("from") from: String,
+                       @Query("to") to: String,
+                       @Query("usertoken") userToken: String): Call<String>
+
+    /**
+     * Gets user tickets
+     *
+     * @param userId - id from user
+     * @param page - page from user ticket
+     * @param pageSize - size of user ticket page
+     * @param userToken - token from user
+     */
+    @GET("/user/{userId}/tickets")
+    fun getUserTickets(@Path("userId") userId: String,
+                       @Query("apikey") apikey: String,
+                       @Query("page") page: Int? = null,
+                       @Query("pageSize") pageSize: Int? = null,
+                       @Query("usertoken") token: String): Call<String>
+
+    /**
+     * Get user event attributes
+     *
+     * @param eventId - id from event
+     * @param usertoken - token from user
+     * @param filters - event filter
+     */
+    @GET("/event/{eventId}/attributes")
+    fun getEventAttributes(@Path("eventId") eventId: String,
+                           @Query("apikey") apikey: String,
+                           @Query("usertoken") userToken: String? = null,
+                           @Query("filters") filters: String? = null): Call<String>
+
+    /**
+     * Gets wallet user events.
+     *
+     * @param userId id of logged user.
+     * @param token of logged user.
+     * @param page chosen by user.
+     * @param pageSize chosen by user.
+     */
+    @GET("/user/{userId}/wallet")
+    fun getWalletEvents(@Path("userId") userId: String,
+                        @Query("apikey") apikey: String,
+                        @Query("usertoken") token: String,
+                        @Query("page") page: Int? = null,
+                        @Query("pageSize") pageSize: Int? = null,
+                        @Query("from") dateFrom: String? = null,
+                        @Query("to") dateTo: String? = null): Call<String>
 }

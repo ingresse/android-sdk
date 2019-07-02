@@ -22,9 +22,55 @@ data class TransactionListJSON(
     val modificationdate: String? = "",
     val operatorId: String? = "",
     val salesgroupId: String? = "",
-    val creditCard: String? = "",
+    val creditCard: TransactionCreditCardJSON?,
     val customer: TransactionUserJSON?,
     val event: TransactionEventJSON?,
     val session: TransactionSessionJSON?,
+    val refund: TransactionRefundJSON?,
+    val payment: TransactionPaymentJSON?,
     val salesgroup: TransactionSalesGroupJSON?,
     val operator: TransactionUserJSON?)
+
+data class TransactionRefundJSON(
+        val date: String? = "",
+        val operator: String? = "",
+        val reason: String? = "")
+
+data class TransactionCreditCardJSON(
+        val firstDigits: String? = "",
+        val lastDigits: String? = "")
+
+data class TransactionPaymentJSON(
+        val id: String? = "",
+        val externalId: String? = "",
+        val details: PaymentDetailsJSON?,
+        val declinedReason: PaymentDeclinedReasonJSON?,
+        val creditCard: PaymentCreditCardJSON?,
+        val bankBillet: PaymentBankBilletJSON?,
+        val acquirer: String? = "")
+
+data class PaymentDetailsJSON(
+        val tid: String? = "",
+        val nsu: String? = "",
+        val authorizationCode: String? = "",
+        val acquirerPaymentId: String? = "")
+
+data class PaymentDeclinedReasonJSON(
+        val message: String? = "",
+        val declinedBy: String? = "",
+        val createdAt: String? = "",
+        val code: String? = "")
+
+data class PaymentCreditCardJSON(
+        val token: String? = "",
+        val masked: String? = "",
+        val expiration: String? = "",
+        val brand: String? = "",
+        val holder: String? = "")
+
+data class PaymentBankBilletJSON(
+        val url: String? = "",
+        val provider: String = "",
+        val expiration: String? = "",
+        val barCode: String? = ""
+)

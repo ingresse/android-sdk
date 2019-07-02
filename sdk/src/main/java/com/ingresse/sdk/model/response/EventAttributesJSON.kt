@@ -4,28 +4,35 @@ import com.google.gson.annotations.SerializedName
 
 data class EventAttributesJSON(
     @SerializedName("accepted_apps")
-    var acceptedApps: Array<String>?,
-    var advertisement: Advertisement?,
+    var acceptedApps: List<String>? = null,
+    val advertisement: AdvertisementJSON? = null,
     @SerializedName("custom_code")
-    var customCode: Boolean,
+    var customCode: Boolean = false,
     @SerializedName("ticket_transfer_enabled")
-    var ticketTransferEnabled: Boolean,
+    var ticketTransferEnabled: Boolean = false,
     @SerializedName("ticket_transfer_required")
-    var ticketTransferRequired: Boolean)
+    var ticketTransferRequired: Boolean = false
+)
 
-data class Advertisement(
-    var mobile: AdData?,
-    var web: AdData?)
+data class AdvertisementJSON(
+    val mobile: MobileJSON? = null
+)
 
-data class AdData(
-    var background: AdBackground?,
-    var cover: AdCover?)
+data class MobileJSON(
+    val background: BackgroundJSON? = null,
+    val cover: CoverJSON? = null
+)
 
-data class AdBackground(
-    var image: String?,
-    var backgroundColor: String?,
-    var textColor: String?)
+data class BackgroundJSON(
+    val image: String? = ""
+)
 
-data class AdCover(
-    var image: String?,
-    var url: String?)
+data class CoverJSON(
+    val image: String? = "",
+    val url: String? = ""
+)
+
+data class WebJSON(
+    val background: BackgroundJSON? = null,
+    val cover: CoverJSON? = null
+)

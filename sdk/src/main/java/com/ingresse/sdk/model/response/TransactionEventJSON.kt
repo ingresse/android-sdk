@@ -9,4 +9,4 @@ data class TransactionEventJSON(
     val poster: String? = "",
     val venue: VenueJSON?,
     val saleEnabled: Boolean? = false,
-    val taxToCostumer: Int? = 0)
+    val taxToCostumer: String? = "")
