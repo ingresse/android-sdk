@@ -2,9 +2,13 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.*
 import com.ingresse.sdk.base.Array
-import com.ingresse.sdk.builders.*
+import com.ingresse.sdk.base.IngresseCallback
+import com.ingresse.sdk.base.Response
+import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.ClientBuilder
+import com.ingresse.sdk.builders.Host
+import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.model.request.*
 import com.ingresse.sdk.model.response.*
@@ -25,10 +29,13 @@ class UserService(private val client: IngresseClient) {
     private var mGetEventAttributesCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
+    private var mGetWalletEventsCall: Call<String>? = null
+    private var mGetWalletEventsConcurrentCalls: ArrayList<Call<String>> = ArrayList()
+
     init {
         val httpClient = ClientBuilder(client)
-            .addRequestHeaders()
-            .build()
+                .addRequestHeaders()
+                .build()
 
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
@@ -54,7 +61,7 @@ class UserService(private val client: IngresseClient) {
      * Method to cancel user tickets data request
      */
     fun cancelUserTicketsData(concurrent: Boolean = false) {
-        if(!concurrent) {
+        if (!concurrent) {
             mUserTicketsCall?.cancel()
             return
         }
@@ -67,6 +74,19 @@ class UserService(private val client: IngresseClient) {
      * Method to cancel a get event attributes
      */
     fun cancelGetEventAttributes() = mGetEventAttributesCall?.cancel()
+
+    /**
+     * Method to cancel a get wallet event list by user
+     */
+    fun cancelGetWalletEvents(concurrent: Boolean = false) {
+        if (!concurrent) {
+            mGetWalletEventsCall?.cancel()
+            return
+        }
+
+        mGetWalletEventsConcurrentCalls.forEach { it.cancel() }
+        mGetWalletEventsConcurrentCalls.clear()
+    }
 
     /**
      * Get user data
@@ -121,10 +141,10 @@ class UserService(private val client: IngresseClient) {
      */
     fun updateBasicInfos(request: UserBasicInfos, onSuccess: (UserUpdatedDataJSON) -> Unit, onError: (APIError) -> Unit) {
         mUpdateBasicInfosCall = service.updateBasicInfos(
-            userId = request.userId,
-            apikey = client.key,
-            userToken = request.userToken,
-            params = request
+                userId = request.userId,
+                apikey = client.key,
+                userToken = request.userToken,
+                params = request
         )
 
         val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
@@ -139,7 +159,7 @@ class UserService(private val client: IngresseClient) {
                     onError(apiError)
                     return
                 }
-                
+
                 if (response.status == null) return onError(APIError.default)
 
                 if (response.status) {
@@ -180,20 +200,20 @@ class UserService(private val client: IngresseClient) {
                            onConnectionError: (error: Throwable) -> Unit) {
 
         val call = service.getUserTickets(
-            userId = request.userId,
-            apikey = client.key,
-            page = request.page,
-            pageSize = request.pageSize,
-            token = request.userToken
+                userId = request.userId,
+                apikey = client.key,
+                page = request.page,
+                pageSize = request.pageSize,
+                token = request.userToken
         )
 
         if (!concurrent) mUserTicketsCall = call else mConcurrentCalls.add(call)
 
-        val callback = object: IngresseCallback<Response<Array<UserTicketsJSON>>?> {
+        val callback = object : IngresseCallback<Response<Array<UserTicketsJSON>>?> {
             override fun onSuccess(data: Response<Array<UserTicketsJSON>>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
 
-                if(!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
+                if (!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response)
             }
 
@@ -230,13 +250,13 @@ class UserService(private val client: IngresseClient) {
                            onConnectionError: (error: Throwable) -> Unit) {
 
         var call = service.getEventAttributes(
-            eventId = request.eventId,
-            apikey = client.key,
-            userToken = request.userToken,
-            filters = request.filters?.joinToString(",")
+                eventId = request.eventId,
+                apikey = client.key,
+                userToken = request.userToken,
+                filters = request.filters?.joinToString(",")
         )
 
-        val callback = object: IngresseCallback<Response<EventAttributesJSON>?> {
+        val callback = object : IngresseCallback<Response<EventAttributesJSON>?> {
             override fun onSuccess(data: Response<EventAttributesJSON>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
@@ -252,8 +272,59 @@ class UserService(private val client: IngresseClient) {
                 onError(apiError)
             }
         }
-
         val type = object : TypeToken<Response<EventAttributesJSON>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Wallet Event list by user
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun getWalletEvents(concurrent: Boolean = false,
+                        request: WalletEvents,
+                        onSuccess: (Array<WalletEventJSON>) -> Unit,
+                        onError: (APIError) -> Unit,
+                        onConnectionError: (error: Throwable) -> Unit) {
+
+        val call = service.getWalletEvents(
+                apikey = client.key,
+                userId = request.userId,
+                token = request.userToken,
+                page = request.page,
+                pageSize = request.pageSize,
+                dateFrom = request.from,
+                dateTo = request.to
+        )
+
+        if (!concurrent) mGetWalletEventsCall = call else mGetWalletEventsConcurrentCalls.add(call)
+
+        val callback = object : IngresseCallback<Response<Array<WalletEventJSON>>?> {
+            override fun onSuccess(data: Response<Array<WalletEventJSON>>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                if (!concurrent) mGetWalletEventsCall = null else mGetWalletEventsConcurrentCalls.remove(call)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) {
+                if (!concurrent) mGetWalletEventsCall = null else mGetWalletEventsConcurrentCalls.remove(call)
+                onError(error)
+            }
+
+            override fun onRetrofitError(error: Throwable) {
+                if (!concurrent) mGetWalletEventsCall = null else mGetWalletEventsConcurrentCalls.remove(call)
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+        val type = object : TypeToken<Response<Array<WalletEventJSON>>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }

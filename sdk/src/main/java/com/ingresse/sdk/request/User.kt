@@ -73,4 +73,21 @@ interface User {
                            @Query("apikey") apikey: String,
                            @Query("usertoken") userToken: String? = null,
                            @Query("filters") filters: String? = null): Call<String>
+
+    /**
+     * Gets wallet user events.
+     *
+     * @param userId id of logged user.
+     * @param token of logged user.
+     * @param page chosen by user.
+     * @param pageSize chosen by user.
+     */
+    @GET("/user/{userId}/wallet")
+    fun getWalletEvents(@Path("userId") userId: String,
+                        @Query("apikey") apikey: String,
+                        @Query("usertoken") token: String,
+                        @Query("page") page: Int? = null,
+                        @Query("pageSize") pageSize: Int? = null,
+                        @Query("from") dateFrom: String? = null,
+                        @Query("to") dateTo: String? = null): Call<String>
 }
