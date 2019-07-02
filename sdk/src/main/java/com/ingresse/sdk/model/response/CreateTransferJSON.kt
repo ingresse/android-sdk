@@ -12,7 +12,7 @@ data class UserCreateTransferJSON(
     val email: String? = "",
     val name: String? = "",
     val type: String? = "",
-    val social: Array<UserSocialCreateTransfersJSON>? = emptyArray(),
+    val social: List<UserSocialCreateTransfersJSON>? = emptyList(),
     val picture: String? = ""
 )
 

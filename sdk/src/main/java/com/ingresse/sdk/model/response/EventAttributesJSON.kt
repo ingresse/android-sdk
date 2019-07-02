@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class EventAttributesJSON(
     @SerializedName("accepted_apps")
-    var acceptedApps: Array<String>? = null,
+    var acceptedApps: List<String>? = null,
     val advertisement: AdvertisementJSON? = null,
     @SerializedName("custom_code")
     var customCode: Boolean = false,
