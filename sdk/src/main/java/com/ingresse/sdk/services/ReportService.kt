@@ -73,7 +73,7 @@ class ReportService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
-                if (error is IOException) onConnectionError(error)
+                if (error is IOException) return onConnectionError(error)
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
