@@ -17,7 +17,7 @@ interface Report {
     @GET("/dashboard/{eventId}/visitsReport")
     fun getVisitsReport(@Path("eventId") eventId: String,
                         @Query("apikey") apikey: String,
-                        @Query("userToken") userToken: String,
+                        @Query("usertoken") userToken: String,
                         @Query("from") from: String? = null,
                         @Query("to") to: String? = null): Call<String>
 }
