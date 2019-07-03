@@ -45,7 +45,6 @@ class AttributesService(private val client: IngresseClient) {
      */
     fun cancelGetEventAttributes() = mGetEventAttributesCall?.cancel()
 
-
     /**
      * Get event attributes
      *
