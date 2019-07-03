@@ -1,18 +1,6 @@
 package com.ingresse.sdk.model.response
 
-import com.google.gson.annotations.SerializedName
-
-data class EventAttributesJSON(
-    @SerializedName("accepted_apps")
-    var acceptedApps: List<String>? = null,
-    val advertisement: AdvertisementJSON? = null,
-    @SerializedName("custom_code")
-    var customCode: Boolean = false,
-    @SerializedName("ticket_transfer_enabled")
-    var ticketTransferEnabled: Boolean = false,
-    @SerializedName("ticket_transfer_required")
-    var ticketTransferRequired: Boolean = false
-)
+data class EventAttributesJSON(var name: String, var value: Any)
 
 data class AdvertisementJSON(
     val mobile: MobileJSON? = null
