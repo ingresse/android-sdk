@@ -9,6 +9,8 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.TicketStatus
 import com.ingresse.sdk.model.response.CheckinSessionJSON
 import com.ingresse.sdk.model.response.CheckinStatusJSON
@@ -66,7 +68,7 @@ class TicketStatusService(val client: IngresseClient, timeout: Long = 2) {
      * @param onError - error callback
      * @param onTimeout - network failure
      */
-    fun getTicketStatus(request: TicketStatus, onValid: () -> Unit, onValidated: (status: CheckinStatusJSON) -> Unit, onError: (APIError) -> Unit, onTimeout: () -> Unit) {
+    fun getTicketStatus(request: TicketStatus, onValid: Block, onValidated: (status: CheckinStatusJSON) -> Unit, onError: ErrorBlock, onTimeout: Block) {
         val call = service.getCheckinStatus(request.code, client.key, request.userToken)
         mCurrentCall = call
 

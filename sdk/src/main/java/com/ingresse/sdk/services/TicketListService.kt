@@ -8,6 +8,7 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.ErrorBlock
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -45,7 +46,7 @@ class TicketListService(private val client: IngresseClient) {
 
     fun cancel() = mTicketListCall?.cancel()
 
-    fun getTicketList(request: Requests.TicketList, onSuccess: (ArrayList<Responses.GroupJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFailure: (String) -> Unit) {
+    fun getTicketList(request: Requests.TicketList, onSuccess: (ArrayList<Responses.GroupJSON>) -> Unit, onError: ErrorBlock, onNetworkFailure: (String) -> Unit) {
         val call = service.getTicketList(
                 eventId = request.eventId,
                 sessionId = request.sessionId,

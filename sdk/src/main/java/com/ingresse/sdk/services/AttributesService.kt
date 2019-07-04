@@ -10,6 +10,8 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.EventAttributes
 import com.ingresse.sdk.model.request.UpdateEventAttribute
 import com.ingresse.sdk.model.response.EventAttributesJSON
@@ -18,6 +20,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.IOException
 
 class AttributesService(private val client: IngresseClient) {
     private var host = Host.EVENTS
@@ -52,7 +55,7 @@ class AttributesService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getEventAttributes(request: EventAttributes, onSuccess: (List<EventAttributesJSON>) -> Unit, onError: (APIError) -> Unit) {
+    fun getEventAttributes(request: EventAttributes, onSuccess: (List<EventAttributesJSON>) -> Unit, onError: ErrorBlock, onNetworkError: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val customFields = request.filters?.joinToString(",")
@@ -69,8 +72,9 @@ class AttributesService(private val client: IngresseClient) {
             }
 
             override fun onError(error: APIError) = onError(error)
-
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onNetworkError()
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
@@ -88,7 +92,7 @@ class AttributesService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun updateEventAttributes(request: UpdateEventAttribute, onSuccess: () -> Unit, onError: (APIError) -> Unit) {
+    fun updateEventAttributes(request: UpdateEventAttribute, onSuccess: Block, onError: ErrorBlock, onNetworkError: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call = service.updateEventAttributes(
@@ -99,10 +103,10 @@ class AttributesService(private val client: IngresseClient) {
 
         val callback = object : IngresseCallback<Ignored> {
             override fun onSuccess(data: Ignored?) = onSuccess()
-
             override fun onError(error: APIError) = onError(error)
-
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onNetworkError()
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)

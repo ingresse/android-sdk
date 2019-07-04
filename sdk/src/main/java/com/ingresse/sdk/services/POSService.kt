@@ -10,6 +10,8 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.PlannerAttributes
 import com.ingresse.sdk.model.request.PrintTickets
 import com.ingresse.sdk.model.request.SellTickets
@@ -71,7 +73,7 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun sellTickets(request: SellTickets, onSuccess: (SellTicketsJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun sellTickets(request: SellTickets, onSuccess: (SellTicketsJSON) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mSellTicketsCall = service.sellTickets(
@@ -105,7 +107,7 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun printTickets(request: PrintTickets, onSuccess: (PrintTicketsJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun printTickets(request: PrintTickets, onSuccess: (PrintTicketsJSON) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mPrintTicketsCall = service.printTickets(
@@ -139,7 +141,7 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun postPrintLog(request: PrintTickets, onSuccess: () -> Unit = {}, onError: (APIError) -> Unit = {}) {
+    fun postPrintLog(request: PrintTickets, onSuccess: Block = {}, onError: ErrorBlock = {}) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mPrintTicketsCall = service.postPrintHistoryLog(
@@ -168,7 +170,7 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getPlannerAttributes(request: PlannerAttributes, onSuccess: (PlannerAttributesJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun getPlannerAttributes(request: PlannerAttributes, onSuccess: (PlannerAttributesJSON) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mGetPlannerAttributesCall = service.getPlannerAttributes(

@@ -7,6 +7,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.CreateTransfer
 import com.ingresse.sdk.model.request.EventTicket
 import com.ingresse.sdk.model.request.UpdateTransfer
@@ -68,7 +69,7 @@ class TicketService(private val client: IngresseClient) {
      */
     fun getEventTickets(request: EventTicket = EventTicket(),
                         onSuccess: (Array<TicketGroupJSON>) -> Unit,
-                        onError: (APIError) -> Unit,
+                        onError: ErrorBlock,
                         onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
@@ -110,7 +111,7 @@ class TicketService(private val client: IngresseClient) {
      */
     fun createTransfer(request: CreateTransfer,
                        onSuccess: (CreateTransferJSON) -> Unit,
-                       onError: (APIError) -> Unit,
+                       onError: ErrorBlock,
                        onConnectionError: (error: Throwable) -> Unit) {
 
         var call = service.createTransfer(
@@ -152,7 +153,7 @@ class TicketService(private val client: IngresseClient) {
      */
     fun updateTransfer(request: UpdateTransfer,
                        onSuccess: (UpdateTransferJSON) -> Unit,
-                       onError: (APIError) -> Unit,
+                       onError: ErrorBlock,
                        onConnectionError: (error: Throwable) -> Unit) {
 
         var call = service.updateTransfer(

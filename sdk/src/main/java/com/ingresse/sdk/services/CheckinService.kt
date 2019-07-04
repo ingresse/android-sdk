@@ -8,6 +8,8 @@ import com.ingresse.sdk.base.RetrofitObserver
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.CheckinRequest
 import com.ingresse.sdk.model.response.CheckinStatus
 import com.ingresse.sdk.model.response.GuestCheckinJSON
@@ -65,7 +67,7 @@ class CheckinService(private val client: IngresseClient) {
     fun checkin(request: CheckinRequest,
                 onSuccess: (tickets: List<GuestCheckinJSON>) -> Unit,
                 onFail: (tickets: List<GuestCheckinJSON>) -> Unit,
-                onError: (APIError) -> Unit,
+                onError: ErrorBlock,
                 onNetworkFail: (String) -> Unit) {
 
         val call = service.checkin(
@@ -104,8 +106,8 @@ class CheckinService(private val client: IngresseClient) {
     fun singleCheckin(request: CheckinRequest,
                       onSuccess: (GuestCheckinJSON) -> Unit,
                       onFail: (ticket: GuestCheckinJSON, reason: CheckinStatus) -> Unit,
-                      onError: (APIError) -> Unit,
-                      onTimeout: () -> Unit) {
+                      onError: ErrorBlock,
+                      onTimeout: Block) {
 
         val call = service.checkin(
                 apiKey = client.key,
