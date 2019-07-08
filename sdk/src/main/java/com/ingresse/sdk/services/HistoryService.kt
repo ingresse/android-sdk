@@ -44,7 +44,6 @@ class HistoryService(private val client: IngresseClient) {
      */
     fun cancelGetCheckinHistory() = mGetCheckinHistoryCall?.cancel()
 
-
     /**
      * Get ticket checkin history
      *
