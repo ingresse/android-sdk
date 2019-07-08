@@ -16,6 +16,7 @@ import com.ingresse.sdk.request.History
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class HistoryService(private val client: IngresseClient) {
@@ -30,6 +31,7 @@ class HistoryService(private val client: IngresseClient) {
                 .build()
         val adapter = Retrofit.Builder()
                 .client(httpClient)
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(URLBuilder(host, client.environment).build())
                 .build()

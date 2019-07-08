@@ -3,7 +3,7 @@ package com.ingresse.sdk.model.response
 data class CheckinHistoryJSON(
         var session: SessionHistoryJSON,
         var owner: UserHistoryDataJSON,
-        var lastStatus: CheckinLastStatusJSON)
+        var lastStatus: CheckinLastStatusJSON?)
 
 data class SessionHistoryJSON(
         var id: String,
@@ -22,7 +22,7 @@ data class CheckinLastStatusJSON(
         var holder: UserHistoryDataJSON)
 
 data class UserHistoryDataJSON(
-        var id: String,
+        var id: Int,
         var email: String,
         var username: String?,
         var name: String,
