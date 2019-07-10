@@ -16,4 +16,15 @@ interface History {
     fun getCheckinHistory(@Path("code") ticketCode: String,
                           @Query("apikey") apikey: String,
                           @Query("usertoken") userToken: String) : Call<String>
+
+    /**
+     * Get ticket transfer history
+     *
+     * @param ticketId  - id from ticket
+     * @param userToken - UserToken required
+     */
+    @GET("/ticket/{ticketId}/transfer")
+    fun getTransferHistory(@Path("ticketId") ticketId: String,
+                           @Query("apikey") apikey: String,
+                           @Query("usertoken") userToken: String) : Call<String>
 }
