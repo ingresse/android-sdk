@@ -19,4 +19,5 @@ class IngresseService(client: IngresseClient) {
     var event = EventService(client)
     var ticket = TicketService(client)
     var report = ReportService(client)
+    var history = HistoryService(client)
 }

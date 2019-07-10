@@ -40,4 +40,19 @@ interface Report {
                          @Query("from") from: String,
                          @Query("to") to: String,
                          @Query("channel") channel: String? = null): Call<String>
+                         
+    /**
+     * Retrieve visits report
+     *
+     * @param eventId - id from event
+     * @param userToken - user token
+     * @param from - search from some date
+     * @param to - search to some date
+     */
+    @GET("/dashboard/{eventId}/visitsReport")
+    fun getVisitsReport(@Path("eventId") eventId: String,
+                        @Query("apikey") apikey: String,
+                        @Query("usertoken") userToken: String,
+                        @Query("from") from: String? = null,
+                        @Query("to") to: String? = null): Call<String>
 }
