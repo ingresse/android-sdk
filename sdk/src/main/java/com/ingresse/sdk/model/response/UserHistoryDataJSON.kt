@@ -6,4 +6,4 @@ data class UserHistoryDataJSON(
         var username: String?,
         var name: String,
         var phone: String,
-        var picture: String)
+        var picture: String?)
