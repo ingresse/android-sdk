@@ -13,12 +13,20 @@ enum class TransactionStatus {
     DECLINED,
     @SerializedName("error")
     ERROR,
-    @SerializedName("limitExceeded")
-    LIMIT_EXCEEDED,
     @SerializedName("manual review")
     MANUAL_REVIEW,
     @SerializedName("pending")
     PENDING,
     @SerializedName("refund")
-    REFUND
+    REFUND,
+    @SerializedName("limitExceeded")
+    LIMIT_EXCEEDED
+}
+
+enum class EventsCategory(val slug: String?) {
+    PARTY("festas-e-baladas"),
+    SHOWS("shows-e-festivais"),
+    THEATER("teatro-e-cultura"),
+    UNIVERSITY("universitario"),
+    GASTRONOMY("gastronomia")
 }
