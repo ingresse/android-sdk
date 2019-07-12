@@ -11,8 +11,8 @@ data class WalletEventJSON(
     val tickets: Int? = 0,
     val transfered: Int? = 0,
     val customTickets: List<WalletCustomTicketsJSON>? = emptyList(),
-    val sessions: WalletSessionJSON? = WalletSessionJSON(),
-    val venue: WalletVenueJSON? = WalletVenueJSON()
+    val sessions: WalletSessionJSON?,
+    val venue: WalletVenueJSON?
 )
 
 data class WalletCustomTicketsJSON(
@@ -25,7 +25,7 @@ data class WalletSessionJSON(
 )
 
 data class WalletSessionDataJSON(
-    val id: String? = "",
+    val id: Int? = 0,
     val datetime: String? = ""
 )
 

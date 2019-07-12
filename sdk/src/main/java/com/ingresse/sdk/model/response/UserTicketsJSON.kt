@@ -29,7 +29,7 @@ data class EventSessionUserTicketsJSON(
 
 data class EventSessionDateJSON(
     val id: Int? = 0,
-    val dateTime: String? = ""
+    val datetime: String? = ""
 )
 
 data class EventVenueJSON(
