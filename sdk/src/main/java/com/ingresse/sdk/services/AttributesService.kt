@@ -55,7 +55,11 @@ class AttributesService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getEventAttributes(request: EventAttributes, onSuccess: (List<EventAttributesJSON>) -> Unit, onError: ErrorBlock, onNetworkError: Block) {
+    fun getEventAttributes(request: EventAttributes,
+                           onSuccess: (List<EventAttributesJSON>) -> Unit,
+                           onError: ErrorBlock,
+                           onNetworkError: Block,
+                           onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val customFields = request.filters?.joinToString(",")
@@ -71,7 +75,10 @@ class AttributesService(private val client: IngresseClient) {
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) = onError(error)
+            override fun onError(error: APIError) {
+                if (error.message == "expired") return onTokenExpired()
+                onError(error)
+            }
             override fun onRetrofitError(error: Throwable) {
                 if (error is IOException) return onNetworkError()
 
