@@ -70,7 +70,7 @@ class SearchService(private val client: IngresseClient) {
      */
     fun searchEvents(concurrent: Boolean = false,
                      request: EventSearch,
-                     onSuccess: (ArrayList<Source<EventJSON>>) -> Unit,
+                     onSuccess: (ArrayList<Source<EventJSON>>, Int) -> Unit,
                      onError: (APIError) -> Unit,
                      onConnectionError: (error: Throwable) -> Unit) {
 
@@ -93,9 +93,10 @@ class SearchService(private val client: IngresseClient) {
                 if (cancelAllCalled) return
 
                 val response = data?.data?.hits ?: return onError(APIError.default)
+                val totalResults = data.data.total
 
                 if (!concurrent) mEventsSearchCall = null else mConcurrentCalls.remove(call)
-                onSuccess(response)
+                onSuccess(response, totalResults)
             }
 
             override fun onError(error: APIError) {
