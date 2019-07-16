@@ -41,7 +41,7 @@ data class VenueUserTransfersJSON(
 )
 
 data class TicketUserTransfersJSON(
-    val id: Int? = 0,
+    val id: Long? = 0,
     val guestTypeId: Int? = 0,
     val ticketTypeId: Int? = 0,
     val name: String? = "",
@@ -50,7 +50,7 @@ data class TicketUserTransfersJSON(
 )
 
 data class ReceiverUserTransfersJSON(
-    val transferId: Int? = 0,
+    val transferId: Long? = 0,
     val userId: Int? = 0,
     val email: String? = "",
     val name: String? = "",

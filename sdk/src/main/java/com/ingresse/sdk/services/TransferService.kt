@@ -14,9 +14,11 @@ import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.FriendsFromSearch
 import com.ingresse.sdk.model.request.RecentTransfers
+import com.ingresse.sdk.model.request.UpdateTransfer
 import com.ingresse.sdk.model.request.UserTransfersData
 import com.ingresse.sdk.model.response.FriendsFromSearchJSON
 import com.ingresse.sdk.model.response.RecentTransfersJSON
+import com.ingresse.sdk.model.response.UpdateTransferJSON
 import com.ingresse.sdk.model.response.UserTransfersJSON
 import com.ingresse.sdk.request.Transfer
 import retrofit2.Call
@@ -214,6 +216,48 @@ class TransferService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<List<FriendsFromSearchJSON>>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Update ticket transfer
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun updateTransfer(request: UpdateTransfer,
+                       onSuccess: (UpdateTransferJSON) -> Unit,
+                       onError: (APIError) -> Unit,
+                       onConnectionError: (error: Throwable) -> Unit) {
+
+        var call = service.updateTransfer(
+                ticketId = request.ticketId,
+                transferId = request.transferId,
+                apikey = client.key,
+                userToken = request.userToken,
+                params = request.params
+        )
+
+        val callback = object: IngresseCallback<Response<UpdateTransferJSON>?> {
+            override fun onSuccess(data: Response<UpdateTransferJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<UpdateTransferJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }
