@@ -21,8 +21,6 @@ enum class TransactionStatus {
     PENDING,
     @SerializedName("refund")
     REFUND
-    @SerializedName("limitExceeded")
-    LIMIT_EXCEEDED
 }
 
 enum class EventsCategory(val slug: String?) {
