@@ -1,7 +1,7 @@
 package com.ingresse.sdk.model.response
 
 data class UserTransfersJSON(
-    val id: Int? = 0,
+    val id: Long? = 0,
     val event: EventUserTransfersJSON? = null,
     val session: SessionUserTransfersJSON? = null,
     val venue: VenueUserTransfersJSON? = null,
