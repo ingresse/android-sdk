@@ -10,6 +10,7 @@ import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Search
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.FriendsFromSearch
 import com.ingresse.sdk.model.response.FriendsFromSearchJSON
 import retrofit2.Call
@@ -50,7 +51,7 @@ class SearchService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun searchEventByTitle(request: EventSearch, onSuccess: (ArrayList<Source<EventJSON>>) -> Unit, onError: (APIError) -> Unit) {
+    fun searchEventByTitle(request: EventSearch, onSuccess: (ArrayList<Source<EventJSON>>) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mEventSearchCall = service.getEventByTitle(

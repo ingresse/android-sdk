@@ -8,8 +8,10 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.CANCELED_CALL
 import com.ingresse.sdk.helper.EnumConverterFactory
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.*
 import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.Transaction
@@ -101,7 +103,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun createTransaction(request: CreateTransaction, onSuccess: (TransactionDataJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun createTransaction(request: CreateTransaction, onSuccess: (TransactionDataJSON) -> Unit, onError: ErrorBlock) {
         mCreateTransactionCall = service.createTransaction(
                 userToken = request.userToken,
                 apikey = client.key,
@@ -133,10 +135,11 @@ class TransactionService(private val client: IngresseClient) {
      * @param request - all parameters used for retrieving transaction details
      * @param onSuccess - success callback
      * @param onError - error callback
+     * @param onConnectionError - connection error callback
      */
     fun getTransactionDetails(request: TransactionDetails,
                               onSuccess: (TransactionDetailsJSON) -> Unit,
-                              onError: (APIError) -> Unit,
+                              onError: ErrorBlock,
                               onConnectionError: (Throwable) -> Unit) {
         mGetTransactionDetailsCall = service.getTransactionDetails(
                 transactionId = request.transactionId,
@@ -172,7 +175,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun cancelTransaction(request: CancelTransaction, onSuccess: (TransactionDetailsJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun cancelTransaction(request: CancelTransaction, onSuccess: (TransactionDetailsJSON) -> Unit, onError: ErrorBlock) {
         mCancelTransactionCall = service.cancelTransaction(
                 transactionId = request.transactionId,
                 apikey = client.key,
@@ -205,7 +208,10 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getTransactionReport(request: TransactionReport, onSuccess: (TransactionReportJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun getTransactionReport(request: TransactionReport, 
+                             onSuccess: (TransactionReportJSON) -> Unit, 
+                             onError: ErrorBlock, 
+                             onConnectionError: (Throwable) -> Unit) {
         mGetTransactionReportCall = service.getTransactionReport(
                 eventId = request.eventId,
                 apikey = client.key,
@@ -221,6 +227,8 @@ class TransactionService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
@@ -238,7 +246,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getTransactionList(request: TransactionList, onSuccess: (Array<TransactionListJSON>) -> Unit, onError: (APIError) -> Unit) {
+    fun getTransactionList(request: TransactionList, onSuccess: (Array<TransactionListJSON>) -> Unit, onError: ErrorBlock) {
         mGetTransactionListCall = service.getTransactionList(
                 eventId = request.eventId,
                 apikey = client.key,
@@ -280,8 +288,8 @@ class TransactionService(private val client: IngresseClient) {
      */
     fun getTransactions(request: Transactions,
                         onSuccess: (Array<TransactionsJSON>) -> Unit,
-                        onError: (APIError) -> Unit,
-                        onCanceledCall: (() -> Unit)? = null,
+                        onError: ErrorBlock,
+                        onCanceledCall: Block? = null,
                         onConnectionError: (Throwable) -> Unit) {
         mGetTransactionsCall = service.getTransactions(
                 apikey = client.key,
@@ -337,7 +345,7 @@ class TransactionService(private val client: IngresseClient) {
      */
     fun getDetails(request: TransactionDetails,
                    onSuccess: (TransactionsJSON) -> Unit,
-                   onError: (APIError) -> Unit,
+                   onError: ErrorBlock,
                    onConnectionError: (Throwable) -> Unit) {
         mGetDetailsCall = service.getDetails(
                 transactionId = request.transactionId,
@@ -374,7 +382,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      */
     fun getRefundReasons(onSuccess: (List<String>) -> Unit,
-                         onError: (APIError) -> Unit,
+                         onError: ErrorBlock,
                          onConnectionError: (Throwable) -> Unit) {
         mGetRefundReasonsCall = service.getRefundReasons(apikey = client.key)
 
@@ -408,7 +416,7 @@ class TransactionService(private val client: IngresseClient) {
      */
     fun refundTransaction(request: RefundTransaction,
                           onSuccess: (TransactionDetailsRefundJSON) -> Unit,
-                          onError: (APIError) -> Unit,
+                          onError: ErrorBlock,
                           onConnectionError: (Throwable) -> Unit) {
         mRefundTransactionCall = service.refundTransaction(
                 transactionId = request.transactionId,

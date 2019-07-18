@@ -7,6 +7,8 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.EventListByProducer
 import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Event
@@ -74,8 +76,8 @@ class EventService(private val client: IngresseClient) {
     fun getEventListByProducer(concurrent: Boolean = false,
                                request: EventListByProducer? = EventListByProducer(),
                                onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit,
-                               onError: (APIError) -> Unit,
-                               onTokenExpired: () -> Unit,
+                               onError: ErrorBlock,
+                               onTokenExpired: Block,
                                onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
@@ -132,8 +134,8 @@ class EventService(private val client: IngresseClient) {
      */
     fun getEventDescription(eventId: String,
                             onSuccess: (String) -> Unit,
-                            onError: (APIError) -> Unit,
-                            onTokenExpired: () -> Unit,
+                            onError: ErrorBlock,
+                            onTokenExpired: Block,
                             onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 

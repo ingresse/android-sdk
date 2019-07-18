@@ -35,7 +35,7 @@ data class PaymentCardJSON(
         val lastDigits: String? = "")
 
 data class TransactionBasketJSON(
-        val tickets: Array<TransactionTicketJSON>?)
+        val tickets: List<TransactionTicketJSON>?)
 
 data class TransactionTicketJSON(
         val id: Int? = 0,
@@ -51,7 +51,7 @@ data class TransactionTicketJSON(
         val price: String? = "",
         val tax: String? = "",
         val percentTax: String? = "",
-        val sessions: Array<BasketSessionsJSON>?)
+        val sessions: List<BasketSessionsJSON>?)
 
 data class BasketSessionsJSON(
         val id: Int? = 0,

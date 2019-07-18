@@ -8,6 +8,7 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.CompanyLogin
 import com.ingresse.sdk.model.response.CompanyLoginJSON
 import com.ingresse.sdk.model.response.UserAuthTokenJSON
@@ -50,7 +51,7 @@ class AuthService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun companyLoginWithEmail(request: CompanyLogin, onSuccess: (CompanyLoginJSON) -> Unit, onError: (APIError) -> Unit, onConnectionError: (Throwable) -> Unit) {
+    fun companyLoginWithEmail(request: CompanyLogin, onSuccess: (CompanyLoginJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit) {
         mCompanyLoginCall = service.companyLoginWithEmail(
             apikey = client.key,
             email = request.email,
@@ -85,7 +86,7 @@ class AuthService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun renewAuthToken(userToken: String, onSuccess: (String) -> Unit, onError: (APIError) -> Unit) {
+    fun renewAuthToken(userToken: String, onSuccess: (String) -> Unit, onError: ErrorBlock) {
         mRenewAuthTokenCall = service.renewAuthToken(
             apikey = client.key,
             userToken = userToken

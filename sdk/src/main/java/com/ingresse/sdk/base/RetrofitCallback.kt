@@ -87,6 +87,7 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
 
         if (!body.contains(ERROR_PREFIX)) {
             try {
+                if (type.javaClass == Ignored::class.java) return callback.onSuccess(null)
                 val obj = gson.fromJson<T>(body, type)
                 callback.onSuccess(obj)
             } catch (e: RuntimeException) {

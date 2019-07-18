@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.model.response.GuestJSON
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.helper.guard
 import com.ingresse.sdk.model.request.GuestList
 import com.ingresse.sdk.request.Entrance
@@ -66,7 +67,7 @@ class EntranceService(private val client: IngresseClient) {
         mConcurrentCalls.clear()
     }
 
-    fun getGuestList(concurrent: Boolean = false, request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: (APIError) -> Unit, onNetworkFail: (String) -> Unit) {
+    fun getGuestList(concurrent: Boolean = false, request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: ErrorBlock, onNetworkFail: (String) -> Unit) {
         val call = service.getEventGuestList(
                 apikey = client.key,
                 eventId = request.eventId,

@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.FriendsFromSearch
 import com.ingresse.sdk.model.request.RecentTransfers
 import com.ingresse.sdk.model.request.UserTransfersData
@@ -82,7 +83,7 @@ class TransferService(private val client: IngresseClient) {
     fun getUserTransfersData(concurrent: Boolean = false,
                              request: UserTransfersData,
                              onSuccess: (Array<UserTransfersJSON>) -> Unit,
-                             onError: (APIError) -> Unit,
+                             onError: ErrorBlock,
                              onConnectionError: (error: Throwable) -> Unit) {
 
         var call = service.getUserTransfers(
@@ -133,7 +134,7 @@ class TransferService(private val client: IngresseClient) {
      */
     fun getRecentTransfersData(request: RecentTransfers,
                                onSuccess: (List<RecentTransfersJSON>) -> Unit,
-                               onError: (APIError) -> Unit,
+                               onError: ErrorBlock,
                                onConnectionError: (error: Throwable) -> Unit) {
 
         var call = service.getRecentTransfers(
@@ -175,7 +176,7 @@ class TransferService(private val client: IngresseClient) {
      */
     fun getFriendsFromSearch(request: FriendsFromSearch,
                              onSuccess: (List<FriendsFromSearchJSON>) -> Unit,
-                             onError: (APIError) -> Unit,
+                             onError: ErrorBlock,
                              onConnectionError: (error: Throwable) -> Unit) {
 
         var call = service.getFriendsFromSearch(

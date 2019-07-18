@@ -1,9 +1,8 @@
 package com.ingresse.sdk.request
 
+import com.ingresse.sdk.model.request.AttributesToUpdate
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface Attributes {
 
@@ -13,19 +12,21 @@ interface Attributes {
      * @param eventId - id from event
      * @param filters - specific fields from event attributes
      */
-    @GET("/event/{eventId}/attributes")
+    @GET("/{eventId}/attributes")
     fun getEventAttributes(@Path("eventId") eventId: String,
                            @Query("apikey") apikey: String,
                            @Query("filters") filters: String?): Call<String>
 
     /**
-     * Get planner attributes
+     * Update event attributes
      *
      * @param eventId - id from event
-     * @param fields - specific attributes from planner
+     * @param userToken - token of logged user
+     * @param body - attributes to update
      */
-    @GET("/event/{eventId}")
-    fun getPlannerAttributes(@Path("eventId") eventId: String,
-                             @Query("apikey") apikey: String,
-                             @Query("fields") fields: String = "planner,posImage,aiddp,formalName,cnpj,cpf,obs2,cityNumber,address,title"): Call<String>
+    @PUT("/{eventId}/attributes")
+    fun updateEventAttributes(@Path("eventId") eventId: String,
+                              @Query("apikey") apikey: String,
+                              @Query("usertoken") userToken: String,
+                              @Body body: AttributesToUpdate): Call<String>
 }
