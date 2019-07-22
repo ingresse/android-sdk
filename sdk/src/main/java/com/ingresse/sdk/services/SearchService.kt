@@ -19,11 +19,11 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class SearchService(private val client: IngresseClient) {
-    private var host = Host.SEARCH
-    private var service: Search
+    private val service: Search
     private var cancelAllCalled = false
 
-    private var mEventSearchCall: Call<String>? = null
+    private var mEventsSearchCall: Call<String>? = null
+    private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
         val httpClient = ClientBuilder(client)
@@ -33,16 +33,34 @@ class SearchService(private val client: IngresseClient) {
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .client(httpClient)
-                .baseUrl(URLBuilder(host, client.environment).build())
+                .baseUrl(URLBuilder(Host.SEARCH, client.environment).build())
                 .build()
 
         service = adapter.create(Search::class.java)
     }
 
     /**
+     * Method to cancel all requests
+     */
+    fun cancelAll() {
+        cancelAllCalled = true
+        mEventsSearchCall?.cancel()
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
+
+    /**
      * Method to cancel a event search request
      */
-    fun cancelEventSearchByTitle() = mEventSearchCall?.cancel()
+    fun cancelEventsSearch(concurrent: Boolean = false) {
+        if (!concurrent) {
+            mEventsSearchCall?.cancel()
+            return
+        }
+
+        mConcurrentCalls.forEach { it.cancel() }
+        mConcurrentCalls.clear()
+    }
 
     /**
      * Search event by title
@@ -51,26 +69,47 @@ class SearchService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun searchEventByTitle(request: EventSearch, onSuccess: (ArrayList<Source<EventJSON>>) -> Unit, onError: ErrorBlock) {
+    fun searchEvents(concurrent: Boolean = false,
+                     request: EventSearch,
+                     onSuccess: (ArrayList<Source<EventJSON>>, Int) -> Unit,
+                     onError: (APIError) -> Unit,
+                     onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        mEventSearchCall = service.getEventByTitle(
+        val call = service.getEvents(
             title = request.title,
+            state = request.state,
+            category = request.category,
+            term = request.term,
             size = request.size,
             from = request.from,
+            to = request.to,
             orderBy = request.orderBy,
             offset = request.offset
         )
 
+        if (!concurrent) mEventsSearchCall = call else mConcurrentCalls.add(call)
+
         val callback = object : IngresseCallback<ResponseHits<EventJSON>?> {
             override fun onSuccess(data: ResponseHits<EventJSON>?) {
+                if (cancelAllCalled) return
+
                 val response = data?.data?.hits ?: return onError(APIError.default)
-                onSuccess(response)
+                val totalResults = data.data.total
+
+                if (!concurrent) mEventsSearchCall = null else mConcurrentCalls.remove(call)
+                onSuccess(response, totalResults)
             }
 
-            override fun onError(error: APIError) = onError(error)
+            override fun onError(error: APIError) {
+                if (!concurrent) mEventsSearchCall = null else mConcurrentCalls.remove(call)
+                onError(error)
+            }
 
             override fun onRetrofitError(error: Throwable) {
+                if (!concurrent) mEventsSearchCall = null else mConcurrentCalls.remove(call)
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
@@ -78,6 +117,6 @@ class SearchService(private val client: IngresseClient) {
         }
 
         val type = object: TypeToken<ResponseHits<EventJSON>?>() {}.type
-        mEventSearchCall?.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback))
     }
 }
