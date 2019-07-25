@@ -211,7 +211,7 @@ class TicketService(private val client: IngresseClient) {
                 apikey = client.key,
                 userToken = request.userToken,
                 code = request.code,
-                uuid = request.uuid
+                device = request.device
         )
 
         val callback = object : IngresseCallback<Response<AuthenticationUserDeviceJSON>?> {
