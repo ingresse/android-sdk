@@ -27,7 +27,7 @@ interface Ticket {
     fun authenticationUserDevice(@Query("apikey") apikey: String,
                                  @Query("usertoken") userToken: String,
                                  @Header("X-INGRESSE-OTP") code: String? = null,
-                                 @Header("X-INGRESSE-DEVICE") device: String): Call<String>
+                                 @Header("X-INGRESSE-DEVICE") device: String? = null): Call<String>
 
     /**
      * Create or Refuse a ticket transfer
