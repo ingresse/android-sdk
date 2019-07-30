@@ -10,8 +10,12 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
+import com.ingresse.sdk.helper.ErrorBlock
+import com.ingresse.sdk.model.request.PlannerAttributes
 import com.ingresse.sdk.model.request.PrintTickets
 import com.ingresse.sdk.model.request.SellTickets
+import com.ingresse.sdk.model.response.PlannerAttributesJSON
 import com.ingresse.sdk.model.response.PrintTicketsJSON
 import com.ingresse.sdk.model.response.SellTicketsJSON
 import com.ingresse.sdk.request.POS
@@ -30,6 +34,7 @@ class POSService(private val client: IngresseClient) {
 
     private var mSellTicketsCall: Call<String>? = null
     private var mPrintTicketsCall: Call<String>? = null
+    private var mGetPlannerAttributesCall: Call<String>? = null
 
     init {
         val httpClient = ClientBuilder(client)
@@ -57,13 +62,18 @@ class POSService(private val client: IngresseClient) {
     fun cancelPrintTickets() = mPrintTicketsCall?.cancel()
 
     /**
+     * Method to cancel a get event planner attributes
+     */
+    fun cancelGetPlannerAttributes() = mGetPlannerAttributesCall?.cancel()
+
+    /**
      * Sell tickets
      *
      * @param request - parameters required to request
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun sellTickets(request: SellTickets, onSuccess: (SellTicketsJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun sellTickets(request: SellTickets, onSuccess: (SellTicketsJSON) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mSellTicketsCall = service.sellTickets(
@@ -97,7 +107,7 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun printTickets(request: PrintTickets, onSuccess: (PrintTicketsJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun printTickets(request: PrintTickets, onSuccess: (PrintTicketsJSON) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mPrintTicketsCall = service.printTickets(
@@ -131,7 +141,7 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun postPrintLog(request: PrintTickets, onSuccess: () -> Unit = {}, onError: (APIError) -> Unit = {}) {
+    fun postPrintLog(request: PrintTickets, onSuccess: Block = {}, onError: ErrorBlock = {}) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mPrintTicketsCall = service.postPrintHistoryLog(
@@ -151,5 +161,38 @@ class POSService(private val client: IngresseClient) {
 
         val type = object : TypeToken<ResponsePrintLog>() {}.type
         mPrintTicketsCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get planner attributes
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
+    fun getPlannerAttributes(request: PlannerAttributes, onSuccess: (PlannerAttributesJSON) -> Unit, onError: ErrorBlock) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
+        mGetPlannerAttributesCall = service.getPlannerAttributes(
+                eventId = request.eventId,
+                apikey = client.key)
+
+        val callback = object : IngresseCallback<Response<PlannerAttributesJSON>?> {
+            override fun onSuccess(data: Response<PlannerAttributesJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<PlannerAttributesJSON>>() {}.type
+        mGetPlannerAttributesCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

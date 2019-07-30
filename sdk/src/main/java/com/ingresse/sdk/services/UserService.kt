@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.*
 import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.User
@@ -95,7 +96,7 @@ class UserService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getUserData(request: UserData, onSuccess: (UserDataJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun getUserData(request: UserData, onSuccess: (UserDataJSON) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val fields = listOf("id", "name", "lastname",
@@ -139,7 +140,7 @@ class UserService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun updateBasicInfos(request: UserBasicInfos, onSuccess: (UserUpdatedDataJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun updateBasicInfos(request: UserBasicInfos, onSuccess: (UserUpdatedDataJSON) -> Unit, onError: ErrorBlock) {
         mUpdateBasicInfosCall = service.updateBasicInfos(
                 userId = request.userId,
                 apikey = client.key,
@@ -196,7 +197,7 @@ class UserService(private val client: IngresseClient) {
     fun getUserTicketsData(concurrent: Boolean = false,
                            request: UserTicketsData,
                            onSuccess: (Array<UserTicketsJSON>) -> Unit,
-                           onError: (APIError) -> Unit,
+                           onError: ErrorBlock,
                            onConnectionError: (error: Throwable) -> Unit) {
 
         val call = service.getUserTickets(
@@ -246,7 +247,7 @@ class UserService(private val client: IngresseClient) {
      */
     fun getEventAttributes(request: EventAttributes,
                            onSuccess: (EventAttributesJSON) -> Unit,
-                           onError: (APIError) -> Unit,
+                           onError: ErrorBlock,
                            onConnectionError: (error: Throwable) -> Unit) {
 
         var call = service.getEventAttributes(
@@ -287,7 +288,7 @@ class UserService(private val client: IngresseClient) {
     fun getWalletEvents(concurrent: Boolean = false,
                         request: WalletEvents,
                         onSuccess: (Array<WalletEventJSON>) -> Unit,
-                        onError: (APIError) -> Unit,
+                        onError: ErrorBlock,
                         onConnectionError: (error: Throwable) -> Unit) {
 
         val call = service.getWalletEvents(

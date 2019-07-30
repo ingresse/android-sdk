@@ -44,4 +44,15 @@ interface POS {
                             @Query("apikey") apikey: String,
                             @Query("usertoken") userToken: String,
                             @Field("printer") printer: String = "thermal"): Call<String>
+
+    /**
+     * Get planner attributes
+     *
+     * @param eventId - id from event
+     * @param fields - specific attributes from planner
+     */
+    @GET("/event/{eventId}")
+    fun getPlannerAttributes(@Path("eventId") eventId: String,
+                             @Query("apikey") apikey: String,
+                             @Query("fields") fields: String = "planner,posImage,aiddp,formalName,cnpj,cpf,obs2,cityNumber,address,title"): Call<String>
 }

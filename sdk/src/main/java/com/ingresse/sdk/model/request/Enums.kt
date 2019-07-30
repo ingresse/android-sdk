@@ -22,3 +22,11 @@ enum class TransactionStatus {
     @SerializedName("refund")
     REFUND
 }
+
+enum class EventsCategory(val slug: String?) {
+    PARTY("festas-e-baladas"),
+    SHOWS("shows-e-festivais"),
+    THEATER("teatro-e-cultura"),
+    UNIVERSITY("universitario"),
+    GASTRONOMY("gastronomia")
+}

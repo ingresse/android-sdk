@@ -9,6 +9,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.SalesGroup
 import com.ingresse.sdk.model.response.SalesGroupJSON
 import com.ingresse.sdk.request.Permission
@@ -48,7 +49,7 @@ class PermissionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getSalesGroup(request: SalesGroup, onSuccess: (Array<SalesGroupJSON>) -> Unit, onError: (APIError) -> Unit) {
+    fun getSalesGroup(request: SalesGroup, onSuccess: (Array<SalesGroupJSON>) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mSalesGroupCall = service.getSalesGroup(

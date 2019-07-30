@@ -10,8 +10,8 @@ data class TransactionsJSON(
         var amount: Int? = 0,
         var interest: Int? = 0,
         var status: TransactionsStatusJSON?,
-        var tickets: Array<TransactionsTicketsJSON>?,
-        var extras: Array<TransactionsExtrasJSON>?,
+        var tickets: List<TransactionsTicketsJSON>?,
+        var extras: List<TransactionsExtrasJSON>?,
         var refund: TransactionsRefundJSON?,
         var passkey: TransactionsPasskeyJSON?)
 
@@ -19,7 +19,7 @@ data class TransactionsJSON(
 data class TransactionsEventJSON(
         var id: String? = "",
         var title: String? = "",
-        var sessions: Array<TransactionsEventSessionsJSON>?,
+        var sessions: List<TransactionsEventSessionsJSON>?,
         var address: TransactionsEventAddressJSON?)
 
 data class TransactionsEventSessionsJSON(
@@ -89,7 +89,7 @@ data class TransactionsPaymentReasonJSON(
 // STATUS
 data class TransactionsStatusJSON(
         var current: TransactionsStatusCurrentJSON?,
-        var history: Array<TransactionsStatusHistoryJSON>?)
+        var history: List<TransactionsStatusHistoryJSON>?)
 
 data class TransactionsStatusCurrentJSON(
         var name: String? = "",
@@ -103,6 +103,7 @@ data class TransactionsStatusHistoryJSON(
 // TICKETS
 data class TransactionsTicketsJSON(
         var id: Int? = 0,
+        var code: String? = "",
         var name: String? = "",
         var quantity: Int? = 0,
         var unitPrice: Int? = 0,
