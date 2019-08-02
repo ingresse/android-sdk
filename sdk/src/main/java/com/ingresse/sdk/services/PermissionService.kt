@@ -2,6 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
+import com.ingresse.sdk.base.DataArray
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
@@ -16,6 +17,8 @@ import com.ingresse.sdk.request.Permission
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+
+private typealias SalesGroupResponse = Response<DataArray<SalesGroupJSON>?>
 
 class PermissionService(private val client: IngresseClient) {
     private var host = Host.API
@@ -49,7 +52,7 @@ class PermissionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getSalesGroup(request: SalesGroup, onSuccess: (Array<SalesGroupJSON>) -> Unit, onError: ErrorBlock) {
+    fun getSalesGroup(request: SalesGroup, onSuccess: (DataArray<SalesGroupJSON>) -> Unit, onError: ErrorBlock) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mSalesGroupCall = service.getSalesGroup(
@@ -57,8 +60,8 @@ class PermissionService(private val client: IngresseClient) {
                 userToken = request.userToken
         )
 
-        val callback = object : IngresseCallback<Response<Array<SalesGroupJSON>?>> {
-            override fun onSuccess(data: Response<Array<SalesGroupJSON>?>?) {
+        val callback = object : IngresseCallback<SalesGroupResponse> {
+            override fun onSuccess(data: SalesGroupResponse?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -72,7 +75,7 @@ class PermissionService(private val client: IngresseClient) {
             }
         }
 
-        val type = object : TypeToken<Response<Array<SalesGroup>?>>() {}.type
+        val type = object : TypeToken<SalesGroupResponse>() {}.type
         mSalesGroupCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
