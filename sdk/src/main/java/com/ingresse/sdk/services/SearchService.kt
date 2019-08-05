@@ -74,8 +74,6 @@ class SearchService(private val client: IngresseClient) {
                      onSuccess: (ArrayList<Source<EventJSON>>, Int) -> Unit,
                      onError: (APIError) -> Unit,
                      onConnectionError: (error: Throwable) -> Unit) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
-
         val call = service.getEvents(
             title = request.title,
             state = request.state,
