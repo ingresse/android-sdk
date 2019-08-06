@@ -203,6 +203,7 @@ class TicketService(private val client: IngresseClient) {
      */
     fun authenticationUserDevice(request: AuthenticationUserDevice,
                                  onSuccess: (AuthenticationUserDeviceJSON) -> Unit,
+                                 onOtpRequired: (otpRequired: Int) -> Unit,
                                  onError: (APIError) -> Unit,
                                  onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
@@ -221,7 +222,13 @@ class TicketService(private val client: IngresseClient) {
                 onSuccess(response)
             }
 
-            override fun onError(error: APIError) = onError(error)
+            override fun onError(error: APIError) {
+                if(error.code == 2057) {
+                    onOtpRequired(error.code)
+                    return
+                }
+                onError(error)
+            }
 
             override fun onRetrofitError(error: Throwable) {
                 if (error is IOException) return onConnectionError(error)
