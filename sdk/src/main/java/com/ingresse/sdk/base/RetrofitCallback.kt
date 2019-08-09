@@ -64,7 +64,7 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
         val responseCode = response.code()
         val gson = Gson()
 
-        if (responseCode != TOO_MANY_REQUESTS.code || responseCode != UNAUTHORIZED.code) {
+        if (responseCode != TOO_MANY_REQUESTS.code && responseCode != UNAUTHORIZED.code) {
                 if (!errorBody.isNullOrEmpty()) {
                     if (errorBody.contains(AUTHTOKEN_EXPIRED, true)) {
                         val apiError = APIError.Builder().setMessage("expired")
