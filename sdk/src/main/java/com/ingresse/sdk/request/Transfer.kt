@@ -59,8 +59,8 @@ interface Transfer {
      * @param params - Param with action to update a transfer
      */
     @POST("/ticket/{ticketId}/transfer/{transferId}")
-    fun updateTransfer(@Path("ticketId") ticketId: Long,
-                       @Path("transferId") transferId: Long,
+    fun updateTransfer(@Path("ticketId") ticketId: Int,
+                       @Path("transferId") transferId: Int,
                        @Query("apikey") apikey: String,
                        @Query("usertoken") userToken: String,
                        @Body params: TransferActionParams): Call<String>
