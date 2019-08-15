@@ -5,12 +5,12 @@ enum class Host(val address: String) {
     API("api.ingresse.com"),
     CEP("cep.ingresse.com"),
     SEARCH("event-search.ingresse.com"),
-    SEARCH_HML("hml-event.ingresse.com/search/company/")
+    SEARCH_HML("event.ingresse.com/search/company/")
 }
 
 enum class Environment(val prefix: String) {
     PROD(""),
-    HML("hml-"),
+    HML("hmlb-"),
     TEST("test-"),
     STG("stg-")
 }
