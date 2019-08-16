@@ -24,6 +24,9 @@ interface Event {
 
     /**
      * Get event description
+     *
+     * @param eventId - Id from event
+     * @param fields - Get specifically described fields
      */
     @GET("/{eventId}")
     fun getEventDescription(@Path("eventId") eventId: String,

@@ -10,6 +10,8 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.CANCELED_CALL
+import com.ingresse.sdk.helper.SOCKET_CLOSED
 import com.ingresse.sdk.model.request.FriendsFromSearch
 import com.ingresse.sdk.model.request.RecentTransfers
 import com.ingresse.sdk.model.request.UpdateTransfer
@@ -85,9 +87,10 @@ class TransferService(private val client: IngresseClient) {
                              request: UserTransfersData,
                              onSuccess: (Array<UserTransfersJSON>) -> Unit,
                              onError: (APIError) -> Unit,
+                             onCanceledCall: (() -> Unit)? = null,
                              onConnectionError: (error: Throwable) -> Unit) {
 
-        var call = service.getUserTransfers(
+        val call = service.getUserTransfers(
             userId = request.userId,
             apikey = client.key,
             page = request.page,
@@ -113,7 +116,12 @@ class TransferService(private val client: IngresseClient) {
 
             override fun onRetrofitError(error: Throwable) {
                 if (!concurrent) mUserTransfersCall = null else mConcurrentCalls.remove(call)
-                if (error is IOException) return onConnectionError(error)
+                if (error is IOException) {
+                    return when (error.localizedMessage) {
+                        CANCELED_CALL, SOCKET_CLOSED -> if (onCanceledCall != null) onCanceledCall() else return
+                        else -> onConnectionError(error)
+                    }
+                }
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
@@ -138,7 +146,7 @@ class TransferService(private val client: IngresseClient) {
                                onError: (APIError) -> Unit,
                                onConnectionError: (error: Throwable) -> Unit) {
 
-        var call = service.getRecentTransfers(
+        val call = service.getRecentTransfers(
             userId = request.userId,
             apikey = client.key,
             userToken = request.usertoken,
@@ -180,7 +188,7 @@ class TransferService(private val client: IngresseClient) {
                              onError: (APIError) -> Unit,
                              onConnectionError: (error: Throwable) -> Unit) {
 
-        var call = service.getFriendsFromSearch(
+        val call = service.getFriendsFromSearch(
             term = request.term,
             size = request.size,
             apikey = client.key,
@@ -221,7 +229,7 @@ class TransferService(private val client: IngresseClient) {
                        onError: (APIError) -> Unit,
                        onConnectionError: (error: Throwable) -> Unit) {
 
-        var call = service.updateTransfer(
+        val call = service.updateTransfer(
                 ticketId = request.ticketId,
                 transferId = request.transferId,
                 apikey = client.key,

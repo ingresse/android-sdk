@@ -18,6 +18,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.IOException
 
 class AttributesService(private val client: IngresseClient) {
     private var host = Host.API
@@ -59,10 +60,13 @@ class AttributesService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getEventAttributes(request: EventAttributes, onSuccess: (EventAttributesJSON) -> Unit, onError: (APIError) -> Unit) {
+    fun getEventAttributes(request: EventAttributes,
+                           onSuccess: (EventAttributesJSON) -> Unit,
+                           onError: (APIError) -> Unit,
+                           onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        val customFields = request.filters?.let { it.joinToString(",") }
+        val customFields: String? = request.filters?.joinToString(",")
 
         mGetEventAttributesCall = service.getEventAttributes(
             eventId = request.eventId,
@@ -78,6 +82,8 @@ class AttributesService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
