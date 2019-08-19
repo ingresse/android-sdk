@@ -139,12 +139,58 @@ class EventService(private val client: IngresseClient) {
                             onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        val call  = service.getEventDescription(eventId)
+        val call  = service.getEventField(eventId, "description")
 
         val callback = object: IngresseCallback<DataJSON<EventJSON>?> {
             override fun onSuccess(data: DataJSON<EventJSON>?) {
                 if (cancelAllCalled) return
                 val response = data?.data?.description ?: return onError(APIError.default)
+                onSuccess(response)
+                mGetEventDescriptionCall = null
+            }
+
+            override fun onError(error: APIError) {
+                mGetEventDescriptionCall = null
+                if (error.message == "expired") return onTokenExpired()
+
+                onError(error)
+            }
+
+            override fun onRetrofitError(error: Throwable) {
+                mGetEventDescriptionCall = null
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<DataJSON<EventJSON>?>() {}.type
+        call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get event admins
+     *
+     * @param eventId - id of the event to fetch
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onTokenExpired - token expired callback
+     * @param onConnectionError - connection error callback
+     */
+    fun getEventAdmins(eventId: String,
+                       onSuccess: (List<Int>) -> Unit,
+                       onError: ErrorBlock,
+                       onTokenExpired: Block,
+                       onConnectionError: (error: Throwable) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
+        val call = service.getEventField(eventId, "admins")
+        val callback = object: IngresseCallback<DataJSON<EventJSON>?> {
+            override fun onSuccess(data: DataJSON<EventJSON>?) {
+                if (cancelAllCalled) return
+                val response = data?.data?.admins ?: return onError(APIError.default)
                 onSuccess(response)
                 mGetEventDescriptionCall = null
             }
