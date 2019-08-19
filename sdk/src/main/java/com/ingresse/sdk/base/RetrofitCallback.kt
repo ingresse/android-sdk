@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.AUTHTOKEN_EXPIRED
 import com.ingresse.sdk.helper.ERROR_PREFIX
+import com.ingresse.sdk.helper.HttpStatusCode.*
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import retrofit2.Call
@@ -60,44 +61,61 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
     override fun onResponse(call: Call<String>, response: Response<String>) {
         val errorBody = response.errorBody()?.string()
         val body = response.body()
+        val responseCode = response.code()
         val gson = Gson()
 
-        if (!errorBody.isNullOrEmpty()) {
-            if (errorBody.contains(AUTHTOKEN_EXPIRED, true)){
-                val apiError = APIError.Builder().setMessage("expired")
-                callback.onError(apiError.build())
+        if (responseCode != TOO_MANY_REQUESTS.code && responseCode != UNAUTHORIZED.code) {
+                if (!errorBody.isNullOrEmpty()) {
+                    if (errorBody.contains(AUTHTOKEN_EXPIRED, true)) {
+                        val apiError = APIError.Builder().setMessage("expired")
+                        callback.onError(apiError.build())
+                        return
+                    }
+
+                    try {
+                        val obj = gson.fromJson(errorBody, ErrorData::class.java)
+                        val apiError = APIError.Builder().setCode(obj.code ?: 0)
+                        callback.onError(apiError.build())
+                    } catch (e: RuntimeException) {
+                        callback.onError(APIError.default)
+                    }
+
+                    return
+                }
+
+            if (body.isNullOrEmpty()) {
+                callback.onError(APIError.default)
                 return
             }
 
-            try {
-                val obj = gson.fromJson(errorBody, ErrorData::class.java)
-                val apiError = APIError.Builder().setCode(obj.code ?: 0)
-                callback.onError(apiError.build())
-            } catch (e: RuntimeException) {
-                callback.onError(APIError.default)
+            if (!body.contains(ERROR_PREFIX)) {
+                try {
+                    if (type.javaClass == Ignored::class.java) return callback.onSuccess(null)
+                    val obj = gson.fromJson<T>(body, type)
+                    callback.onSuccess(obj)
+                } catch (e: RuntimeException) {
+                    callback.onError(APIError.default)
+                }
+
+                return
             }
+        }
 
+        if(responseCode == TOO_MANY_REQUESTS.code) {
+            callback.onError(APIError.Builder()
+                    .setCode(TOO_MANY_REQUESTS.code)
+                    .setError("")
+                    .setCategory("")
+                    .build())
             return
         }
 
-        if (body.isNullOrEmpty()) {
-            callback.onError(APIError.default)
-            return
+        var errorResponse = if(responseCode == UNAUTHORIZED.code) {
+            gson.fromJson(errorBody, Error::class.java)
+        } else {
+            gson.fromJson(body, Error::class.java)
         }
 
-        if (!body.contains(ERROR_PREFIX)) {
-            try {
-                if (type.javaClass == Ignored::class.java) return callback.onSuccess(null)
-                val obj = gson.fromJson<T>(body, type)
-                callback.onSuccess(obj)
-            } catch (e: RuntimeException) {
-                callback.onError(APIError.default)
-            }
-
-            return
-        }
-
-        val errorResponse = gson.fromJson(body, Error::class.java)
         val errorData = errorResponse.responseError
 
         val error = APIError.Builder()

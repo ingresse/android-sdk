@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.*
 import com.ingresse.sdk.builders.ClientBuilder
+import com.ingresse.sdk.builders.Environment
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
@@ -11,9 +12,11 @@ import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.CreateTransfer
 import com.ingresse.sdk.model.request.EventTicket
 import com.ingresse.sdk.model.request.UpdateTransfer
+import com.ingresse.sdk.model.response.AuthenticationUserDeviceJSON
 import com.ingresse.sdk.model.response.CreateTransferJSON
 import com.ingresse.sdk.model.response.TicketGroupJSON
 import com.ingresse.sdk.model.response.UpdateTransferJSON
+import com.ingresse.sdk.request.AuthenticationUserDevice
 import com.ingresse.sdk.request.Ticket
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -25,9 +28,12 @@ class TicketService(private val client: IngresseClient) {
     private val host = Host.API
     private val service: Ticket
 
+    private val hmlService: Ticket
+
     private var mGetEventTicketsCall: Call<String>? = null
     private var mCreateTransferCall: Call<String>? = null
     private var mUpdateTransferCall: Call<String>? = null
+    private var mAuthenticationUserDeviceCall: Call<String>? = null
 
     init {
         val httpClient = ClientBuilder(client)
@@ -41,7 +47,15 @@ class TicketService(private val client: IngresseClient) {
                 .baseUrl(URLBuilder(host, client.environment).build())
                 .build()
 
+        val hmlAdapter = Retrofit.Builder()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
+                .baseUrl(URLBuilder(host, Environment.HML).build())
+                .build()
+
         service = adapter.create(Ticket::class.java)
+        hmlService = hmlAdapter.create(Ticket::class.java)
     }
 
     /**
@@ -58,6 +72,11 @@ class TicketService(private val client: IngresseClient) {
      * Method to cancel update transfer
      */
     fun cancelUpdateTransfer() = mUpdateTransferCall?.cancel()
+
+    /**
+     * Method to cancel a authentication user device request
+     */
+    fun cancelAuthenticationUserDevice() = mAuthenticationUserDeviceCall?.cancel()
 
     /**
      * Company login with email and password
@@ -183,5 +202,55 @@ class TicketService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<UpdateTransferJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * 2FA Authentication User Device
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     */
+    fun authenticationUserDevice(request: AuthenticationUserDevice,
+                                 onSuccess: (AuthenticationUserDeviceJSON) -> Unit,
+                                 onOtpRequired: (otpRequired: Int) -> Unit,
+                                 onError: (APIError) -> Unit,
+                                 onConnectionError: (error: Throwable) -> Unit) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
+        mAuthenticationUserDeviceCall = hmlService.authenticationUserDevice(
+                apikey = client.key,
+                userToken = request.userToken,
+                code = request.code,
+                device = request.device
+        )
+
+        val callback = object : IngresseCallback<Response<AuthenticationUserDeviceJSON>?> {
+            override fun onSuccess(data: Response<AuthenticationUserDeviceJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) {
+                if(error.code == 2057) {
+                    onOtpRequired(error.code)
+                    return
+                }
+                onError(error)
+            }
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+        }
+
+        val type = object : TypeToken<Response<AuthenticationUserDeviceJSON>?>() {}.type
+        mAuthenticationUserDeviceCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
