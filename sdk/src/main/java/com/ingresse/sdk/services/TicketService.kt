@@ -4,7 +4,6 @@ import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.*
 import com.ingresse.sdk.builders.ClientBuilder
-import com.ingresse.sdk.builders.Environment
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
@@ -28,8 +27,6 @@ class TicketService(private val client: IngresseClient) {
     private val host = Host.API
     private val service: Ticket
 
-    private val hmlService: Ticket
-
     private var mGetEventTicketsCall: Call<String>? = null
     private var mCreateTransferCall: Call<String>? = null
     private var mUpdateTransferCall: Call<String>? = null
@@ -47,15 +44,7 @@ class TicketService(private val client: IngresseClient) {
                 .baseUrl(URLBuilder(host, client.environment).build())
                 .build()
 
-        val hmlAdapter = Retrofit.Builder()
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient)
-                .baseUrl(URLBuilder(host, Environment.HML).build())
-                .build()
-
         service = adapter.create(Ticket::class.java)
-        hmlService = hmlAdapter.create(Ticket::class.java)
     }
 
     /**
@@ -219,7 +208,7 @@ class TicketService(private val client: IngresseClient) {
                                  onConnectionError: (error: Throwable) -> Unit) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        mAuthenticationUserDeviceCall = hmlService.authenticationUserDevice(
+        mAuthenticationUserDeviceCall = service.authenticationUserDevice(
                 apikey = client.key,
                 userToken = request.userToken,
                 code = request.code,
