@@ -17,6 +17,19 @@ interface Ticket {
                         @Query("apikey") apikey: String): Call<String>
 
     /**
+     * 2FA Authentication user device
+     *
+     * @param userToken - user token
+     * @header X-INGRESSE-OTP - code to validate user device
+     * @header X-INGRESSE-DEVICE - uuid user device data
+     */
+    @POST("/two-factor")
+    fun authenticationUserDevice(@Query("apikey") apikey: String,
+                                 @Query("usertoken") userToken: String,
+                                 @Header("X-INGRESSE-OTP") code: String? = null,
+                                 @Header("X-INGRESSE-DEVICE") device: String? = null): Call<String>
+
+    /**
      * Create or Refuse a ticket transfer
      *
      * @param ticketId - Ticket id to transfer
