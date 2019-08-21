@@ -8,6 +8,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.model.request.HighlightEvents
 import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.model.response.HighlightEventJSON
@@ -70,10 +71,11 @@ class HighlightsService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      */
     fun getHighlightEvents(concurrent: Boolean = false,
-                               request: HighlightEvents,
-                               onSuccess: (Array<HighlightEventJSON>) -> Unit,
-                               onError: (APIError) -> Unit,
-                               onConnectionError: (error: Throwable) -> Unit) {
+                           request: HighlightEvents,
+                           onSuccess: (Array<HighlightEventJSON>) -> Unit,
+                           onError: (APIError) -> Unit,
+                           onConnectionError: (error: Throwable) -> Unit,
+                           onTokenExpired: Block) {
 
         val call  = service.getHighlightEvents(
             apikey = client.key,
@@ -107,6 +109,8 @@ class HighlightsService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<Array<HighlightEventJSON>>?>() {}.type

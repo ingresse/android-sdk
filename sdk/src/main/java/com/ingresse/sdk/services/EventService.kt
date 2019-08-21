@@ -117,6 +117,8 @@ class EventService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<ResponseHits<EventJSON>?>() {}.type
@@ -164,6 +166,8 @@ class EventService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<DataJSON<EventJSON>?>() {}.type
@@ -210,6 +214,8 @@ class EventService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<DataJSON<EventJSON>?>() {}.type

@@ -103,7 +103,10 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun createTransaction(request: CreateTransaction, onSuccess: (TransactionDataJSON) -> Unit, onError: ErrorBlock) {
+    fun createTransaction(request: CreateTransaction,
+                          onSuccess: (TransactionDataJSON) -> Unit,
+                          onError: ErrorBlock,
+                          onTokenExpired: Block) {
         mCreateTransactionCall = service.createTransaction(
                 userToken = request.userToken,
                 apikey = client.key,
@@ -123,6 +126,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<CreateTransactionJSON>?>() {}.type
@@ -140,7 +145,8 @@ class TransactionService(private val client: IngresseClient) {
     fun getTransactionDetails(request: TransactionDetails,
                               onSuccess: (TransactionDetailsJSON) -> Unit,
                               onError: ErrorBlock,
-                              onConnectionError: (Throwable) -> Unit) {
+                              onConnectionError: (Throwable) -> Unit,
+                              onTokenExpired: Block) {
         mGetTransactionDetailsCall = service.getTransactionDetails(
                 transactionId = request.transactionId,
                 userToken = request.userToken,
@@ -162,6 +168,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<TransactionDetailsJSON>?>() {}.type
@@ -175,7 +183,10 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun cancelTransaction(request: CancelTransaction, onSuccess: (TransactionDetailsJSON) -> Unit, onError: ErrorBlock) {
+    fun cancelTransaction(request: CancelTransaction,
+                          onSuccess: (TransactionDetailsJSON) -> Unit,
+                          onError: ErrorBlock,
+                          onTokenExpired: Block) {
         mCancelTransactionCall = service.cancelTransaction(
                 transactionId = request.transactionId,
                 apikey = client.key,
@@ -195,6 +206,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<TransactionDetailsJSON>?>() {}.type
@@ -211,7 +224,8 @@ class TransactionService(private val client: IngresseClient) {
     fun getTransactionReport(request: TransactionReport, 
                              onSuccess: (TransactionReportJSON) -> Unit, 
                              onError: ErrorBlock, 
-                             onConnectionError: (Throwable) -> Unit) {
+                             onConnectionError: (Throwable) -> Unit,
+                             onTokenExpired: Block) {
         mGetTransactionReportCall = service.getTransactionReport(
                 eventId = request.eventId,
                 apikey = client.key,
@@ -233,6 +247,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<TransactionReportJSON>?>() {}.type
@@ -246,7 +262,10 @@ class TransactionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getTransactionList(request: TransactionList, onSuccess: (Array<TransactionListJSON>) -> Unit, onError: ErrorBlock) {
+    fun getTransactionList(request: TransactionList,
+                           onSuccess: (Array<TransactionListJSON>) -> Unit,
+                           onError: ErrorBlock,
+                           onTokenExpired: Block) {
         mGetTransactionListCall = service.getTransactionList(
                 eventId = request.eventId,
                 apikey = client.key,
@@ -271,6 +290,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<Array<TransactionListJSON>?>>() {}.type
@@ -290,7 +311,8 @@ class TransactionService(private val client: IngresseClient) {
                         onSuccess: (Array<TransactionsJSON>) -> Unit,
                         onError: ErrorBlock,
                         onCanceledCall: Block? = null,
-                        onConnectionError: (Throwable) -> Unit) {
+                        onConnectionError: (Throwable) -> Unit,
+                        onTokenExpired: Block) {
         mGetTransactionsCall = service.getTransactions(
                 apikey = client.key,
                 userToken = request.userToken,
@@ -329,6 +351,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<Array<TransactionsJSON>>?>() {}.type
@@ -346,7 +370,8 @@ class TransactionService(private val client: IngresseClient) {
     fun getDetails(request: TransactionDetails,
                    onSuccess: (TransactionsJSON) -> Unit,
                    onError: ErrorBlock,
-                   onConnectionError: (Throwable) -> Unit) {
+                   onConnectionError: (Throwable) -> Unit,
+                   onTokenExpired: Block) {
         mGetDetailsCall = service.getDetails(
                 transactionId = request.transactionId,
                 userToken = request.userToken,
@@ -368,6 +393,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<TransactionsJSON>?>() {}.type
@@ -383,7 +410,8 @@ class TransactionService(private val client: IngresseClient) {
      */
     fun getRefundReasons(onSuccess: (List<String>) -> Unit,
                          onError: ErrorBlock,
-                         onConnectionError: (Throwable) -> Unit) {
+                         onConnectionError: (Throwable) -> Unit,
+                         onTokenExpired: Block) {
         mGetRefundReasonsCall = service.getRefundReasons(apikey = client.key)
 
         val callback = object : IngresseCallback<Response<DataArray<String>>?> {
@@ -401,6 +429,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<DataArray<String>>?>() {}.type
@@ -417,7 +447,8 @@ class TransactionService(private val client: IngresseClient) {
     fun refundTransaction(request: RefundTransaction,
                           onSuccess: (TransactionDetailsRefundJSON) -> Unit,
                           onError: ErrorBlock,
-                          onConnectionError: (Throwable) -> Unit) {
+                          onConnectionError: (Throwable) -> Unit,
+                          onTokenExpired: Block) {
         mRefundTransactionCall = service.refundTransaction(
                 transactionId = request.transactionId,
                 apikey = client.key,
@@ -440,6 +471,8 @@ class TransactionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<TransactionDetailsRefundJSON>?>() {}.type

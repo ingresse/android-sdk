@@ -8,6 +8,7 @@ import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.CompanyLogin
 import com.ingresse.sdk.model.response.CompanyLoginJSON
@@ -51,7 +52,7 @@ class AuthService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun companyLoginWithEmail(request: CompanyLogin, onSuccess: (CompanyLoginJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit) {
+    fun companyLoginWithEmail(request: CompanyLogin, onSuccess: (CompanyLoginJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
         mCompanyLoginCall = service.companyLoginWithEmail(
             apikey = client.key,
             email = request.email,
@@ -73,6 +74,7 @@ class AuthService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object: TypeToken<Response<CompanyLoginJSON>>() {}.type
@@ -86,7 +88,7 @@ class AuthService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun renewAuthToken(userToken: String, onSuccess: (String) -> Unit, onError: ErrorBlock) {
+    fun renewAuthToken(userToken: String, onSuccess: (String) -> Unit, onError: ErrorBlock, onTokenExpired: Block) {
         mRenewAuthTokenCall = service.renewAuthToken(
             apikey = client.key,
             userToken = userToken
@@ -105,6 +107,8 @@ class AuthService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object: TypeToken<Response<UserAuthTokenJSON>>() {}.type

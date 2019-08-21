@@ -73,7 +73,10 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun sellTickets(request: SellTickets, onSuccess: (SellTicketsJSON) -> Unit, onError: ErrorBlock) {
+    fun sellTickets(request: SellTickets,
+                    onSuccess: (SellTicketsJSON) -> Unit,
+                    onError: ErrorBlock,
+                    onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mSellTicketsCall = service.sellTickets(
@@ -94,6 +97,8 @@ class POSService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<ResponseSellTickets>() {}.type
@@ -107,7 +112,10 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun printTickets(request: PrintTickets, onSuccess: (PrintTicketsJSON) -> Unit, onError: ErrorBlock) {
+    fun printTickets(request: PrintTickets,
+                     onSuccess: (PrintTicketsJSON) -> Unit,
+                     onError: ErrorBlock,
+                     onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mPrintTicketsCall = service.printTickets(
@@ -128,6 +136,8 @@ class POSService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<ResponsePrintTickets>() {}.type
@@ -141,7 +151,10 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun postPrintLog(request: PrintTickets, onSuccess: Block = {}, onError: ErrorBlock = {}) {
+    fun postPrintLog(request: PrintTickets,
+                     onSuccess: Block = {},
+                     onError: ErrorBlock = {},
+                     onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mPrintTicketsCall = service.postPrintHistoryLog(
@@ -157,6 +170,7 @@ class POSService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<ResponsePrintLog>() {}.type
@@ -170,7 +184,10 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getPlannerAttributes(request: PlannerAttributes, onSuccess: (PlannerAttributesJSON) -> Unit, onError: ErrorBlock) {
+    fun getPlannerAttributes(request: PlannerAttributes,
+                             onSuccess: (PlannerAttributesJSON) -> Unit,
+                             onError: ErrorBlock,
+                             onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mGetPlannerAttributesCall = service.getPlannerAttributes(
@@ -190,6 +207,8 @@ class POSService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<PlannerAttributesJSON>>() {}.type

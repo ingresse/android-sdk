@@ -10,6 +10,7 @@ import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Search
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.FriendsFromSearch
 import com.ingresse.sdk.model.response.FriendsFromSearchJSON
@@ -73,7 +74,8 @@ class SearchService(private val client: IngresseClient) {
                      request: EventSearch,
                      onSuccess: (ArrayList<Source<EventJSON>>, Int) -> Unit,
                      onError: (APIError) -> Unit,
-                     onConnectionError: (error: Throwable) -> Unit) {
+                     onConnectionError: (error: Throwable) -> Unit,
+                     onTokenExpired: Block) {
         val call = service.getEvents(
             title = request.title,
             state = request.state,
@@ -112,6 +114,8 @@ class SearchService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object: TypeToken<ResponseHits<EventJSON>?>() {}.type

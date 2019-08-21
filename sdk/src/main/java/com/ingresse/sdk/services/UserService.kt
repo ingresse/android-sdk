@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.*
 import com.ingresse.sdk.model.response.*
@@ -96,7 +97,10 @@ class UserService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getUserData(request: UserData, onSuccess: (UserDataJSON) -> Unit, onError: ErrorBlock) {
+    fun getUserData(request: UserData,
+                    onSuccess: (UserDataJSON) -> Unit,
+                    onError: ErrorBlock,
+                    onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val fields = listOf("id", "name", "lastname",
@@ -127,6 +131,8 @@ class UserService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<UserDataJSON>>() {}.type
@@ -140,7 +146,10 @@ class UserService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun updateBasicInfos(request: UserBasicInfos, onSuccess: (UserUpdatedDataJSON) -> Unit, onError: ErrorBlock) {
+    fun updateBasicInfos(request: UserBasicInfos,
+                         onSuccess: (UserUpdatedDataJSON) -> Unit,
+                         onError: ErrorBlock,
+                         onTokenExpired: Block) {
         mUpdateBasicInfosCall = service.updateBasicInfos(
                 userId = request.userId,
                 apikey = client.key,
@@ -179,6 +188,8 @@ class UserService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<UserUpdatedJSON>>() {}.type
@@ -198,7 +209,8 @@ class UserService(private val client: IngresseClient) {
                            request: UserTicketsData,
                            onSuccess: (Array<UserTicketsJSON>) -> Unit,
                            onError: ErrorBlock,
-                           onConnectionError: (error: Throwable) -> Unit) {
+                           onConnectionError: (error: Throwable) -> Unit,
+                           onTokenExpired: Block) {
 
         val call = service.getUserTickets(
                 userId = request.userId,
@@ -231,6 +243,8 @@ class UserService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<Array<UserTicketsJSON>>?>() {}.type
@@ -248,7 +262,8 @@ class UserService(private val client: IngresseClient) {
     fun getEventAttributes(request: EventAttributes,
                            onSuccess: (EventAttributesJSON) -> Unit,
                            onError: ErrorBlock,
-                           onConnectionError: (error: Throwable) -> Unit) {
+                           onConnectionError: (error: Throwable) -> Unit,
+                           onTokenExpired: Block) {
 
         var call = service.getEventAttributes(
                 eventId = request.eventId,
@@ -272,6 +287,8 @@ class UserService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
         val type = object : TypeToken<Response<EventAttributesJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
@@ -289,7 +306,8 @@ class UserService(private val client: IngresseClient) {
                         request: WalletEvents,
                         onSuccess: (Array<WalletEventJSON>) -> Unit,
                         onError: ErrorBlock,
-                        onConnectionError: (error: Throwable) -> Unit) {
+                        onConnectionError: (error: Throwable) -> Unit,
+                        onTokenExpired: Block) {
 
         val call = service.getWalletEvents(
                 apikey = client.key,
@@ -324,6 +342,8 @@ class UserService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
         val type = object : TypeToken<Response<Array<WalletEventJSON>>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))

@@ -6,4 +6,5 @@ interface IngresseCallback<T> {
     fun onSuccess(data: T?)
     fun onError(error: APIError)
     fun onRetrofitError(error: Throwable)
+    fun onTokenExpired()
 }

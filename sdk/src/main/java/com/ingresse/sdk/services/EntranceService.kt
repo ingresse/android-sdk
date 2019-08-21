@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.model.response.GuestJSON
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.helper.guard
 import com.ingresse.sdk.model.request.GuestList
@@ -67,7 +68,12 @@ class EntranceService(private val client: IngresseClient) {
         mConcurrentCalls.clear()
     }
 
-    fun getGuestList(concurrent: Boolean = false, request: GuestList, onSuccess: (Array<GuestJSON>) -> Unit, onError: ErrorBlock, onNetworkFail: (String) -> Unit) {
+    fun getGuestList(concurrent: Boolean = false,
+                     request: GuestList,
+                     onSuccess: (Array<GuestJSON>) -> Unit,
+                     onError: ErrorBlock,
+                     onNetworkFail: (String) -> Unit,
+                     onTokenExpired: Block) {
         val call = service.getEventGuestList(
                 apikey = client.key,
                 eventId = request.eventId,
@@ -101,6 +107,8 @@ class EntranceService(private val client: IngresseClient) {
                 if (!concurrent) mGuestListCall = null else mConcurrentCalls.remove(call)
                 onNetworkFail(error.localizedMessage)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object: TypeToken<Response<Array<GuestJSON>>>() {}.type

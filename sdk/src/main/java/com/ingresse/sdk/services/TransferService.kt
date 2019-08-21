@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.FriendsFromSearch
 import com.ingresse.sdk.model.request.RecentTransfers
@@ -84,7 +85,8 @@ class TransferService(private val client: IngresseClient) {
                              request: UserTransfersData,
                              onSuccess: (Array<UserTransfersJSON>) -> Unit,
                              onError: ErrorBlock,
-                             onConnectionError: (error: Throwable) -> Unit) {
+                             onConnectionError: (error: Throwable) -> Unit,
+                             onTokenExpired: Block) {
 
         var call = service.getUserTransfers(
             userId = request.userId,
@@ -118,6 +120,8 @@ class TransferService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<Array<UserTransfersJSON>>?>() {}.type
@@ -135,7 +139,8 @@ class TransferService(private val client: IngresseClient) {
     fun getRecentTransfersData(request: RecentTransfers,
                                onSuccess: (List<RecentTransfersJSON>) -> Unit,
                                onError: ErrorBlock,
-                               onConnectionError: (error: Throwable) -> Unit) {
+                               onConnectionError: (error: Throwable) -> Unit,
+                               onTokenExpired: Block) {
 
         var call = service.getRecentTransfers(
             userId = request.userId,
@@ -160,6 +165,8 @@ class TransferService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<List<RecentTransfersJSON>>?>() {}.type
@@ -177,7 +184,8 @@ class TransferService(private val client: IngresseClient) {
     fun getFriendsFromSearch(request: FriendsFromSearch,
                              onSuccess: (List<FriendsFromSearchJSON>) -> Unit,
                              onError: ErrorBlock,
-                             onConnectionError: (error: Throwable) -> Unit) {
+                             onConnectionError: (error: Throwable) -> Unit,
+                             onTokenExpired: Block) {
 
         var call = service.getFriendsFromSearch(
             term = request.term,
@@ -201,6 +209,8 @@ class TransferService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<List<FriendsFromSearchJSON>>?>() {}.type
