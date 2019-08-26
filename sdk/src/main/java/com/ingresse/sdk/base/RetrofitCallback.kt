@@ -24,9 +24,7 @@ class RetrofitObserver<T>(val type: Type, val callback: IngresseCallback<T>): Si
         }
 
         if (t.contains(AUTHTOKEN_EXPIRED, true)){
-            val apiError = APIError.Builder().setMessage("expired")
-            callback.onError(apiError.build())
-            return
+            return callback.onTokenExpired()
         }
 
         if (!t.contains(ERROR_PREFIX)) {
@@ -67,9 +65,7 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
         if (responseCode != TOO_MANY_REQUESTS.code && responseCode != UNAUTHORIZED.code) {
                 if (!errorBody.isNullOrEmpty()) {
                     if (errorBody.contains(AUTHTOKEN_EXPIRED, true)) {
-                        val apiError = APIError.Builder().setMessage("expired")
-                        callback.onError(apiError.build())
-                        return
+                        return callback.onTokenExpired()
                     }
 
                     try {
@@ -101,19 +97,19 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
             }
         }
 
-        if(responseCode == TOO_MANY_REQUESTS.code) {
+        if (responseCode == TOO_MANY_REQUESTS.code) {
             callback.onError(APIError.Builder()
                     .setCode(TOO_MANY_REQUESTS.code)
-                    .setError("")
-                    .setCategory("")
                     .build())
             return
         }
 
-        var errorResponse = if(responseCode == UNAUTHORIZED.code) {
-            gson.fromJson(errorBody, Error::class.java)
-        } else {
-            gson.fromJson(body, Error::class.java)
+        val errorResponse: Error
+
+        errorResponse = when {
+            responseCode != UNAUTHORIZED.code -> gson.fromJson(body, Error::class.java)
+            errorBody?.contains(AUTHTOKEN_EXPIRED) == true -> return callback.onTokenExpired()
+            else -> gson.fromJson(errorBody, Error::class.java)
         }
 
         val errorData = errorResponse.responseError

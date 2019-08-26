@@ -68,7 +68,12 @@ class TicketStatusService(val client: IngresseClient, timeout: Long = 2) {
      * @param onError - error callback
      * @param onTimeout - network failure
      */
-    fun getTicketStatus(request: TicketStatus, onValid: Block, onValidated: (status: CheckinStatusJSON) -> Unit, onError: ErrorBlock, onTimeout: Block) {
+    fun getTicketStatus(request: TicketStatus,
+                        onValid: Block,
+                        onValidated: (status: CheckinStatusJSON) -> Unit,
+                        onError: ErrorBlock,
+                        onTimeout: Block,
+                        onTokenExpired: Block) {
         val call = service.getCheckinStatus(request.code, client.key, request.userToken)
         mCurrentCall = call
 
@@ -86,6 +91,7 @@ class TicketStatusService(val client: IngresseClient, timeout: Long = 2) {
 
             override fun onError(error: APIError) = onError(error)
             override fun onRetrofitError(error: Throwable) = onTimeout()
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object: TypeToken<Response<Array<CheckinSessionJSON>>>() {}.type

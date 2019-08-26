@@ -9,6 +9,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.CashClosing
 import com.ingresse.sdk.model.response.CashClosingJSON
@@ -45,7 +46,7 @@ class BalanceService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getCashClosing(request: CashClosing, onSuccess: (CashClosingJSON) -> Unit, onError: ErrorBlock) {
+    fun getCashClosing(request: CashClosing, onSuccess: (CashClosingJSON) -> Unit, onError: ErrorBlock, onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call = service.getCashClosing(
@@ -68,6 +69,8 @@ class BalanceService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<ResponseType>() {}.type

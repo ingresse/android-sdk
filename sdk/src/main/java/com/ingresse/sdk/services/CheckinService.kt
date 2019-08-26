@@ -68,7 +68,8 @@ class CheckinService(private val client: IngresseClient) {
                 onSuccess: (tickets: List<GuestCheckinJSON>) -> Unit,
                 onFail: (tickets: List<GuestCheckinJSON>) -> Unit,
                 onError: ErrorBlock,
-                onNetworkFail: (String) -> Unit) {
+                onNetworkFail: (String) -> Unit,
+                onTokenExpired: Block) {
 
         val call = service.checkin(
                 apiKey = client.key,
@@ -98,6 +99,8 @@ class CheckinService(private val client: IngresseClient) {
             override fun onRetrofitError(error: Throwable) {
                 onNetworkFail(error.localizedMessage)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }))
 
         mConcurrentCalls.add(observer)
@@ -107,7 +110,8 @@ class CheckinService(private val client: IngresseClient) {
                       onSuccess: (GuestCheckinJSON) -> Unit,
                       onFail: (ticket: GuestCheckinJSON, reason: CheckinStatus) -> Unit,
                       onError: ErrorBlock,
-                      onTimeout: Block) {
+                      onTimeout: Block,
+                      onTokenExpired: Block) {
 
         val call = service.checkin(
                 apiKey = client.key,
@@ -129,6 +133,7 @@ class CheckinService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) = onError(error)
             override fun onRetrofitError(error: Throwable) = onTimeout()
+            override fun onTokenExpired() = onTokenExpired()
         }))
     }
 }

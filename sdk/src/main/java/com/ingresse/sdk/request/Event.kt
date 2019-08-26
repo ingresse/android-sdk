@@ -26,6 +26,6 @@ interface Event {
      * Get event description
      */
     @GET("/{eventId}")
-    fun getEventDescription(@Path("eventId") eventId: String,
-                            @Query("fields") fields: String = "description"): Call<String>
+    fun getEventField(@Path("eventId") eventId: String,
+                      @Query("fields") fields: String): Call<String>
 }

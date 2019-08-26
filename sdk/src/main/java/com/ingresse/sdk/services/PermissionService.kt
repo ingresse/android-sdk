@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.SalesGroup
 import com.ingresse.sdk.model.response.SalesGroupJSON
@@ -52,7 +53,10 @@ class PermissionService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getSalesGroup(request: SalesGroup, onSuccess: (DataArray<SalesGroupJSON>) -> Unit, onError: ErrorBlock) {
+    fun getSalesGroup(request: SalesGroup,
+                      onSuccess: (DataArray<SalesGroupJSON>) -> Unit,
+                      onError: ErrorBlock,
+                      onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mSalesGroupCall = service.getSalesGroup(
@@ -73,6 +77,8 @@ class PermissionService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<SalesGroupResponse>() {}.type
