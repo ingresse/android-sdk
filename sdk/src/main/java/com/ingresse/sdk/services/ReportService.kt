@@ -9,6 +9,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.model.request.SalesTimeline
 import com.ingresse.sdk.model.request.SessionDashboard
 import com.ingresse.sdk.model.request.VisitsReport
@@ -74,7 +75,8 @@ class ReportService(private val client: IngresseClient) {
     fun getVisitsReport(request: VisitsReport,
                         onSuccess: (VisitsReportJSON) -> Unit,
                         onError: (APIError) -> Unit,
-                        onConnectionError: (Throwable) -> Unit) {
+                        onConnectionError: (Throwable) -> Unit,
+                        onTokenExpired: Block) {
         mGetVisitsReportService = service.getVisitsReport(
                 eventId = request.eventId,
                 userToken = request.userToken,
@@ -98,6 +100,8 @@ class ReportService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<VisitsReportJSON>?>() {}.type
@@ -112,7 +116,11 @@ class ReportService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getSessionDashboard(request: SessionDashboard, onSuccess: (SessionDashboardJSON) -> Unit, onError: (APIError) -> Unit, onNetworkFailure: (String) -> Unit) {
+    fun getSessionDashboard(request: SessionDashboard,
+                            onSuccess: (SessionDashboardJSON) -> Unit,
+                            onError: (APIError) -> Unit,
+                            onNetworkFailure: (String) -> Unit,
+                            onTokenExpired: Block) {
 
         mGetSessionDashboardCall = service.getSessionDashboard(
                 apikey = client.key,
@@ -129,6 +137,7 @@ class ReportService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) = onError(error)
             override fun onRetrofitError(error: Throwable) = onNetworkFailure(error.localizedMessage)
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<ResponseSessionDashboard>() {}.type
@@ -142,7 +151,11 @@ class ReportService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getSalesTimeline(request: SalesTimeline, onSuccess: (SalesTimelineJSON) -> Unit, onError: (APIError) -> Unit, onNetworkFailure: (String) -> Unit) {
+    fun getSalesTimeline(request: SalesTimeline,
+                         onSuccess: (SalesTimelineJSON) -> Unit,
+                         onError: (APIError) -> Unit,
+                         onNetworkFailure: (String) -> Unit,
+                         onTokenExpired: Block) {
 
         mGetSalesTimelineCall = service.getSalesTimeline(
                 apikey = client.key,
@@ -161,6 +174,7 @@ class ReportService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) = onError(error)
             override fun onRetrofitError(error: Throwable) = onNetworkFailure(error.localizedMessage)
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<ResponseSalesTimeline>() {}.type

@@ -7,6 +7,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.CreateTransfer
 import com.ingresse.sdk.model.request.EventTicket
@@ -78,7 +79,8 @@ class TicketService(private val client: IngresseClient) {
     fun getEventTickets(request: EventTicket = EventTicket(),
                         onSuccess: (Array<TicketGroupJSON>) -> Unit,
                         onError: ErrorBlock,
-                        onConnectionError: (error: Throwable) -> Unit) {
+                        onConnectionError: (error: Throwable) -> Unit,
+                        onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mGetEventTicketsCall = service.getEventTickets(
@@ -103,6 +105,8 @@ class TicketService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<Array<TicketGroupJSON>>?>() {}.type
@@ -120,7 +124,8 @@ class TicketService(private val client: IngresseClient) {
     fun createTransfer(request: CreateTransfer,
                        onSuccess: (CreateTransferJSON) -> Unit,
                        onError: ErrorBlock,
-                       onConnectionError: (error: Throwable) -> Unit) {
+                       onConnectionError: (error: Throwable) -> Unit,
+                       onTokenExpired: Block) {
 
         var call = service.createTransfer(
             ticketId = request.ticketId,
@@ -145,6 +150,8 @@ class TicketService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<CreateTransferJSON>?>() {}.type
@@ -162,7 +169,8 @@ class TicketService(private val client: IngresseClient) {
     fun updateTransfer(request: UpdateTransfer,
                        onSuccess: (UpdateTransferJSON) -> Unit,
                        onError: ErrorBlock,
-                       onConnectionError: (error: Throwable) -> Unit) {
+                       onConnectionError: (error: Throwable) -> Unit,
+                       onTokenExpired: Block) {
 
         var call = service.updateTransfer(
             ticketId = request.ticketId,
@@ -187,6 +195,8 @@ class TicketService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<UpdateTransferJSON>?>() {}.type
@@ -205,7 +215,8 @@ class TicketService(private val client: IngresseClient) {
                                  onSuccess: (AuthenticationUserDeviceJSON) -> Unit,
                                  onOtpRequired: (otpRequired: Int) -> Unit,
                                  onError: (APIError) -> Unit,
-                                 onConnectionError: (error: Throwable) -> Unit) {
+                                 onConnectionError: (error: Throwable) -> Unit,
+                                 onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mAuthenticationUserDeviceCall = service.authenticationUserDevice(
@@ -237,6 +248,7 @@ class TicketService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<AuthenticationUserDeviceJSON>?>() {}.type

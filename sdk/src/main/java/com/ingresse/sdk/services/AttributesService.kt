@@ -86,6 +86,8 @@ class AttributesService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<DataArray<EventAttributesJSON>>() {}.type
@@ -99,7 +101,7 @@ class AttributesService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun updateEventAttributes(request: UpdateEventAttribute, onSuccess: Block, onError: ErrorBlock, onNetworkError: Block) {
+    fun updateEventAttributes(request: UpdateEventAttribute, onSuccess: Block, onError: ErrorBlock, onNetworkError: Block, onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call = service.updateEventAttributes(
@@ -118,6 +120,7 @@ class AttributesService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Ignored>() {}.type

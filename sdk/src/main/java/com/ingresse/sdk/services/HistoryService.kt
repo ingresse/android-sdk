@@ -10,6 +10,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.model.request.CheckinHistory
 import com.ingresse.sdk.model.response.CheckinHistoryJSON
 import com.ingresse.sdk.request.History
@@ -55,7 +56,8 @@ class HistoryService(private val client: IngresseClient) {
     fun getTicketCheckinHistory(request: CheckinHistory,
                                 onSuccess: (List<CheckinHistoryJSON>) -> Unit,
                                 onError: (APIError) -> Unit,
-                                onConnectionError: (Throwable) -> Unit) {
+                                onConnectionError: (Throwable) -> Unit,
+                                onTokenExpired: Block) {
         mGetCheckinHistoryCall = service.getCheckinHistory(
                 apikey = client.key,
                 ticketCode = request.ticketCode,
@@ -77,6 +79,8 @@ class HistoryService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<DataArray<CheckinHistoryJSON>?>>() {}.type
