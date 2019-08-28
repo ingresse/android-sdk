@@ -1,81 +1,67 @@
 package com.ingresse.sdk.model.response
 
 data class UserTransfersJSON(
-    val id: Int? = 0,
-    val event: EventUserTransfersJSON? = null,
-    val session: SessionUserTransfersJSON? = null,
-    val venue: VenueUserTransfersJSON? = null,
-    val ticket: TicketUserTransfersJSON? = null,
-    val receivedFrom: ReceiverUserTransfersJSON? = null,
-    val sessions: SessionsJSON? = null
-)
+        val id: Long? = 0,
+        val event: EventUserTransfersJSON? = null,
+        val session: TransferSessionDateJSON? = null,
+        val venue: VenueUserTransfersJSON? = null,
+        val ticket: TicketUserTransfersJSON? = null,
+        val receivedFrom: ReceiverUserTransfersJSON? = null,
+        val sessions: SessionsJSON? = null)
 
 data class EventUserTransfersJSON(
-    val id: Int? = 0,
-    val title: String? = "",
-    val type: String? = "",
-    val status: String? = "",
-    val saleEnabled: Boolean? = false,
-    val link: String? = "",
-    val poster: String? = ""
-)
+        val id: Int? = 0,
+        val title: String? = "",
+        val type: String? = "",
+        val status: String? = "",
+        val saleEnabled: Boolean? = false,
+        val link: String? = "",
+        val poster: String? = "")
 
-data class SessionUserTransfersJSON(
-    val id: Int? = 0,
-    val datetime: String? = ""
-)
+data class TransferSessionDateJSON(
+        val id: Int? = 0,
+        val datetime: String? = "")
 
 data class VenueUserTransfersJSON(
-    val id: Int? = 0,
-    val name: String? = "",
-    val street: String? = "",
-    val crossStreet: String? = "",
-    val zipCode: String? = "",
-    val city: String? = "",
-    val state: String? = "",
-    val country: String? = "",
-    val latitude: Double? = 0.0,
-    val longitude: Double? = 0.0,
-    val hidden: Boolean? = false,
-    val complement: String? = ""
-)
+        val id: Int? = 0,
+        val name: String? = "",
+        val street: String? = "",
+        val crossStreet: String? = "",
+        val zipCode: String? = "",
+        val city: String? = "",
+        val state: String? = "",
+        val country: String? = "",
+        val latitude: Double? = 0.0,
+        val longitude: Double? = 0.0,
+        val hidden: Boolean? = false,
+        val complement: String? = "")
 
 data class TicketUserTransfersJSON(
-    val id: Int? = 0,
-    val guestTypeId: Int? = 0,
-    val ticketTypeId: Int? = 0,
-    val name: String? = "",
-    val type: String? = "",
-    val description: String? = ""
-)
+        val id: Long? = 0,
+        val guestTypeId: Int? = 0,
+        val ticketTypeId: Int? = 0,
+        val name: String? = "",
+        val type: String? = "",
+        val description: String? = "")
 
 data class ReceiverUserTransfersJSON(
-    val transferId: Int? = 0,
-    val userId: Int? = 0,
-    val email: String? = "",
-    val name: String? = "",
-    val type: String? = "",
-    val status: String? = "",
-    val history: Array<TransfersHistoryJSON>? = emptyArray(),
-    val socialId: Array<UserSocialTransfersJSON>? = emptyArray(),
-    val picture: String? = ""
-)
+        val transferId: Long? = 0,
+        val userId: Int? = 0,
+        val email: String? = "",
+        val name: String? = "",
+        val type: String? = "",
+        val status: String? = "",
+        val history: Array<TransfersHistoryJSON>? = emptyArray(),
+        val socialId: Array<UserSocialTransfersJSON>? = emptyArray(),
+        val picture: String? = "")
 
 data class TransfersHistoryJSON(
-    val status: String? = "",
-    val creationDate: String? = ""
-)
+        val status: String? = "",
+        val creationDate: String? = "")
 
 data class UserSocialTransfersJSON(
-    val id: String? = "",
-    val network: String? = ""
-)
+        val id: String? = "",
+        val network: String? = "")
 
 data class SessionsJSON(
-    val data: Array<DateJSON>? = emptyArray()
-)
-
-data class DateJSON(
-    val id: Int? = 0,
-    val datetime: String? = ""
-)
+        val data: Array<TransferSessionDateJSON>? = emptyArray())
