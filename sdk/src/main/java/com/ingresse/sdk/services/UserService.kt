@@ -315,8 +315,8 @@ class UserService(private val client: IngresseClient) {
                         onSuccess: (Array<WalletEventJSON>) -> Unit,
                         onError: ErrorBlock,
                         onConnectionError: (error: Throwable) -> Unit,
-                        onTokenExpired: Block) {
-                        onCanceledCall: (() -> Unit)? = null) -> Unit) {
+                        onTokenExpired: Block,
+                        onCanceledCall: (() -> Unit)? = null) {
 
         val call = service.getWalletEvents(
                 apikey = client.key,

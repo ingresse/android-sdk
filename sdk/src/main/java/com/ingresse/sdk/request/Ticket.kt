@@ -1,6 +1,5 @@
 package com.ingresse.sdk.request
 
-import com.ingresse.sdk.model.request.TransferActionParams
 import retrofit2.Call
 import retrofit2.http.*
 

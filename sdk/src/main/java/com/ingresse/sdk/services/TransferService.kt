@@ -238,7 +238,8 @@ class TransferService(private val client: IngresseClient) {
     fun updateTransfer(request: UpdateTransfer,
                        onSuccess: (UpdateTransferJSON) -> Unit,
                        onError: (APIError) -> Unit,
-                       onConnectionError: (error: Throwable) -> Unit) {
+                       onConnectionError: (error: Throwable) -> Unit,
+                       onTokenExpired: Block) {
 
         val call = service.updateTransfer(
                 ticketId = request.ticketId,
@@ -249,6 +250,8 @@ class TransferService(private val client: IngresseClient) {
         )
 
         val callback = object: IngresseCallback<Response<UpdateTransferJSON>?> {
+            override fun onTokenExpired() = onTokenExpired()
+
             override fun onSuccess(data: Response<UpdateTransferJSON>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)

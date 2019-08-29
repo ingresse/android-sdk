@@ -158,50 +158,50 @@ class TicketService(private val client: IngresseClient) {
         call.enqueue(RetrofitCallback(type, callback))
     }
 
-    /**
-     * Update ticket transfer
-     *
-     * @param request - parameters required to request
-     * @param onSuccess - success callback
-     * @param onError - error callback
-     * @param onConnectionError - connection error callback
-     */
-    fun updateTransfer(request: UpdateTransfer,
-                       onSuccess: (UpdateTransferJSON) -> Unit,
-                       onError: ErrorBlock,
-                       onConnectionError: (error: Throwable) -> Unit,
-                       onTokenExpired: Block) {
-
-        var call = service.updateTransfer(
-            ticketId = request.ticketId,
-            transferId = request.transferId,
-            apikey = client.key,
-            userToken = request.userToken,
-            params = request.params
-        )
-
-        val callback = object: IngresseCallback<Response<UpdateTransferJSON>?> {
-            override fun onSuccess(data: Response<UpdateTransferJSON>?) {
-                val response = data?.responseData ?: return onError(APIError.default)
-                onSuccess(response)
-            }
-
-            override fun onError(error: APIError) = onError(error)
-
-            override fun onRetrofitError(error: Throwable) {
-                if (error is IOException) return onConnectionError(error)
-
-                val apiError = APIError()
-                apiError.message = error.localizedMessage
-                onError(apiError)
-            }
-
-            override fun onTokenExpired() = onTokenExpired()
-        }
-
-        val type = object : TypeToken<Response<UpdateTransferJSON>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
-    }
+//    /**
+//     * Update ticket transfer
+//     *
+//     * @param request - parameters required to request
+//     * @param onSuccess - success callback
+//     * @param onError - error callback
+//     * @param onConnectionError - connection error callback
+//     */
+//    fun updateTransfer(request: UpdateTransfer,
+//                       onSuccess: (UpdateTransferJSON) -> Unit,
+//                       onError: ErrorBlock,
+//                       onConnectionError: (error: Throwable) -> Unit,
+//                       onTokenExpired: Block) {
+//
+//        var call = service.updateTransfer(
+//            ticketId = request.ticketId,
+//            transferId = request.transferId,
+//            apikey = client.key,
+//            userToken = request.userToken,
+//            params = request.params
+//        )
+//
+//        val callback = object: IngresseCallback<Response<UpdateTransferJSON>?> {
+//            override fun onSuccess(data: Response<UpdateTransferJSON>?) {
+//                val response = data?.responseData ?: return onError(APIError.default)
+//                onSuccess(response)
+//            }
+//
+//            override fun onError(error: APIError) = onError(error)
+//
+//            override fun onRetrofitError(error: Throwable) {
+//                if (error is IOException) return onConnectionError(error)
+//
+//                val apiError = APIError()
+//                apiError.message = error.localizedMessage
+//                onError(apiError)
+//            }
+//
+//            override fun onTokenExpired() = onTokenExpired()
+//        }
+//
+//        val type = object : TypeToken<Response<UpdateTransferJSON>?>() {}.type
+//        call.enqueue(RetrofitCallback(type, callback))
+//    }
 
     /**
      * 2FA Authentication User Device
