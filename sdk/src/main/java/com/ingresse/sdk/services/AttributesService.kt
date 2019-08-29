@@ -2,10 +2,7 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.DataArray
-import com.ingresse.sdk.base.Ignored
-import com.ingresse.sdk.base.IngresseCallback
-import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.base.*
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
@@ -14,6 +11,7 @@ import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.EventAttributes
 import com.ingresse.sdk.model.request.UpdateEventAttribute
+import com.ingresse.sdk.model.response.EventAdvertisementJSON
 import com.ingresse.sdk.model.response.EventAttributesJSON
 import com.ingresse.sdk.request.Attributes
 import retrofit2.Call
@@ -125,5 +123,51 @@ class AttributesService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Ignored>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Get event attributes
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     */
+    fun getEventAdvertisement(request: EventAttributes,
+                              onSuccess: (EventAdvertisementJSON) -> Unit,
+                              onError: ErrorBlock,
+                              onNetworkError: Block,
+                              onTokenExpired: Block) {
+        if (client.authToken.isEmpty()) return onError(APIError.default)
+
+        val customFields = request.filters?.joinToString(",")
+
+        mGetEventAttributesCall = service.getEventAttributes(
+                eventId = request.eventId,
+                apikey = client.key,
+                filters = customFields)
+
+        val callback = object : IngresseCallback<DataJSON<EventAdvertisementJSON>?> {
+            override fun onSuccess(data: DataJSON<EventAdvertisementJSON>?) {
+                val response = data?.data ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) {
+                if (error.message == "expired") return onTokenExpired()
+                onError(error)
+            }
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onNetworkError()
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<DataArray<EventAttributesJSON>>() {}.type
+        mGetEventAttributesCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
