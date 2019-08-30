@@ -21,22 +21,25 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
 class AttributesService(private val client: IngresseClient) {
-    private var host = Host.EVENTS
-    private var service: Attributes
+    private lateinit var service: Attributes
 
     private var mGetEventAttributesCall: Call<String>? = null
 
     init {
+        initService()
+    }
+
+    fun initService(host: Host = Host.EVENTS) {
         val httpClient = ClientBuilder(client)
-            .addRequestHeaders()
-            .build()
+                .addRequestHeaders()
+                .build()
 
         val adapter = Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient)
-            .baseUrl(URLBuilder(host, client.environment).build())
-            .build()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
         service = adapter.create(Attributes::class.java)
     }
@@ -126,7 +129,7 @@ class AttributesService(private val client: IngresseClient) {
     }
 
     /**
-     * Get event attributes
+     * Get event advertisement attribute
      *
      * @param request - parameters required to request
      * @param onSuccess - success callback
@@ -139,16 +142,17 @@ class AttributesService(private val client: IngresseClient) {
                               onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        val customFields = request.filters?.joinToString(",")
+        initService(Host.API)
 
-        mGetEventAttributesCall = service.getEventAttributes(
+        mGetEventAttributesCall = service.getEventAdvertisement(
                 eventId = request.eventId,
                 apikey = client.key,
-                filters = customFields)
+                userToken = request.userToken,
+                filters = "advertisement")
 
-        val callback = object : IngresseCallback<DataJSON<EventAdvertisementJSON>?> {
-            override fun onSuccess(data: DataJSON<EventAdvertisementJSON>?) {
-                val response = data?.data ?: return onError(APIError.default)
+        val callback = object : IngresseCallback<Response<EventAdvertisementJSON>?> {
+            override fun onSuccess(data: Response<EventAdvertisementJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
@@ -167,7 +171,7 @@ class AttributesService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<DataArray<EventAttributesJSON>>() {}.type
+        val type = object : TypeToken<Response<EventAdvertisementJSON>>() {}.type
         mGetEventAttributesCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
