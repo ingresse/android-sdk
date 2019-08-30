@@ -18,6 +18,19 @@ interface Attributes {
                            @Query("filters") filters: String?): Call<String>
 
     /**
+     * Get event advertisement attribute
+     *
+     * @param eventId - id from event
+     * @param userToken - token of logged user
+     * @param filters - specific fields to advertisement attribute
+     */
+    @GET("/event/{eventId}/attributes")
+    fun getEventAdvertisement(@Path("eventId") eventId: String,
+                           @Query("apikey") apikey: String,
+                           @Query("usertoken") userToken: String,
+                           @Query("filters") filters: String?): Call<String>
+
+    /**
      * Update event attributes
      *
      * @param eventId - id from event
