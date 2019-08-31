@@ -4,11 +4,11 @@ data class EventAdvertisementJSON(
         val advertisement: AdvertisementJSON)
 
 data class AdvertisementJSON(
-        val mobile: MobileJSON)
+        val mobile: MobileJSON?)
 
 data class MobileJSON(
-        val background: BackgroundJSON,
-        val cover: CoverJSON)
+        val background: BackgroundJSON?,
+        val cover: CoverJSON?)
 
 data class BackgroundJSON(
         val image: String? = ""

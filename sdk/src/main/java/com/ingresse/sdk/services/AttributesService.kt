@@ -25,11 +25,9 @@ class AttributesService(private val client: IngresseClient) {
 
     private var mGetEventAttributesCall: Call<String>? = null
 
-    init {
-        initService()
-    }
+    init { initService() }
 
-    fun initService(host: Host = Host.EVENTS) {
+    private fun initService(host: Host = Host.EVENTS) {
         val httpClient = ClientBuilder(client)
                 .addRequestHeaders()
                 .build()
@@ -160,6 +158,7 @@ class AttributesService(private val client: IngresseClient) {
                 if (error.message == "expired") return onTokenExpired()
                 onError(error)
             }
+
             override fun onRetrofitError(error: Throwable) {
                 if (error is IOException) return onNetworkError()
 
