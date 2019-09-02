@@ -11,7 +11,7 @@ import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.EventAttributes
 import com.ingresse.sdk.model.request.UpdateEventAttribute
-import com.ingresse.sdk.model.response.EventAdvertisementJSON
+import com.ingresse.sdk.model.response.EventAttributesDataJSON
 import com.ingresse.sdk.model.response.EventAttributesJSON
 import com.ingresse.sdk.request.Attributes
 import retrofit2.Call
@@ -133,8 +133,8 @@ class AttributesService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun getEventAdvertisement(request: EventAttributes,
-                              onSuccess: (EventAdvertisementJSON) -> Unit,
+    fun getEventAttributesData(request: EventAttributes,
+                              onSuccess: (EventAttributesDataJSON) -> Unit,
                               onError: ErrorBlock,
                               onNetworkError: Block,
                               onTokenExpired: Block) {
@@ -146,10 +146,10 @@ class AttributesService(private val client: IngresseClient) {
                 eventId = request.eventId,
                 apikey = client.key,
                 userToken = request.userToken,
-                filters = "advertisement")
+                filters = request.filters?.joinToString(","))
 
-        val callback = object : IngresseCallback<Response<EventAdvertisementJSON>?> {
-            override fun onSuccess(data: Response<EventAdvertisementJSON>?) {
+        val callback = object : IngresseCallback<Response<EventAttributesDataJSON>?> {
+            override fun onSuccess(data: Response<EventAttributesDataJSON>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -170,7 +170,7 @@ class AttributesService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<EventAdvertisementJSON>>() {}.type
+        val type = object : TypeToken<Response<EventAttributesDataJSON>>() {}.type
         mGetEventAttributesCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
