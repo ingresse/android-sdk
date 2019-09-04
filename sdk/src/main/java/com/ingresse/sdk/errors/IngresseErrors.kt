@@ -24,7 +24,10 @@ object IngresseErrors {
             Pair("error_no_code", "Ocorreu um problema durante a solicitação. Entre em contato com o organizador do evento.")
     )
 
+    @JvmStatic
     fun getTitle(code: Int): String = errors.getProperty("title_$code", defaults["title"]!!)
+
+    @JvmStatic
     fun getError(code: Int): String {
         if (code == 0) return defaults["error_no_code"]!!
         return errors.getProperty(code.toString(), String.format(defaults["error"]!!, code))
