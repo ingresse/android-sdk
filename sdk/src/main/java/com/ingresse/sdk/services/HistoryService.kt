@@ -14,7 +14,7 @@ import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.model.request.CheckinHistory
 import com.ingresse.sdk.model.request.TransferHistory
 import com.ingresse.sdk.model.response.CheckinHistoryJSON
-import com.ingresse.sdk.model.response.TransferHistoryJSON
+import com.ingresse.sdk.model.response.TransferHistoryItemJSON
 import com.ingresse.sdk.request.History
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -104,17 +104,18 @@ class HistoryService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      */
     fun getTicketTransferHistory(request: TransferHistory,
-                                 onSuccess: (List<TransferHistoryJSON>) -> Unit,
+                                 onSuccess: (List<TransferHistoryItemJSON>) -> Unit,
                                  onError: (APIError) -> Unit,
-                                 onConnectionError: (Throwable) -> Unit) {
+                                 onConnectionError: (Throwable) -> Unit,
+                                 onTokenExpired: Block) {
         mGetTransferHistoryCall = service.getTransferHistory(
                 ticketId = request.ticketId,
                 apikey = client.key,
                 userToken = request.userToken
         )
 
-        val callback = object : IngresseCallback<Response<DataArray<TransferHistoryJSON>?>> {
-            override fun onSuccess(data: Response<DataArray<TransferHistoryJSON>?>?) {
+        val callback = object : IngresseCallback<Response<DataArray<TransferHistoryItemJSON>?>> {
+            override fun onSuccess(data: Response<DataArray<TransferHistoryItemJSON>?>?) {
                 val response = data?.responseData?.data ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -128,9 +129,11 @@ class HistoryService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<DataArray<TransferHistoryJSON>?>>() {}.type
+        val type = object : TypeToken<Response<DataArray<TransferHistoryItemJSON>?>>() {}.type
         mGetTransferHistoryCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
