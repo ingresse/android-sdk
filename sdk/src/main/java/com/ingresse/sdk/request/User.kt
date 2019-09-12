@@ -1,6 +1,7 @@
 package com.ingresse.sdk.request
 
 import com.ingresse.sdk.model.request.UserBasicInfos
+import com.ingresse.sdk.model.request.UserPlanner
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -30,6 +31,19 @@ interface User {
                          @Query("apikey") apikey: String,
                          @Query("usertoken") userToken: String,
                          @Body params: UserBasicInfos): Call<String>
+
+    /**
+     * Update planner infos
+     *
+     * @param userId - id from user
+     * @param userToken - token from user
+     * @param params - planner fields to update
+     */
+    @POST("/user/{userId}")
+    fun updateUserPlannerInfos(@Path("userId") userId: String,
+                               @Query("apikey") apikey: String,
+                               @Query("usertoken") userToken: String,
+                               @Body params: UserPlanner): Call<String>
 
     /**
      * Get cash closing for specified date offset
