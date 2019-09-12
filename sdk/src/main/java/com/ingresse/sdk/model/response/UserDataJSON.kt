@@ -43,4 +43,4 @@ data class UserPlannerJSON(
         val cpf: String? = "",
         val cnpj: String? = "",
         val openField1: String? = "",
-        val pictures: UserPicturesJSON?)
+        val pictures: Any? = null)
