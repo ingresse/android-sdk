@@ -1,5 +1,6 @@
 package com.ingresse.sdk.request
 
+import com.ingresse.sdk.model.request.ReturnTicketType
 import com.ingresse.sdk.model.request.TransferActionParams
 import retrofit2.Call
 import retrofit2.http.*
@@ -64,4 +65,17 @@ interface Transfer {
                        @Query("apikey") apikey: String,
                        @Query("usertoken") userToken: String,
                        @Body params: TransferActionParams): Call<String>
+
+    /**
+     * Return a ticket
+     *
+     * @param ticketId - Ticket id to update transfer
+     * @param userToken - User token
+     * @param type - for isReturn param
+     */
+    @POST("/ticket/{ticketId}/transfer")
+    fun returnTicket(@Path("ticketId") ticketId: Int,
+                     @Query("apikey") apikey: String,
+                     @Query("usertoken") userToken: String,
+                     @Body type: ReturnTicketType = ReturnTicketType()): Call<String>
 }
