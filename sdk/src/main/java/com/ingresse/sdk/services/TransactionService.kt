@@ -263,7 +263,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onError - error callback
      */
     fun getTransactionList(request: TransactionList,
-                           onSuccess: (Array<TransactionListJSON>) -> Unit,
+                           onSuccess: (Array<TransactionJSON>) -> Unit,
                            onError: ErrorBlock,
                            onTokenExpired: Block) {
         mGetTransactionListCall = service.getTransactionList(
@@ -277,8 +277,8 @@ class TransactionService(private val client: IngresseClient) {
                 status = request.status
         )
 
-        val callback = object : IngresseCallback<Response<Array<TransactionListJSON>>?> {
-            override fun onSuccess(data: Response<Array<TransactionListJSON>>?) {
+        val callback = object : IngresseCallback<Response<Array<TransactionJSON>>?> {
+            override fun onSuccess(data: Response<Array<TransactionJSON>>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -294,7 +294,7 @@ class TransactionService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<Array<TransactionListJSON>?>>() {}.type
+        val type = object : TypeToken<Response<Array<TransactionJSON>?>>() {}.type
         mGetTransactionListCall?.enqueue(RetrofitCallback(type, callback))
     }
 
@@ -308,7 +308,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      */
     fun getTransactions(request: Transactions,
-                        onSuccess: (Array<TransactionsJSON>) -> Unit,
+                        onSuccess: (Array<TransactionJSON>) -> Unit,
                         onError: ErrorBlock,
                         onCanceledCall: Block? = null,
                         onConnectionError: (Throwable) -> Unit,
@@ -331,8 +331,8 @@ class TransactionService(private val client: IngresseClient) {
                 order = request.order
         )
 
-        val callback = object : IngresseCallback<Response<Array<TransactionsJSON>>?> {
-            override fun onSuccess(data: Response<Array<TransactionsJSON>>?) {
+        val callback = object : IngresseCallback<Response<Array<TransactionJSON>>?> {
+            override fun onSuccess(data: Response<Array<TransactionJSON>>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -355,7 +355,7 @@ class TransactionService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<Array<TransactionsJSON>>?>() {}.type
+        val type = object : TypeToken<Response<Array<TransactionJSON>>?>() {}.type
         mGetTransactionsCall?.enqueue(RetrofitCallback(type, callback))
     }
 
@@ -368,7 +368,7 @@ class TransactionService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      */
     fun getDetails(request: TransactionDetails,
-                   onSuccess: (TransactionsJSON) -> Unit,
+                   onSuccess: (TransactionJSON) -> Unit,
                    onError: ErrorBlock,
                    onConnectionError: (Throwable) -> Unit,
                    onTokenExpired: Block) {
@@ -378,8 +378,8 @@ class TransactionService(private val client: IngresseClient) {
                 apikey = client.key
         )
 
-        val callback = object : IngresseCallback<Response<TransactionsJSON>?> {
-            override fun onSuccess(data: Response<TransactionsJSON>?) {
+        val callback = object : IngresseCallback<Response<TransactionJSON>?> {
+            override fun onSuccess(data: Response<TransactionJSON>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -397,7 +397,7 @@ class TransactionService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<TransactionsJSON>?>() {}.type
+        val type = object : TypeToken<Response<TransactionJSON>?>() {}.type
         mGetDetailsCall?.enqueue(RetrofitCallback(type, callback))
     }
 
