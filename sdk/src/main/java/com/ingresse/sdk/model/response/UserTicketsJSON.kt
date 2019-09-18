@@ -48,15 +48,15 @@ data class EventVenueJSON(
 )
 
 data class HolderJSON(
-    val transferId: Int? = 0,
-    val userId: Int? = 0,
-    val email: String? = "",
-    val name: String? = "",
-    val type: String? = "",
-    val status: String? = "",
-    val history: List<TransferHistoryJSON>? = emptyList(),
-    val socialId: Array<UserSocialJSON>? = emptyArray(),
-    val picture: String? = ""
+        val transferId: Int? = 0,
+        val userId: Int? = 0,
+        val email: String? = "",
+        val name: String? = "",
+        val type: String? = "",
+        val status: String? = "",
+        val history: List<TransferHistoryJSON>? = emptyList(),
+        val socialId: Array<UserSocialJSON>? = emptyArray(),
+        val picture: String? = ""
 )
 
 data class UserSocialJSON(
