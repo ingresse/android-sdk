@@ -4,5 +4,6 @@ data class UserTicketsData(
     var userId: String = "",
     var page: Int? = 1,
     var pageSize: Int? = 50,
+    var eventId: Int? = null,
     var userToken: String = ""
 )
