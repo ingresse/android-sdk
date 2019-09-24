@@ -220,6 +220,7 @@ class UserService(private val client: IngresseClient) {
                 apikey = client.key,
                 page = request.page,
                 pageSize = request.pageSize,
+                eventId = request.eventId,
                 token = request.userToken
         )
 
