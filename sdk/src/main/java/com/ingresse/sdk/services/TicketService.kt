@@ -127,7 +127,7 @@ class TicketService(private val client: IngresseClient) {
                        onConnectionError: (error: Throwable) -> Unit,
                        onTokenExpired: Block) {
 
-        var call = service.createTransfer(
+        val call = service.createTransfer(
             ticketId = request.ticketId,
             apikey = client.key,
             userToken = request.userToken,
@@ -172,7 +172,7 @@ class TicketService(private val client: IngresseClient) {
                        onConnectionError: (error: Throwable) -> Unit,
                        onTokenExpired: Block) {
 
-        var call = service.updateTransfer(
+        val call = service.updateTransfer(
             ticketId = request.ticketId,
             transferId = request.transferId,
             apikey = client.key,

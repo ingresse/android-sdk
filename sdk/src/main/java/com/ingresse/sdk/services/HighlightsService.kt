@@ -2,15 +2,16 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.*
 import com.ingresse.sdk.base.Array
+import com.ingresse.sdk.base.IngresseCallback
+import com.ingresse.sdk.base.Response
+import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.model.request.HighlightEvents
-import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.model.response.HighlightEventJSON
 import com.ingresse.sdk.request.Highlight
 import retrofit2.Call

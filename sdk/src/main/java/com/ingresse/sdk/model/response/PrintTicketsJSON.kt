@@ -1,7 +1,7 @@
 package com.ingresse.sdk.model.response
 
 data class PrintTicketsJSON(
-    var data: Array<TicketToPrint> = emptyArray())
+    var data: List<TicketToPrint> = emptyList())
 
 data class TicketToPrint(
     var eventAddress: String = "",

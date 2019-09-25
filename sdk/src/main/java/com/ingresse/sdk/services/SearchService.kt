@@ -2,24 +2,24 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.*
+import com.ingresse.sdk.base.IngresseCallback
+import com.ingresse.sdk.base.ResponseHits
+import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.base.Source
 import com.ingresse.sdk.builders.ClientBuilder
+import com.ingresse.sdk.builders.Host
+import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
+import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.model.request.EventSearch
 import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Search
-import com.ingresse.sdk.builders.Host
-import com.ingresse.sdk.builders.URLBuilder
-import com.ingresse.sdk.helper.Block
-import com.ingresse.sdk.helper.ErrorBlock
-import com.ingresse.sdk.model.request.FriendsFromSearch
-import com.ingresse.sdk.model.response.FriendsFromSearchJSON
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
-class SearchService(private val client: IngresseClient) {
+class SearchService(client: IngresseClient) {
     private val service: Search
     private var cancelAllCalled = false
 

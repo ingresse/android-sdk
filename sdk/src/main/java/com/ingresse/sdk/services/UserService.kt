@@ -334,7 +334,7 @@ class UserService(private val client: IngresseClient) {
                            onConnectionError: (error: Throwable) -> Unit,
                            onTokenExpired: Block) {
 
-        var call = service.getEventAttributes(
+        val call = service.getEventAttributes(
                 eventId = request.eventId,
                 apikey = client.key,
                 userToken = request.userToken,

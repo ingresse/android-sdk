@@ -10,7 +10,7 @@ interface Transfer {
      * @param userId id from user
      * @param page - page from user ticket
      * @param pageSize - size of user ticket page
-     * @param usertoken - token from user
+     * @param token - token from user
      * @param status - user transfers status
      */
     @GET("/user/{userId}/transfers")

@@ -13,7 +13,7 @@ data class TransactionReportJSON(
     val pendingTransactions: String? = "",
     val waitingTransactions: String? = "",
     val limitExceededTransactions: String? = "",
-    val summaryByDay: Array<SummaryByDayJSON>?
+    val summaryByDay: List<SummaryByDayJSON>?
 )
 
 data class SummaryByDayJSON(

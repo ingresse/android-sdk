@@ -5,7 +5,7 @@ data class TicketGroupJSON(
     val name: String? = "",
     val description: String? = "",
     val status: String? = "",
-    val type: Array<TicketJSON> = emptyArray()
+    val type: List<TicketJSON> = emptyList()
 )
 
 data class TicketJSON(
@@ -19,7 +19,7 @@ data class TicketJSON(
     val status: String? = "",
     val restrictions:  TicketRestrictions? = TicketRestrictions(),
     val hidden: Boolean = false,
-    val dates: Array<TicketSession>? = emptyArray()
+    val dates: List<TicketSession>? = emptyList()
 )
 
 data class TicketRestrictions(

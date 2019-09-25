@@ -66,7 +66,7 @@ interface User {
      * @param userId - id from user
      * @param page - page from user ticket
      * @param pageSize - size of user ticket page
-     * @param userToken - token from user
+     * @param token - token from user
      */
     @GET("/user/{userId}/tickets")
     fun getUserTickets(@Path("userId") userId: String,
@@ -79,7 +79,7 @@ interface User {
      * Get user event attributes
      *
      * @param eventId - id from event
-     * @param usertoken - token from user
+     * @param userToken - token from user
      * @param filters - event filter
      */
     @GET("/event/{eventId}/attributes")

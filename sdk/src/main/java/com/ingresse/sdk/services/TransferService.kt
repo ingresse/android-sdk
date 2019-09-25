@@ -88,7 +88,7 @@ class TransferService(private val client: IngresseClient) {
                              onConnectionError: (error: Throwable) -> Unit,
                              onTokenExpired: Block) {
 
-        var call = service.getUserTransfers(
+        val call = service.getUserTransfers(
             userId = request.userId,
             apikey = client.key,
             page = request.page,
@@ -142,7 +142,7 @@ class TransferService(private val client: IngresseClient) {
                                onConnectionError: (error: Throwable) -> Unit,
                                onTokenExpired: Block) {
 
-        var call = service.getRecentTransfers(
+        val call = service.getRecentTransfers(
             userId = request.userId,
             apikey = client.key,
             userToken = request.usertoken,
@@ -187,7 +187,7 @@ class TransferService(private val client: IngresseClient) {
                              onConnectionError: (error: Throwable) -> Unit,
                              onTokenExpired: Block) {
 
-        var call = service.getFriendsFromSearch(
+        val call = service.getFriendsFromSearch(
             term = request.term,
             size = request.size,
             apikey = client.key,

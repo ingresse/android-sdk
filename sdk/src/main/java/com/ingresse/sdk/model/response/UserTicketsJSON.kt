@@ -55,7 +55,7 @@ data class HolderJSON(
         val type: String? = "",
         val status: String? = "",
         val history: List<TransferHistoryJSON>? = emptyList(),
-        val socialId: Array<UserSocialJSON>? = emptyArray(),
+        val socialId: List<UserSocialJSON>? = emptyList(),
         val picture: String? = ""
 )
 

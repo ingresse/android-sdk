@@ -18,6 +18,6 @@ enum class ShopStatus(val status: String) {
 
     companion object {
         fun getStatus(status: String): ShopStatus =
-            ShopStatus.values().find { it.status.equals(status, true) } ?: UNAVAILABLE
+            values().find { it.status.equals(status, true) } ?: UNAVAILABLE
     }
 }
