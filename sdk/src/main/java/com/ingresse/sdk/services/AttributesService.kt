@@ -61,6 +61,8 @@ class AttributesService(private val client: IngresseClient) {
                            onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
+        initService()
+
         val customFields = request.filters?.joinToString(",")
 
         mGetEventAttributesCall = service.getEventAttributes(
@@ -142,7 +144,7 @@ class AttributesService(private val client: IngresseClient) {
 
         initService(Host.API)
 
-        mGetEventAttributesCall = service.getEventAdvertisement(
+        mGetEventAttributesCall = service.getEventAttributesOld(
                 eventId = request.eventId,
                 apikey = client.key,
                 userToken = request.userToken,
