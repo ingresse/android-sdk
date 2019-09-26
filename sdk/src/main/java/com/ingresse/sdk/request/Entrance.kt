@@ -40,9 +40,7 @@ interface Entrance {
      * Update ticket status
      *
      * @param eventId - Event id
-     * @param tickets - Tickets to update
      * @param userToken - Token for logged user
-     * @param callback - Callback action
      */
     @Headers("ContentType: application/json")
     @POST("/event/{eventId}/guestlist?method=updatestatus")

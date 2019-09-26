@@ -56,8 +56,8 @@ data class ReceiverUserTransfersJSON(
     val name: String? = "",
     val type: String? = "",
     val status: String? = "",
-    val history: Array<TransfersHistoryJSON>? = emptyArray(),
-    val socialId: Array<UserSocialTransfersJSON>? = emptyArray(),
+    val history: List<TransfersHistoryJSON>? = emptyList(),
+    val socialId: List<UserSocialTransfersJSON>? = emptyList(),
     val picture: String? = ""
 )
 
@@ -72,7 +72,7 @@ data class UserSocialTransfersJSON(
 )
 
 data class SessionsJSON(
-    val data: Array<DateJSON>? = emptyArray()
+    val data: List<DateJSON>? = emptyList()
 )
 
 data class DateJSON(

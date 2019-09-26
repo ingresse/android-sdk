@@ -1,6 +1,7 @@
 package com.ingresse.sdk.request
 
 import com.ingresse.sdk.model.request.UserBasicInfos
+import com.ingresse.sdk.model.request.UserPlanner
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -32,6 +33,19 @@ interface User {
                          @Body params: UserBasicInfos): Call<String>
 
     /**
+     * Update planner infos
+     *
+     * @param userId - id from user
+     * @param userToken - token from user
+     * @param params - planner fields to update
+     */
+    @POST("/user/{userId}")
+    fun updateUserPlannerInfos(@Path("userId") userId: String,
+                               @Query("apikey") apikey: String,
+                               @Query("usertoken") userToken: String,
+                               @Body params: UserPlanner): Call<String>
+
+    /**
      * Get cash closing for specified date offset
      *
      * @param userId - id of the operator to get info
@@ -52,7 +66,7 @@ interface User {
      * @param userId - id from user
      * @param page - page from user ticket
      * @param pageSize - size of user ticket page
-     * @param userToken - token from user
+     * @param token - token from user
      */
     @GET("/user/{userId}/tickets")
     fun getUserTickets(@Path("userId") userId: String,
@@ -65,7 +79,7 @@ interface User {
      * Get user event attributes
      *
      * @param eventId - id from event
-     * @param usertoken - token from user
+     * @param userToken - token from user
      * @param filters - event filter
      */
     @GET("/event/{eventId}/attributes")

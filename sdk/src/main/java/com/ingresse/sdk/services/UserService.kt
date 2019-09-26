@@ -27,10 +27,10 @@ class UserService(private val client: IngresseClient) {
 
     private var mUserDataCall: Call<String>? = null
     private var mUpdateBasicInfosCall: Call<String>? = null
+    private var mUpdateUserPlannerInfosCall: Call<String>? = null
     private var mUserTicketsCall: Call<String>? = null
     private var mGetEventAttributesCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
-
     private var mGetWalletEventsCall: Call<String>? = null
     private var mGetWalletEventsConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
@@ -58,6 +58,11 @@ class UserService(private val client: IngresseClient) {
      * Method to cancel user update basic infos request
      */
     fun cancelUpdateBasicInfos() = mUpdateBasicInfosCall?.cancel()
+
+    /**
+     * Method to cancel user update planner infos request
+     */
+    fun cancelUpdateUserPlannerInfos() = mUpdateUserPlannerInfosCall?.cancel()
 
     /**
      * Method to cancel user tickets data request
@@ -96,19 +101,21 @@ class UserService(private val client: IngresseClient) {
      * @param request - all parameters used for retrieving user data
      * @param onSuccess - success callback
      * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - user token expired callback
      */
     fun getUserData(request: UserData,
                     onSuccess: (UserDataJSON) -> Unit,
                     onError: ErrorBlock,
+                    onConnectionError: (Throwable) -> Unit,
                     onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val fields = listOf("id", "name", "lastname",
-                "document", "email", "zip",
-                "number", "complement", "city",
-                "state", "street", "district",
-                "phone", "verified", "fbUserId",
-                "type", "pictures", "picture")
+                "document", "email", "zip", "number",
+                "complement", "city", "state", "street",
+                "district", "phone", "verified", "fbUserId",
+                "type", "pictures", "picture", "planner")
 
         val customFields = request.fields?.let { it } ?: fields.joinToString(",")
         mUserDataCall = service.getUserData(
@@ -127,6 +134,8 @@ class UserService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
@@ -145,6 +154,7 @@ class UserService(private val client: IngresseClient) {
      * @param request - all parameters used for update user infos
      * @param onSuccess - success callback
      * @param onError - error callback
+     * @param onTokenExpired - user token expired callback
      */
     fun updateBasicInfos(request: UserBasicInfos,
                          onSuccess: (UserUpdatedDataJSON) -> Unit,
@@ -197,6 +207,63 @@ class UserService(private val client: IngresseClient) {
     }
 
     /**
+     * Update user planner infos
+     *
+     * @param request - all parameters used for update user planner infos
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - user token expired callback
+     */
+    fun updateUserPlannerInfos(request: UserPlannerInfos,
+                               onSuccess: (UserUpdatedDataJSON) -> Unit,
+                               onError: ErrorBlock,
+                               onConnectionError: (error: Throwable) -> Unit,
+                               onTokenExpired: Block) {
+        val plannerRequest = UserPlanner(request)
+        mUpdateUserPlannerInfosCall = service.updateUserPlannerInfos(
+                userId = request.userId,
+                userToken = request.userToken,
+                apikey = client.key,
+                params = plannerRequest
+        )
+
+        val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
+            override fun onSuccess(data: Response<UserUpdatedJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                if (!response.message.isNullOrEmpty()) {
+                    val apiError = APIError()
+                    apiError.message = response.message.joinToString(", ")
+                    apiError.title = "Verifique suas informações"
+                    apiError.code = 0
+                    onError(apiError)
+                    return
+                }
+
+                if (response.status == null || !response.status) return onError(APIError.default)
+
+                val responseData = response.data ?: return onError(APIError.default)
+                onSuccess(responseData)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<UserUpdatedJSON>?>() {}.type
+        mUpdateUserPlannerInfosCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
      * Get user tickets data
      *
      * @param concurrent - flag to concurrent request
@@ -204,6 +271,7 @@ class UserService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
+     * @param onTokenExpired - user token expired callback
      */
     fun getUserTicketsData(concurrent: Boolean = false,
                            request: UserTicketsData,
@@ -258,6 +326,7 @@ class UserService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
+     * @param onTokenExpired - user token expired callback
      */
     fun getEventAttributes(request: EventAttributes,
                            onSuccess: (EventAttributesJSON) -> Unit,
@@ -265,7 +334,7 @@ class UserService(private val client: IngresseClient) {
                            onConnectionError: (error: Throwable) -> Unit,
                            onTokenExpired: Block) {
 
-        var call = service.getEventAttributes(
+        val call = service.getEventAttributes(
                 eventId = request.eventId,
                 apikey = client.key,
                 userToken = request.userToken,
@@ -301,6 +370,7 @@ class UserService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
+     * @param onTokenExpired - user token expired callback
      */
     fun getWalletEvents(concurrent: Boolean = false,
                         request: WalletEvents,

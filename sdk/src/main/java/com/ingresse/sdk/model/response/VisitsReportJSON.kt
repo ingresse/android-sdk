@@ -6,7 +6,7 @@ data class VisitsReportJSON(
         var summaryByDay: VisitsSummaryByDayJSON?)
 
 data class VisitsSummaryByDayJSON(
-        var items: Array<ItemsVisitsSummaryJSON>?)
+        var items: List<ItemsVisitsSummaryJSON>?)
 
 data class ItemsVisitsSummaryJSON(
         var date: String? = "",
