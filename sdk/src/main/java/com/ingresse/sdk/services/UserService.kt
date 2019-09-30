@@ -98,10 +98,13 @@ class UserService(private val client: IngresseClient) {
      * @param request - all parameters used for retrieving user data
      * @param onSuccess - success callback
      * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - user token expired callback
      */
     fun getUserData(request: UserData,
                     onSuccess: (UserDataJSON) -> Unit,
                     onError: ErrorBlock,
+                    onConnectionError: (Throwable) -> Unit,
                     onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
@@ -129,6 +132,8 @@ class UserService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
