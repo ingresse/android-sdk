@@ -23,4 +23,5 @@ class IngresseService(client: IngresseClient) {
     var history = HistoryService(client)
     var highlight = HighlightsService(client)
     var zipCode = ZipCodeService(client)
+    var webSocketService = WebSocketService(client)
 }

@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
     api 'com.crashlytics.sdk.android:crashlytics:2.9.3', { transitive = true }
+    implementation 'com.github.chain-partners:KotlinPhoenixChannel:0.1.15'
 
     // TEST
     testImplementation 'junit:junit:4.12'
@@ -46,4 +47,5 @@ dependencies {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
