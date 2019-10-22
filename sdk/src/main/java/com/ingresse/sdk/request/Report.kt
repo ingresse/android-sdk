@@ -40,7 +40,7 @@ interface Report {
                          @Query("from") from: String,
                          @Query("to") to: String,
                          @Query("channel") channel: String? = null): Call<String>
-                         
+
     /**
      * Retrieve visits report
      *
@@ -55,4 +55,12 @@ interface Report {
                         @Query("usertoken") userToken: String,
                         @Query("from") from: String? = null,
                         @Query("to") to: String? = null): Call<String>
+
+    /**
+     * Retrieve entrance report
+     *
+     * @param sessionId - id from session
+     */
+    @GET("/report/entrance")
+    fun getEntranceReport(@Query("session_id") sessionId: String): Call<String>
 }
