@@ -117,6 +117,7 @@ data class TUserJSON(
         val document: String?,
         val email: String = "",
         val externalId: String? = "",
+        val ddi: String? = "",
         val phone: String? = "",
         val id: Long = 0,
         val name: String = "")

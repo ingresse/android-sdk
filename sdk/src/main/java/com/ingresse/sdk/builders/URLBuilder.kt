@@ -10,7 +10,9 @@ enum class Host(val address: String) {
 
 enum class Environment(val prefix: String) {
     PROD(""),
-    HML("hmlb-"),
+    HML("hml-"),
+    HML_A("hmla-"),
+    HML_B("hmlb-"),
     TEST("test-"),
     STG("stg-")
 }
