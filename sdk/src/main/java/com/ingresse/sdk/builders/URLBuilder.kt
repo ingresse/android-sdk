@@ -5,7 +5,8 @@ enum class Host(val address: String) {
     API("api.ingresse.com"),
     CEP("cep.ingresse.com"),
     SEARCH("event-search.ingresse.com"),
-    SEARCH_HML("event.ingresse.com/search/company/")
+    SEARCH_HML("event.ingresse.com/search/company/"),
+    CHECKIN("checkin.ingresse.com")
 }
 
 enum class Environment(val prefix: String) {
