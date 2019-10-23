@@ -39,6 +39,9 @@ class EntranceService(private val client: IngresseClient) {
                 .baseUrl(url)
 
         val clientBuilder = OkHttpClient.Builder()
+        clientBuilder.callTimeout(50, TimeUnit.SECONDS)
+        clientBuilder.readTimeout(50, TimeUnit.SECONDS)
+        clientBuilder.connectTimeout(50, TimeUnit.SECONDS)
 
         if (client.debug) {
             val logging = HttpLoggingInterceptor()
