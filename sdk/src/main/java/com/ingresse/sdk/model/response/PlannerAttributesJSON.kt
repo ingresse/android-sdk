@@ -10,8 +10,8 @@ data class PlannerAttributesJSON(
     var address: String?)
 
 data class PlannerData(
-    var name: String = "",
-    var logo: String = "",
-    var link: String = "",
-    var email: String = "",
-    var phone: String = "")
+    var name: String? = "",
+    var logo: String? = "",
+    var link: String? = "",
+    var email: String? = "",
+    var phone: String? = "")
