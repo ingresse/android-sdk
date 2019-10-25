@@ -20,7 +20,8 @@ enum class Environment(val prefix: String) {
 class URLBuilder(private val host: Host, private val environment: Environment = Environment.PROD) {
     private val hostPrefix = "https://"
     fun build(): String {
-        if (host == Host.SEARCH && environment == Environment.HML) {
+        val hmls = listOf(Environment.HML, Environment.HML_A, Environment.HML_B)
+        if (host == Host.SEARCH && hmls.contains(environment)) {
             return hostPrefix + environment.prefix + Host.SEARCH_HML.address
         }
 
