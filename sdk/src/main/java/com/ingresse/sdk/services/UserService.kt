@@ -161,6 +161,7 @@ class UserService(private val client: IngresseClient) {
     fun updateBasicInfos(request: UserBasicInfos,
                          onSuccess: (UserUpdatedDataJSON) -> Unit,
                          onError: ErrorBlock,
+                         onNetworkError: Block,
                          onTokenExpired: Block) {
         mUpdateBasicInfosCall = service.updateBasicInfos(
                 userId = request.userId,
@@ -195,11 +196,7 @@ class UserService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) = onError(error)
 
-            override fun onRetrofitError(error: Throwable) {
-                val apiError = APIError()
-                apiError.message = error.localizedMessage
-                onError(apiError)
-            }
+            override fun onRetrofitError(error: Throwable) = onNetworkError()
 
             override fun onTokenExpired() = onTokenExpired()
         }

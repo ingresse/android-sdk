@@ -172,7 +172,7 @@ class TicketService(private val client: IngresseClient) {
                                  onError: (APIError) -> Unit,
                                  onConnectionError: (error: Throwable) -> Unit,
                                  onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
+        if (client.authToken.isEmpty()) return onTokenExpired()
 
         mAuthenticationUserDeviceCall = service.authenticationUserDevice(
                 apikey = client.key,
