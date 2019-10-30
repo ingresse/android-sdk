@@ -54,7 +54,7 @@ class PhoneService(private val client: IngresseClient) {
     fun getCountryList(onSuccess: (List<CountryJSON>) -> Unit,
                        onError: (APIError) -> Unit,
                        onConnectionError: (Throwable) -> Unit) {
-        mGetCountriesCall = service.getCountryList()
+        mGetCountriesCall = service.getCountryList(client.key)
 
         val callback = object : IngresseCallback<CountryResponse> {
             override fun onSuccess(data: CountryResponse?) {
