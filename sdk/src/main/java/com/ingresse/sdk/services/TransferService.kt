@@ -12,12 +12,10 @@ import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
-import com.ingresse.sdk.model.request.FriendsFromSearch
-import com.ingresse.sdk.model.request.RecentTransfers
-import com.ingresse.sdk.model.request.UserTransfersData
-import com.ingresse.sdk.model.response.FriendsFromSearchJSON
-import com.ingresse.sdk.model.response.RecentTransfersJSON
-import com.ingresse.sdk.model.response.UserTransfersJSON
+import com.ingresse.sdk.helper.CANCELED_CALL
+import com.ingresse.sdk.helper.SOCKET_CLOSED
+import com.ingresse.sdk.model.request.*
+import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.Transfer
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -30,8 +28,11 @@ class TransferService(private val client: IngresseClient) {
     private var service: Transfer
 
     private var mUserTransfersCall: Call<String>? = null
+    private var mUpdateTransferCall: Call<String>? = null
+    private var mReturnTicketCall: Call<String>? = null
     private var mRecentTransfersCall: Call<String>? = null
     private var mFriendsFromSearchCall: Call<String>? = null
+    private var mTransferTicketCall: Call<String>? = null
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
 
     init {
@@ -73,6 +74,21 @@ class TransferService(private val client: IngresseClient) {
     fun cancelFriendsFromSearch() = mFriendsFromSearchCall?.cancel()
 
     /**
+     * Method to cancel a transfer update request
+     */
+    fun cancelUpdateTransfer() = mUpdateTransferCall?.cancel()
+
+    /**
+     * Method to cancel a return ticket request
+     */
+    fun cancelReturnTicket() = mReturnTicketCall?.cancel()
+
+    /**
+     * Method to cancel a ticket transfer request
+     */
+    fun cancelTransferTicket() = mTransferTicketCall?.cancel()
+
+    /**
      * Get user transfers data
      *
      * @param concurrent - flag to concurrent request
@@ -80,11 +96,14 @@ class TransferService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
+     * @param onTokenExpired - on token expired callback
+     * @param onCanceledCall - cancelled call callback
      */
     fun getUserTransfersData(concurrent: Boolean = false,
                              request: UserTransfersData,
                              onSuccess: (Array<UserTransfersJSON>) -> Unit,
-                             onError: ErrorBlock,
+                             onError: (APIError) -> Unit,
+                             onCanceledCall: (() -> Unit)? = null,
                              onConnectionError: (error: Throwable) -> Unit,
                              onTokenExpired: Block) {
 
@@ -114,7 +133,12 @@ class TransferService(private val client: IngresseClient) {
 
             override fun onRetrofitError(error: Throwable) {
                 if (!concurrent) mUserTransfersCall = null else mConcurrentCalls.remove(call)
-                if (error is IOException) return onConnectionError(error)
+                if (error is IOException) {
+                    return when (error.localizedMessage) {
+                        CANCELED_CALL, SOCKET_CLOSED -> if (onCanceledCall != null) onCanceledCall() else return
+                        else -> onConnectionError(error)
+                    }
+                }
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
@@ -135,12 +159,13 @@ class TransferService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
+     * @param onTokenExpired - on token expired callback
      */
-    fun getRecentTransfersData(request: RecentTransfers,
-                               onSuccess: (List<RecentTransfersJSON>) -> Unit,
-                               onError: ErrorBlock,
-                               onConnectionError: (error: Throwable) -> Unit,
-                               onTokenExpired: Block) {
+    fun getRecentTransfers(request: RecentTransfers,
+                           onSuccess: (List<RecentTransfersJSON>) -> Unit,
+                           onError: ErrorBlock,
+                           onConnectionError: (Throwable) -> Unit,
+                           onTokenExpired: Block) {
 
         val call = service.getRecentTransfers(
             userId = request.userId,
@@ -180,11 +205,12 @@ class TransferService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      * @param onConnectionError - connection error callback
+     * @param onTokenExpired - on token expired callback
      */
     fun getFriendsFromSearch(request: FriendsFromSearch,
                              onSuccess: (List<FriendsFromSearchJSON>) -> Unit,
                              onError: ErrorBlock,
-                             onConnectionError: (error: Throwable) -> Unit,
+                             onConnectionError: (Throwable) -> Unit,
                              onTokenExpired: Block) {
 
         val call = service.getFriendsFromSearch(
@@ -215,5 +241,138 @@ class TransferService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<List<FriendsFromSearchJSON>>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Update ticket transfer
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - on token expired callback
+     */
+    fun updateTransfer(request: UpdateTransfer,
+                       onSuccess: (UpdateTransferJSON) -> Unit,
+                       onError: ErrorBlock,
+                       onConnectionError: (Throwable) -> Unit,
+                       onTokenExpired: Block) {
+
+        mUpdateTransferCall = service.updateTransfer(
+                ticketId = request.ticketId,
+                transferId = request.transferId,
+                apikey = client.key,
+                userToken = request.userToken,
+                params = request.params
+        )
+
+        val callback = object : IngresseCallback<Response<UpdateTransferJSON>?> {
+            override fun onSuccess(data: Response<UpdateTransferJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<UpdateTransferJSON>?>() {}.type
+        mUpdateTransferCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Return a ticket
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - on token expired callback
+     */
+    fun returnTicket(request: ReturnTicket,
+                     onSuccess: (ReturnTicketJSON) -> Unit,
+                     onError: ErrorBlock,
+                     onConnectionError: (Throwable) -> Unit,
+                     onTokenExpired: Block) {
+        mReturnTicketCall = service.returnTicket(
+                ticketId = request.ticketId,
+                userToken = request.userToken,
+                apikey = client.key
+        )
+
+        val callback = object : IngresseCallback<Response<ReturnTicketJSON>?> {
+            override fun onSuccess(data: Response<ReturnTicketJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<ReturnTicketJSON>?>() {}.type
+        mReturnTicketCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Transfer a ticket
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - on token expired callback
+     */
+    fun transferTicket(request: TransferTicket,
+                       onSuccess: (TransferTicketJSON) -> Unit,
+                       onError: ErrorBlock,
+                       onConnectionError: (Throwable) -> Unit,
+                       onTokenExpired: Block) {
+        mTransferTicketCall = service.transferTicket(
+                ticketId = request.ticketId,
+                apikey = client.key,
+                userToken = request.userToken,
+                user = UserToTransfer(request.toUser)
+        )
+
+        val callback = object : IngresseCallback<Response<TransferTicketJSON>?> {
+            override fun onSuccess(data: Response<TransferTicketJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<TransferTicketJSON>?>() {}.type
+        mTransferTicketCall?.enqueue(RetrofitCallback(type, callback))
     }
 }

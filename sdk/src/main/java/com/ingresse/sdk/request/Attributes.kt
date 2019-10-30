@@ -18,6 +18,19 @@ interface Attributes {
                            @Query("filters") filters: String?): Call<String>
 
     /**
+     * Get event attributes (old request)
+     *
+     * @param eventId - id from event
+     * @param userToken - token of logged user
+     * @param filters - specific fields to desired attributes
+     */
+    @GET("/event/{eventId}/attributes")
+    fun getEventAttributesOld(@Path("eventId") eventId: String,
+                              @Query("apikey") apikey: String,
+                              @Query("usertoken") userToken: String,
+                              @Query("filters") filters: String?): Call<String>
+
+    /**
      * Update event attributes
      *
      * @param eventId - id from event

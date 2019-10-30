@@ -14,4 +14,5 @@ data class PlannerData(
     var logo: String? = "",
     var link: String? = "",
     var email: String? = "",
+    var ddi: String? = "",
     var phone: String? = "")

@@ -1,5 +1,8 @@
 package com.ingresse.sdk.request
 
+import com.ingresse.sdk.model.request.ReturnTicketType
+import com.ingresse.sdk.model.request.TransferActionParams
+import com.ingresse.sdk.model.request.UserToTransfer
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -48,4 +51,45 @@ interface Transfer {
                              @Query("size") size: String?,
                              @Query("apikey") apikey: String,
                              @Query("usertoken") userToken: String): Call<String>
+
+    /**
+     * Update a ticket transfer
+     *
+     * @param ticketId - Ticket id to update transfer
+     * @param transferId - Transfer id
+     * @param userToken - User token
+     * @param params - Param with action to update a transfer
+     */
+    @POST("/ticket/{ticketId}/transfer/{transferId}")
+    fun updateTransfer(@Path("ticketId") ticketId: Int,
+                       @Path("transferId") transferId: Int,
+                       @Query("apikey") apikey: String,
+                       @Query("usertoken") userToken: String,
+                       @Body params: TransferActionParams): Call<String>
+
+    /**
+     * Return a ticket
+     *
+     * @param ticketId - Ticket id to update transfer
+     * @param userToken - User token
+     * @param type - for isReturn param
+     */
+    @POST("/ticket/{ticketId}/transfer")
+    fun returnTicket(@Path("ticketId") ticketId: Int,
+                     @Query("apikey") apikey: String,
+                     @Query("usertoken") userToken: String,
+                     @Body type: ReturnTicketType = ReturnTicketType()): Call<String>
+
+    /**
+     * Transfer a ticket
+     *
+     * @param ticketId - Ticket id to transfer
+     * @param userToken - User token
+     * @param toUser - user id or e-mail to transfer
+     */
+    @POST("/ticket/{ticketId}/transfer")
+    fun transferTicket(@Path("ticketId") ticketId: Int,
+                       @Query("apikey") apikey: String,
+                       @Query("usertoken") userToken: String,
+                       @Body user: UserToTransfer) : Call<String>
 }

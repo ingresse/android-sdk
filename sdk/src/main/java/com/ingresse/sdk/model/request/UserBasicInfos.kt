@@ -6,5 +6,6 @@ data class UserBasicInfos (
         var name: String? = null,
         var lastname: String? = null,
         var email: String? = null,
+        var ddi: String? = null,
         var phone: String? = null,
         var cpf: String? = null)

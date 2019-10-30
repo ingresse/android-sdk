@@ -73,6 +73,7 @@ interface User {
                        @Query("apikey") apikey: String,
                        @Query("page") page: Int? = null,
                        @Query("pageSize") pageSize: Int? = null,
+                       @Query("eventId") eventId: Int? = null,
                        @Query("usertoken") token: String): Call<String>
 
     /**

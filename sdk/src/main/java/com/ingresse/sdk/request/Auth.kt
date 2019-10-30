@@ -13,8 +13,20 @@ interface Auth {
     @FormUrlEncoded
     @POST("/company-login")
     fun companyLoginWithEmail(@Query("apikey") apikey: String,
-                       @Field("email") email: String,
-                       @Field("password") password: String) : Call<String>
+                              @Field("email") email: String,
+                              @Field("password") password: String) : Call<String>
+
+    /**
+     * Execute login for user
+     *
+     * @param email - User's email
+     * @param password - User's password
+     */
+    @FormUrlEncoded
+    @POST("/login")
+    fun login(@Query("apikey") apikey: String,
+              @Field("email") email: String,
+              @Field("password") password: String) : Call<String>
 
     /**
      * Renew user auth token
@@ -23,5 +35,5 @@ interface Auth {
      */
     @GET("/login/renew-token")
     fun renewAuthToken(@Query("apikey") apikey: String,
-                      @Query("usertoken") userToken: String) : Call<String>
+                       @Query("usertoken") userToken: String) : Call<String>
 }

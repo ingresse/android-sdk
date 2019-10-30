@@ -12,6 +12,8 @@ import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
+import com.ingresse.sdk.helper.CANCELED_CALL
+import com.ingresse.sdk.helper.SOCKET_CLOSED
 import com.ingresse.sdk.model.request.*
 import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.User
@@ -159,6 +161,7 @@ class UserService(private val client: IngresseClient) {
     fun updateBasicInfos(request: UserBasicInfos,
                          onSuccess: (UserUpdatedDataJSON) -> Unit,
                          onError: ErrorBlock,
+                         onNetworkError: Block,
                          onTokenExpired: Block) {
         mUpdateBasicInfosCall = service.updateBasicInfos(
                 userId = request.userId,
@@ -193,11 +196,7 @@ class UserService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) = onError(error)
 
-            override fun onRetrofitError(error: Throwable) {
-                val apiError = APIError()
-                apiError.message = error.localizedMessage
-                onError(apiError)
-            }
+            override fun onRetrofitError(error: Throwable) = onNetworkError()
 
             override fun onTokenExpired() = onTokenExpired()
         }
@@ -276,7 +275,8 @@ class UserService(private val client: IngresseClient) {
     fun getUserTicketsData(concurrent: Boolean = false,
                            request: UserTicketsData,
                            onSuccess: (Array<UserTicketsJSON>) -> Unit,
-                           onError: ErrorBlock,
+                           onError: (APIError) -> Unit,
+                           onCanceledCall: (() -> Unit)? = null,
                            onConnectionError: (error: Throwable) -> Unit,
                            onTokenExpired: Block) {
 
@@ -285,6 +285,7 @@ class UserService(private val client: IngresseClient) {
                 apikey = client.key,
                 page = request.page,
                 pageSize = request.pageSize,
+                eventId = request.eventId,
                 token = request.userToken
         )
 
@@ -305,7 +306,12 @@ class UserService(private val client: IngresseClient) {
 
             override fun onRetrofitError(error: Throwable) {
                 if (!concurrent) mUserTicketsCall = null else mConcurrentCalls.remove(call)
-                if (error is IOException) return onConnectionError(error)
+                if (error is IOException) {
+                    return when (error.localizedMessage) {
+                        CANCELED_CALL, SOCKET_CLOSED -> if (onCanceledCall != null) onCanceledCall() else return
+                        else -> onConnectionError(error)
+                    }
+                }
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
@@ -375,9 +381,10 @@ class UserService(private val client: IngresseClient) {
     fun getWalletEvents(concurrent: Boolean = false,
                         request: WalletEvents,
                         onSuccess: (Array<WalletEventJSON>) -> Unit,
-                        onError: ErrorBlock,
+                        onError: (APIError) -> Unit,
                         onConnectionError: (error: Throwable) -> Unit,
-                        onTokenExpired: Block) {
+                        onTokenExpired: Block,
+                        onCanceledCall: (() -> Unit)? = null) {
 
         val call = service.getWalletEvents(
                 apikey = client.key,
@@ -406,7 +413,12 @@ class UserService(private val client: IngresseClient) {
 
             override fun onRetrofitError(error: Throwable) {
                 if (!concurrent) mGetWalletEventsCall = null else mGetWalletEventsConcurrentCalls.remove(call)
-                if (error is IOException) return onConnectionError(error)
+                if (error is IOException) {
+                    return when (error.localizedMessage) {
+                        CANCELED_CALL, SOCKET_CLOSED -> if (onCanceledCall != null) onCanceledCall() else return
+                        else -> onConnectionError(error)
+                    }
+                }
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage

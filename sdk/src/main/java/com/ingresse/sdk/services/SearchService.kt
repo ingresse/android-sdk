@@ -19,7 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
-class SearchService(client: IngresseClient) {
+class SearchService(private val client: IngresseClient) {
     private val service: Search
     private var cancelAllCalled = false
 
