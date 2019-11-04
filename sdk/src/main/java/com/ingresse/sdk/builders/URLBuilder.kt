@@ -24,7 +24,8 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
     private var url: String
 
     init {
-        if (host == Host.SEARCH && environment == Environment.HML) {
+        val hmls = listOf(Environment.HML, Environment.HML_A, Environment.HML_B)
+        if (host == Host.SEARCH && hmls.contains(environment)) {
             url = hostPrefix + environment.prefix + Host.SEARCH_HML.address
         }
 
