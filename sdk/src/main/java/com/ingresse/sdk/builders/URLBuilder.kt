@@ -50,9 +50,7 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
             if (value.isNotEmpty()) parametersList.add("$key=$value")
         }
 
-        url = "192.168.0.228:4000"
         val stringParameter = parametersList.joinToString("&")
         return "ws://$url$path?$stringParameter"
     }
-            
 }
