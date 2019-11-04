@@ -8,25 +8,26 @@ import com.ingresse.sdk.base.SocketObserver
 import com.ingresse.sdk.base.SocketResponse
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
+import com.ingresse.sdk.model.response.WebSocketTransactionDataJSON
 import org.phoenixframework.socket.Socket
 
+private typealias WebSocketTransactionResponse = SocketResponse<WebSocketTransactionDataJSON>
 class WebSocketService(private val client: IngresseClient) {
     private var host = Host.API
     private var socket: Socket? = null
 
     /**
-     * Method to cancel sell tickets
+     * Method to cancel websocket get transaction
      */
     fun closeConnection() = socket?.disconnect()
 
     /**
-     * Sell tickets
+     * Get Transaction
      *
-     * @param request - parameters required to request
+     * @param transactionId - id from transaction
      * @param onSuccess - success callback
-     * @param onError - error callback
      */
-    fun getTransaction(transactionId: String, onSuccess: (Pair<String, String>) -> Unit ) {
+    fun getTransaction(transactionId: String, onSuccess: (transactionId: String, status: String) -> Unit ) {
         if (client.authToken.isEmpty()) return
         val url = URLBuilder(host, client.environment)
             .addPath("/websocket")
@@ -35,24 +36,20 @@ class WebSocketService(private val client: IngresseClient) {
 
         socket = Socket(endpointUri = Uri.parse(url).buildUpon().toString())
 
-        val type = object: TypeToken<SocketResponse<TransactionData>>() {}.type
-        val observer = SocketObserver("transaction:$transactionId", type, object: IngresseSocketCallback<SocketResponse<TransactionData>> {
+        val topic = "transaction:$transactionId"
+        val type = object: TypeToken<WebSocketTransactionResponse>() {}.type
+        val observer = SocketObserver(topic, type, object: IngresseSocketCallback<WebSocketTransactionResponse> {
             override fun onError(error: Throwable?) {}
             override fun onClosing(code: Int?, reason: String?) {}
             override fun onClosed(code: Int?, reason: String?) {}
             override fun onOpen() {}
-            override fun onDataReceived(data: SocketResponse<TransactionData>?) {
+            override fun onDataReceived(data: WebSocketTransactionResponse?) {
                 val transaction = data?.payload?.data ?: return
-                onSuccess(Pair(transaction.transactionId.orEmpty(), transaction.status.orEmpty()))
+                onSuccess(transaction.transactionId.orEmpty(), transaction.status.orEmpty())
             }
         })
 
         socket?.registerEventListener(observer)
         socket?.connect()
     }
-}
-
-class TransactionData {
-    val status: String? = null
-    val transactionId : String? = null
 }

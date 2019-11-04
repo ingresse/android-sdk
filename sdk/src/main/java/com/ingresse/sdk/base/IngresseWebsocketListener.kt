@@ -6,7 +6,6 @@ import org.phoenixframework.socket.PhoenixSocketEventListener
 import org.phoenixframework.socket.Socket
 import java.lang.reflect.Type
 
-
 class SocketObserver<T>(private val topic: String, val type: Type, val callback: IngresseSocketCallback<T>): PhoenixSocketEventListener {
     override fun onClosing(socket: Socket, code: Int?, reason: String?) = callback.onClosing(code, reason)
     override fun onClosed(socket: Socket, code: Int?, reason: String?) = callback.onClosed(code, reason)
