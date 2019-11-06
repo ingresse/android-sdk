@@ -56,9 +56,9 @@ class ZipCodeService(private val client: IngresseClient) {
 
         mZipCodeCall = service.getAddress(request)
 
-        val callback = object : IngresseCallback<Response<ZipCodeAddressJSON>?> {
-            override fun onSuccess(data: Response<ZipCodeAddressJSON>?) {
-                val response = data?.responseData ?: return onError(APIError.default)
+        val callback = object : IngresseCallback<ZipCodeAddressJSON?> {
+            override fun onSuccess(data: ZipCodeAddressJSON?) {
+                val response = data ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
@@ -75,7 +75,7 @@ class ZipCodeService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<ZipCodeAddressJSON>?>() {}.type
+        val type = object : TypeToken<ZipCodeAddressJSON?>() {}.type
         mZipCodeCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
