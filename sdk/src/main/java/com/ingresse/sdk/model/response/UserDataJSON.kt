@@ -18,7 +18,7 @@ data class UserDataJSON(
         val state: String? = "",
         val zip: String? = "",
         val verified: Boolean? = false,
-        val pictures: Any? = null,
+        val pictures: UserPicturesJSON? = null,
         val social: List<SocialAccountJSON>? = emptyList(),
         val planner: UserPlannerJSON? = null)
 
