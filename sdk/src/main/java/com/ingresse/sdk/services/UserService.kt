@@ -218,7 +218,7 @@ class UserService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      */
     fun updateUserAddress(request: UserAddressInfos,
-                          onSuccess: () -> Unit,
+                          onSuccess: (UserUpdatedDataJSON) -> Unit,
                           onError: ErrorBlock,
                           onConnectionError: (Throwable) -> Unit,
                           onTokenExpired: Block) {
@@ -231,8 +231,29 @@ class UserService(private val client: IngresseClient) {
                 method = "update"
         )
 
-        val callback = object : IngresseCallback<Ignored> {
-            override fun onSuccess(data: Ignored?) = onSuccess()
+        val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
+            override fun onSuccess(data: Response<UserUpdatedJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                if (!response.message.isNullOrEmpty()) {
+                    val apiError = APIError()
+                    apiError.message = response.message.joinToString(", ")
+                    apiError.title = "Verifique suas informações"
+                    apiError.code = 0
+                    onError(apiError)
+                    return
+                }
+
+                if (response.status == null) return onError(APIError.default)
+
+                if (response.status) {
+                    response.data?.let { obj -> onSuccess(obj) }
+                    return
+                }
+
+                val responseData = response.data ?: return onError(APIError.default)
+                onSuccess(responseData)
+            }
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
@@ -246,7 +267,7 @@ class UserService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Ignored>() {}.type
+        val type = object : TypeToken<Response<UserUpdatedJSON>?>() {}.type
         mUpdateUserAddressCall?.enqueue(RetrofitCallback(type, callback))
     }
 
