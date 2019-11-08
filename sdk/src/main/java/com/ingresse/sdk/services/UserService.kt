@@ -190,13 +190,8 @@ class UserService(private val client: IngresseClient) {
                 }
 
                 if (response.status == null) return onError(APIError.default)
-
-                if (response.status) {
-                    response.data?.let { obj -> onSuccess(obj) }
-                    return
-                }
-
                 val responseData = response.data ?: return onError(APIError.default)
+                if (!response.status) return onError(APIError.default)
                 onSuccess(responseData)
             }
 
@@ -247,13 +242,8 @@ class UserService(private val client: IngresseClient) {
                 }
 
                 if (response.status == null) return onError(APIError.default)
-
-                if (response.status) {
-                    response.data?.let { obj -> onSuccess(obj) }
-                    return
-                }
-
                 val responseData = response.data ?: return onError(APIError.default)
+                if (!response.status) return onError(APIError.default)
                 onSuccess(responseData)
             }
 
