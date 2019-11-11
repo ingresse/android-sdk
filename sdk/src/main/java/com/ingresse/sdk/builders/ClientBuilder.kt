@@ -25,10 +25,13 @@ class ClientBuilder(private val client: IngresseClient) {
     fun build(): OkHttpClient { return httpClient.build() }
 
     /**
-     * Add specif timeout to request
+     * Add specif timeout to all timeout attributes in httpClient
      */
     fun addTimeout(timeInSeconds: Long = 2): ClientBuilder {
+        httpClient.connectTimeout(timeInSeconds, TimeUnit.SECONDS)
         httpClient.callTimeout(timeInSeconds, TimeUnit.SECONDS)
+        httpClient.writeTimeout(timeInSeconds, TimeUnit.SECONDS)
+        httpClient.readTimeout(timeInSeconds, TimeUnit.SECONDS)
         return this
     }
 
