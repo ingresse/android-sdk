@@ -43,7 +43,6 @@ interface User {
      */
     @POST("/user/{userId}")
     fun updateUserAddress(@Path("userId") userId: String,
-                          @Query("method") method: String,
                           @Query("apikey") apikey: String,
                           @Query("usertoken") userToken: String,
                           @Body params: UserAddressInfos): Call<String>

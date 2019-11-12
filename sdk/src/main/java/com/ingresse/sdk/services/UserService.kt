@@ -212,7 +212,7 @@ class UserService(private val client: IngresseClient) {
     }
 
     /**
-     * Update user basic infos
+     * Update user address
      *
      * @param request - all parameters used for update address
      * @param onSuccess - success callback
@@ -231,8 +231,7 @@ class UserService(private val client: IngresseClient) {
                 userId = request.userId,
                 apikey = client.key,
                 userToken = request.userToken,
-                params = request,
-                method = "update"
+                params = request
         )
 
         val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
@@ -250,12 +249,9 @@ class UserService(private val client: IngresseClient) {
 
                 if (response.status == null) return onError(APIError.default)
 
-                if (response.status) {
-                    response.data?.let { obj -> onSuccess(obj) }
-                    return
-                }
-
                 val responseData = response.data ?: return onError(APIError.default)
+                if (!response.status) return onError(APIError.default)
+
                 onSuccess(responseData)
             }
             override fun onError(error: APIError) = onError(error)
