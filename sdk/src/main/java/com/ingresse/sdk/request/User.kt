@@ -36,8 +36,7 @@ interface User {
     /**
      * Update user address
      *
-     * @param userId - id from user
-     * @param method - info request action
+     * @param userId - id from users
      * @param userToken - token from user
      * @param params - object with infos to update
      */

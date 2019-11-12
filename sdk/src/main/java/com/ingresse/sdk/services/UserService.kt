@@ -219,7 +219,6 @@ class UserService(private val client: IngresseClient) {
      * @param onError - error callback
      * @param onConnectionError - connection error callback
      * @param onTokenExpired - token expired error callback
-     * @param onConnectionError - connection error callback
      */
     fun updateUserAddress(request: UserAddressInfos,
                           onSuccess: (UserUpdatedDataJSON) -> Unit,
@@ -254,6 +253,7 @@ class UserService(private val client: IngresseClient) {
 
                 onSuccess(responseData)
             }
+
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {

@@ -46,6 +46,12 @@ class ZipCodeService(private val client: IngresseClient) {
 
     /**
      * Method to search address by zipcode
+     *
+     * @param request - parameter used for search address
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - token expired error callback
      */
     fun getAddressByZipCode(request: String,
                             onSuccess: (ZipCodeAddressJSON) -> Unit,
