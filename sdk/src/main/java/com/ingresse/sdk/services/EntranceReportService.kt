@@ -56,13 +56,14 @@ class EntranceReportService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      */
     fun getEntranceReport(sessionId: String,
+                          itemId: String? = null,
                           onSuccess: (EntranceReportJSON) -> Unit,
                           onError: (APIError) -> Unit,
                           onConnectionError: (Throwable) -> Unit,
                           onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        mGetEntranceReportService = service.getEntranceReport(sessionId)
+        mGetEntranceReportService = service.getEntranceReport(sessionId, itemId)
 
         val callback = object : IngresseCallback<ResponseEntranceReport?> {
             override fun onSuccess(data: ResponseEntranceReport?) {
