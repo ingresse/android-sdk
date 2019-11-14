@@ -62,5 +62,6 @@ interface Report {
      * @param sessionId - id from session
      */
     @GET("/report/entrance")
-    fun getEntranceReport(@Query("session_id") sessionId: String): Call<String>
+    fun getEntranceReport(@Query("session_id") sessionId: String,
+                          @Query("item_id") itemId: String? = null): Call<String>
 }
