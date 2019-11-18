@@ -8,6 +8,7 @@ class IngresseService(client: IngresseClient) {
     var balance = BalanceService(client)
     var checkin = CheckinService(client)
     var entrance = EntranceService(client)
+    var entranceReport = EntranceReportService(client)
     var permission = PermissionService(client)
     var phone = PhoneService(client)
     var pos = POSService(client)
@@ -22,4 +23,5 @@ class IngresseService(client: IngresseClient) {
     var report = ReportService(client)
     var history = HistoryService(client)
     var highlight = HighlightsService(client)
+    var webSocketService = WebSocketService(client)
 }
