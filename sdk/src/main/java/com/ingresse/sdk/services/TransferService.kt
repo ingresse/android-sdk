@@ -105,7 +105,8 @@ class TransferService(private val client: IngresseClient) {
                              onError: (APIError) -> Unit,
                              onCanceledCall: (() -> Unit)? = null,
                              onConnectionError: (error: Throwable) -> Unit,
-                             onTokenExpired: Block) {
+                             onTokenExpired: Block,
+                             onCanceledCall: (() -> Unit)? = null) {
 
         val call = service.getUserTransfers(
             userId = request.userId,
