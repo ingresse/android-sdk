@@ -17,14 +17,41 @@ enum class Environment(val prefix: String) {
     STG("stg-")
 }
 
-class URLBuilder(private val host: Host, private val environment: Environment = Environment.PROD) {
+class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
     private val hostPrefix = "https://"
-    fun build(): String {
+    private var parameters: MutableMap<String, String> = mutableMapOf()
+    private var path = ""
+    private var url: String
+
+    init {
         val hmls = listOf(Environment.HML, Environment.HML_A, Environment.HML_B)
         if (host == Host.SEARCH && hmls.contains(environment)) {
-            return hostPrefix + environment.prefix + Host.SEARCH_HML.address
+            url = hostPrefix + environment.prefix + Host.SEARCH_HML.address
         }
 
-        return hostPrefix + environment.prefix + host.address
+        url = hostPrefix + environment.prefix + host.address
+    }
+
+    fun addPath(path: String): URLBuilder {
+        this.path = path
+        return this
+    }
+
+    fun addParameter(key: String, value: String): URLBuilder {
+        parameters[key] = value
+        return this
+    }
+
+    fun build() = url
+
+    fun socketBuild(): String {
+        val parametersList: MutableList<String> = mutableListOf()
+        parameters.keys.forEach { key ->
+            val value = parameters[key].orEmpty()
+            if (value.isNotEmpty()) parametersList.add("$key=$value")
+        }
+
+        val stringParameter = parametersList.joinToString("&")
+        return "ws://$url$path?$stringParameter"
     }
 }
