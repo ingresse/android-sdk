@@ -103,7 +103,6 @@ class TransferService(private val client: IngresseClient) {
                              request: UserTransfersData,
                              onSuccess: (Array<UserTransfersJSON>) -> Unit,
                              onError: (APIError) -> Unit,
-                             onCanceledCall: (() -> Unit)? = null,
                              onConnectionError: (error: Throwable) -> Unit,
                              onTokenExpired: Block,
                              onCanceledCall: (() -> Unit)? = null) {
