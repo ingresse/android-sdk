@@ -20,16 +20,23 @@ data class TicketsToSell(
 data class POSTerminal(
     var vendor: String = "",
     @SerializedName("external_id")
-    var externalId: String = ""): Parcelable {
+    var externalId: String = "",
+    @SerializedName("authorization_code")
+    var authorizationCode: String = "",
+    var nsu: String = ""): Parcelable {
 
     constructor(parcel: Parcel) : this() {
         vendor = parcel.readString()
         externalId = parcel.readString()
+        authorizationCode = parcel.readString()
+        nsu = parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(vendor)
         parcel.writeString(externalId)
+        parcel.writeString(authorizationCode)
+        parcel.writeString(nsu)
     }
 
     override fun describeContents(): Int =  0
