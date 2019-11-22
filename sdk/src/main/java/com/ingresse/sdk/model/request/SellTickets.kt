@@ -19,9 +19,7 @@ data class TicketsToSell(
 
 data class POSTerminal(
     var vendor: String = "",
-    @SerializedName("external_id")
     var externalId: String = "",
-    @SerializedName("authorization_code")
     var authorizationCode: String = "",
     var nsu: String = ""): Parcelable {
 
