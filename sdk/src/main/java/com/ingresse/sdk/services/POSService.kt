@@ -23,6 +23,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.net.SocketTimeoutException
 
 private typealias ResponseSellTickets = Response<SellTicketsJSON>
 private typealias ResponsePrintTickets = Response<PrintTicketsJSON>
@@ -38,15 +39,16 @@ class POSService(private val client: IngresseClient) {
 
     init {
         val httpClient = ClientBuilder(client)
-            .addRequestHeaders()
-            .build()
+                .addRequestHeaders()
+                .addTimeout(60)
+                .build()
 
         val adapter = Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient)
-            .baseUrl(URLBuilder(host, client.environment).build())
-            .build()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
+                .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
         service = adapter.create(POS::class.java)
     }
