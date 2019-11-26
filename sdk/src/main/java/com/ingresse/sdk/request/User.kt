@@ -131,4 +131,12 @@ interface User {
                         @Query("pageSize") pageSize: Int? = null,
                         @Query("from") dateFrom: String? = null,
                         @Query("to") dateTo: String? = null): Call<String>
+
+    /**
+     * Validate password strength
+     *
+     * @param password - password to be validated
+     */
+    @POST("/password")
+    fun validatePasswordStrength(@Query("password") password: String): Call<String>
 }
