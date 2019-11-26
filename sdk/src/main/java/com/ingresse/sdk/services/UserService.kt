@@ -37,6 +37,7 @@ class UserService(private val client: IngresseClient) {
     private var mConcurrentCalls: ArrayList<Call<String>> = ArrayList()
     private var mGetWalletEventsCall: Call<String>? = null
     private var mGetWalletEventsConcurrentCalls: ArrayList<Call<String>> = ArrayList()
+    private var mValidatePasswordStrengthCall: Call<String>? = null
 
     init {
         val httpClient = ClientBuilder(client)
@@ -77,6 +78,11 @@ class UserService(private val client: IngresseClient) {
      * Method to cancel user update planner infos request
      */
     fun cancelUpdateUserPlannerInfos() = mUpdateUserPlannerInfosCall?.cancel()
+
+    /**
+     * Method to cancel user validated password strength
+     */
+    fun cancelValidatePasswordStrength() = mValidatePasswordStrengthCall?.cancel()
 
     /**
      * Method to cancel user tickets data request
@@ -548,5 +554,45 @@ class UserService(private val client: IngresseClient) {
         }
         val type = object : TypeToken<Response<Array<WalletEventJSON>>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Validate password strength
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - user token expired callback
+     */
+    fun validatePasswordStrength(request: String,
+                                 onSuccess: (StrengthPasswordJSON) -> Unit,
+                                 onError: ErrorBlock,
+                                 onConnectionError: (Throwable) -> Unit,
+                                 onTokenExpired: Block) {
+
+        mValidatePasswordStrengthCall = service.validatePasswordStrength(request)
+
+        val callback = object : IngresseCallback<StrengthPasswordJSON?> {
+            override fun onSuccess(data: StrengthPasswordJSON?) {
+                val response = data ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError)  = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<StrengthPasswordJSON?>() {}.type
+        mValidatePasswordStrengthCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
