@@ -59,9 +59,11 @@ interface Report {
     /**
      * Retrieve entrance report
      *
+     * @param eventId - id from event
      * @param sessionId - id from session
      */
-    @GET("/report/entrance")
-    fun getEntranceReport(@Query("session_id") sessionId: String,
+    @GET("/report/{eventId}/entrance")
+    fun getEntranceReport(@Path("eventId") eventId: String,
+                          @Query("session_id") sessionId: String,
                           @Query("item_id") itemId: String? = null): Call<String>
 }

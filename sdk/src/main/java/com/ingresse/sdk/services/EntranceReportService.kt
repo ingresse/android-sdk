@@ -11,6 +11,7 @@ import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.Block
+import com.ingresse.sdk.model.request.EntranceReport
 import com.ingresse.sdk.model.response.entranceReport.EntranceReportJSON
 import com.ingresse.sdk.request.Report
 import retrofit2.Call
@@ -55,15 +56,14 @@ class EntranceReportService(private val client: IngresseClient) {
      * @param onError - error callback
      * @param onConnectionError - connection error callback
      */
-    fun getEntranceReport(sessionId: String,
-                          itemId: String? = null,
+    fun getEntranceReport(request: EntranceReport,
                           onSuccess: (EntranceReportJSON) -> Unit,
                           onError: (APIError) -> Unit,
                           onConnectionError: (Throwable) -> Unit,
                           onTokenExpired: Block) {
         if (client.authToken.isEmpty()) return onError(APIError.default)
 
-        mGetEntranceReportService = service.getEntranceReport(sessionId, itemId)
+        mGetEntranceReportService = service.getEntranceReport(request.eventId, request.sessionId, request.itemId)
 
         val callback = object : IngresseCallback<ResponseEntranceReport?> {
             override fun onSuccess(data: ResponseEntranceReport?) {
