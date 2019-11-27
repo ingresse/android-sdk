@@ -1,9 +1,6 @@
 package com.ingresse.sdk.request
 
-import com.ingresse.sdk.model.request.UserAddressInfos
-import com.ingresse.sdk.model.request.UserBasicInfos
-import com.ingresse.sdk.model.request.UserPicture
-import com.ingresse.sdk.model.request.UserPlanner
+import com.ingresse.sdk.model.request.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -138,5 +135,19 @@ interface User {
      * @param password - password to be validated
      */
     @POST("/password")
-    fun validatePasswordStrength(@Query("password") password: String): Call<String>
+    fun validatePasswordStrength(@Query("password") password: String,
+                                 @Query("apikey") apikey: String): Call<String>
+
+    /**
+     * Change password
+     *
+     * @param userId - id from user
+     * @param userToken - token from user
+     * @param params - old and new password to change
+     */
+    @POST("/user/{userId}")
+    fun changePassword(@Path("userId") userId: String,
+                       @Query("usertoken") usertoken: String,
+                       @Query("apikey") apikey: String,
+                       @Body params: PasswordInfo): Call<String>
 }
