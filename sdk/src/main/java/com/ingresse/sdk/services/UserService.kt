@@ -573,7 +573,8 @@ class UserService(private val client: IngresseClient) {
                                  onSuccess: (StrengthPasswordJSON) -> Unit,
                                  onError: ErrorBlock,
                                  onConnectionError: (Throwable) -> Unit,
-                                 onTokenExpired: Block) {
+                                 onTokenExpired: Block,
+                                 onCanceledCall: (() -> Unit)? = null) {
 
         mValidatePasswordStrengthCall = service.validatePasswordStrength(
                 password = request,
@@ -588,7 +589,12 @@ class UserService(private val client: IngresseClient) {
             override fun onError(error: APIError)  = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
-                if (error is IOException) return onConnectionError(error)
+                if (error is IOException) {
+                    return when (error.localizedMessage) {
+                        CANCELED_CALL, SOCKET_CLOSED -> if (onCanceledCall != null) onCanceledCall() else return
+                        else -> onConnectionError(error)
+                    }
+                }
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
@@ -615,8 +621,7 @@ class UserService(private val client: IngresseClient) {
                        onSuccess: Block,
                        onError: ErrorBlock,
                        onConnectionError: (Throwable) -> Unit,
-                       onTokenExpired: Block,
-                       onCanceledCall: (() -> Unit)? = null) {
+                       onTokenExpired: Block) {
 
         mChangePasswordCall = service.changePassword(
                 userId = request.userId,
@@ -629,12 +634,7 @@ class UserService(private val client: IngresseClient) {
             override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
-                if (error is IOException) {
-                    return when (error.localizedMessage) {
-                        CANCELED_CALL, SOCKET_CLOSED -> if (onCanceledCall != null) onCanceledCall() else return
-                        else -> onConnectionError(error)
-                    }
-                }
+                if (error is IOException) return onConnectionError(error)
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
