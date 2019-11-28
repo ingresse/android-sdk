@@ -406,7 +406,8 @@ class UserService(private val client: IngresseClient) {
                            onSuccess: (Array<UserTicketsJSON>) -> Unit,
                            onError: (APIError) -> Unit,
                            onConnectionError: (error: Throwable) -> Unit,
-                           onTokenExpired: Block) {
+                           onTokenExpired: Block,
+                           onCanceledCall: (() -> Unit)? = null)  {
 
         val call = service.getUserTickets(
                 userId = request.userId,
