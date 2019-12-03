@@ -9,7 +9,7 @@ data class IngresseThrowable(
 ): Throwable() {
 
     override fun toString(): String {
-        return "request: ${request.orEmpty()} | response: ${response.orEmpty()} | reason: ${reason.orEmpty()}"
+        return "request: ${request.orEmpty()} | reason: ${reason.orEmpty()}"
     }
 
     constructor(response: Response<String>, reason: String? = "") : this() {
