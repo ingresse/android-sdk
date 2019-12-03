@@ -1,6 +1,8 @@
 package com.ingresse.sdk.request
 
+import com.ingresse.sdk.model.request.UserAddressInfos
 import com.ingresse.sdk.model.request.UserBasicInfos
+import com.ingresse.sdk.model.request.UserPicture
 import com.ingresse.sdk.model.request.UserPlanner
 import retrofit2.Call
 import retrofit2.http.*
@@ -31,6 +33,30 @@ interface User {
                          @Query("apikey") apikey: String,
                          @Query("usertoken") userToken: String,
                          @Body params: UserBasicInfos): Call<String>
+
+    /**
+     * Update user picture
+     *
+     * @param userId - id from user
+     */
+    @POST("/user/{userId}")
+    fun updateUserPicture(@Path("userId") userId: String,
+                         @Query("apikey") apikey: String,
+                         @Query("usertoken") userToken: String,
+                         @Body params: UserPicture): Call<String>
+                 
+    /**
+     * Update user address
+     *
+     * @param userId - id from users
+     * @param userToken - token from user
+     * @param params - object with infos to update
+     */
+    @POST("/user/{userId}")
+    fun updateUserAddress(@Path("userId") userId: String,
+                          @Query("apikey") apikey: String,
+                          @Query("usertoken") userToken: String,
+                          @Body params: UserAddressInfos): Call<String>
 
     /**
      * Update planner infos

@@ -29,6 +29,8 @@ class UserService(private val client: IngresseClient) {
 
     private var mUserDataCall: Call<String>? = null
     private var mUpdateBasicInfosCall: Call<String>? = null
+    private var mUpdateUserPictureCall: Call<String>? = null
+    private var mUpdateUserAddressCall: Call<String>? = null
     private var mUpdateUserPlannerInfosCall: Call<String>? = null
     private var mUserTicketsCall: Call<String>? = null
     private var mGetEventAttributesCall: Call<String>? = null
@@ -60,6 +62,16 @@ class UserService(private val client: IngresseClient) {
      * Method to cancel user update basic infos request
      */
     fun cancelUpdateBasicInfos() = mUpdateBasicInfosCall?.cancel()
+
+    /**
+     * Method to cancel user update picture request
+     */
+    fun cancelUpdateUserPicture() = mUpdateUserPictureCall?.cancel()
+
+    /**
+     * Method to cancel user update address infos request
+     */
+    fun cancelUpdateUserAddress() = mUpdateUserAddressCall?.cancel()
 
     /**
      * Method to cancel user update planner infos request
@@ -116,7 +128,7 @@ class UserService(private val client: IngresseClient) {
         val fields = listOf("id", "name", "lastname",
                 "document", "email", "zip", "number",
                 "complement", "city", "state", "street",
-                "district", "phone", "verified", "fbUserId",
+                "district", "ddi", "phone", "verified", "fbUserId",
                 "type", "pictures", "picture", "planner")
 
         val customFields = request.fields?.let { it } ?: fields.joinToString(",")
@@ -164,6 +176,110 @@ class UserService(private val client: IngresseClient) {
                          onNetworkError: Block,
                          onTokenExpired: Block) {
         mUpdateBasicInfosCall = service.updateBasicInfos(
+            userId = request.userId,
+            apikey = client.key,
+            userToken = request.userToken,
+            params = request
+        )
+
+        val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
+            override fun onSuccess(data: Response<UserUpdatedJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                if (!response.message.isNullOrEmpty()) {
+                    val apiError = APIError()
+                    apiError.message = response.message.joinToString(", ")
+                    apiError.title = "Verifique suas informações"
+                    apiError.code = 0
+                    onError(apiError)
+                    return
+                }
+
+                if (response.status == null) return onError(APIError.default)
+                val responseData = response.data ?: return onError(APIError.default)
+                if (!response.status) return onError(APIError.default)
+                onSuccess(responseData)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) = onNetworkError()
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<UserUpdatedJSON>>() {}.type
+        mUpdateBasicInfosCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Update user picture
+     *
+     * @param request - all parameters used for update user picture
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onTokenExpired - user token expired callback
+     */
+    fun updateUserPicture(request: UserPicture,
+                         onSuccess: (UserUpdatedDataJSON) -> Unit,
+                         onError: ErrorBlock,
+                         onNetworkError: Block,
+                         onTokenExpired: Block) {
+
+        request.picture = "data:image/png;base64,${request.picture}"
+        mUpdateUserPictureCall = service.updateUserPicture(
+            userId = request.userId,
+            apikey = client.key,
+            userToken = request.userToken,
+            params = request
+        )
+
+        val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
+            override fun onSuccess(data: Response<UserUpdatedJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+
+                if (!response.message.isNullOrEmpty()) {
+                    val apiError = APIError()
+                    apiError.message = response.message.joinToString(", ")
+                    apiError.title = "Verifique suas informações"
+                    apiError.code = 0
+                    onError(apiError)
+                    return
+                }
+
+                if (response.status == null) return onError(APIError.default)
+                val responseData = response.data ?: return onError(APIError.default)
+                if (!response.status) return onError(APIError.default)
+                onSuccess(responseData)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) = onNetworkError()
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<UserUpdatedJSON>>() {}.type
+        mUpdateUserPictureCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Update user address
+     *
+     * @param request - all parameters used for update address
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - token expired error callback
+     */
+    fun updateUserAddress(request: UserAddressInfos,
+                          onSuccess: (UserUpdatedDataJSON) -> Unit,
+                          onError: ErrorBlock,
+                          onConnectionError: (Throwable) -> Unit,
+                          onTokenExpired: Block) {
+
+        mUpdateUserAddressCall = service.updateUserAddress(
                 userId = request.userId,
                 apikey = client.key,
                 userToken = request.userToken,
@@ -185,24 +301,27 @@ class UserService(private val client: IngresseClient) {
 
                 if (response.status == null) return onError(APIError.default)
 
-                if (response.status) {
-                    response.data?.let { obj -> onSuccess(obj) }
-                    return
-                }
-
                 val responseData = response.data ?: return onError(APIError.default)
+                if (!response.status) return onError(APIError.default)
+
                 onSuccess(responseData)
             }
 
             override fun onError(error: APIError) = onError(error)
 
-            override fun onRetrofitError(error: Throwable) = onNetworkError()
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
 
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<UserUpdatedJSON>>() {}.type
-        mUpdateBasicInfosCall?.enqueue(RetrofitCallback(type, callback))
+        val type = object : TypeToken<Response<UserUpdatedJSON>?>() {}.type
+        mUpdateUserAddressCall?.enqueue(RetrofitCallback(type, callback))
     }
 
     /**
