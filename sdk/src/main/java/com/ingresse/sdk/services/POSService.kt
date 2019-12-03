@@ -79,7 +79,6 @@ class POSService(private val client: IngresseClient) {
                     onSuccess: (SellTicketsJSON) -> Unit,
                     onError: ErrorBlock,
                     onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mSellTicketsCall = service.sellTickets(
             apikey = client.key,
@@ -118,7 +117,6 @@ class POSService(private val client: IngresseClient) {
                      onSuccess: (PrintTicketsJSON) -> Unit,
                      onError: ErrorBlock,
                      onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mPrintTicketsCall = service.printTickets(
             transactionId = request.transactionId,
@@ -157,7 +155,6 @@ class POSService(private val client: IngresseClient) {
                      onSuccess: Block = {},
                      onError: ErrorBlock = {},
                      onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mPrintTicketsCall = service.postPrintHistoryLog(
                 transactionId = request.transactionId,
@@ -190,7 +187,6 @@ class POSService(private val client: IngresseClient) {
                              onSuccess: (PlannerAttributesJSON) -> Unit,
                              onError: ErrorBlock,
                              onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mGetPlannerAttributesCall = service.getPlannerAttributes(
                 eventId = request.eventId,

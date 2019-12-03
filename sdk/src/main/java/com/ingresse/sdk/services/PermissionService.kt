@@ -57,7 +57,6 @@ class PermissionService(private val client: IngresseClient) {
                       onSuccess: (DataArray<SalesGroupJSON>) -> Unit,
                       onError: ErrorBlock,
                       onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mSalesGroupCall = service.getSalesGroup(
                 apikey = client.key,

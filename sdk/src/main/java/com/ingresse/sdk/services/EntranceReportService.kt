@@ -61,7 +61,6 @@ class EntranceReportService(private val client: IngresseClient) {
                           onError: (APIError) -> Unit,
                           onConnectionError: (Throwable) -> Unit,
                           onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         mGetEntranceReportService = service.getEntranceReport(sessionId, itemId)
 
