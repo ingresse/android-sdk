@@ -37,6 +37,7 @@ class UserService(private val client: IngresseClient) {
     private var mGetWalletEventsConcurrentCalls: ArrayList<Call<String>> = ArrayList()
     private var mValidatePasswordStrengthCall: Call<String>? = null
     private var mChangePasswordCall: Call<String>? = null
+    private var mCreateAccountCall: Call<String>? = null
 
     init {
         val httpClient = ClientBuilder(client)
@@ -87,6 +88,11 @@ class UserService(private val client: IngresseClient) {
      * Method to cancel user validated password strength
      */
     fun cancelChangePassword() = mChangePasswordCall?.cancel()
+
+    /**
+     * Method to cancel a account creation request
+     */
+    fun cancelCreateAccount() = mCreateAccountCall?.cancel()
 
     /**
      * Method to cancel user tickets data request
@@ -646,5 +652,52 @@ class UserService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Ignored>() {}.type
         mChangePasswordCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Create Ingresse account
+     *
+     * @param request - parameters required to request
+     * @param onSuccess - success callback
+     * @param onError - error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - user token expired callback
+     */
+    fun createAccount(request: CreateAccount,
+                      onSuccess: (CreateAccountJSON) -> Unit,
+                      onError: ErrorBlock,
+                      onConnectionError: (Throwable) -> Unit,
+                      onTokenExpired: Block) {
+        mCreateAccountCall = service.createAccount(
+                name = request.name,
+                lastName = request.lastName,
+                ddi = request.ddi,
+                phone = request.phone,
+                document = request.document,
+                email = request.email,
+                password = request.password,
+                newsletter = request.newsletter,
+                apikey = client.key)
+
+        val callback = object : IngresseCallback<Response<DataJSON<CreateAccountJSON>>?> {
+            override fun onSuccess(data: Response<DataJSON<CreateAccountJSON>>?) {
+                val response = data?.responseData?.data ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<DataJSON<CreateAccountJSON>>?>() {}.type
+        mCreateAccountCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
