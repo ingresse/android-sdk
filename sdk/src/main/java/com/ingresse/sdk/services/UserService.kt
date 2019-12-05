@@ -692,7 +692,8 @@ class UserService(private val client: IngresseClient) {
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
-                onError(apiError)            }
+                onError(apiError)
+            }
 
             override fun onTokenExpired() = onTokenExpired()
         }
