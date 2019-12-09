@@ -59,7 +59,6 @@ class AttributesService(private val client: IngresseClient) {
                            onError: ErrorBlock,
                            onNetworkError: Block,
                            onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         initService()
 
@@ -103,7 +102,6 @@ class AttributesService(private val client: IngresseClient) {
      * @param onError - error callback
      */
     fun updateEventAttributes(request: UpdateEventAttribute, onSuccess: Block, onError: ErrorBlock, onNetworkError: Block, onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call = service.updateEventAttributes(
                 eventId = request.eventId,
@@ -140,8 +138,6 @@ class AttributesService(private val client: IngresseClient) {
                               onError: ErrorBlock,
                               onNetworkError: Block,
                               onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
-
         initService(Host.API)
 
         mGetEventAttributesCall = service.getEventAttributesOld(

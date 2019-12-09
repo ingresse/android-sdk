@@ -47,8 +47,6 @@ class BalanceService(private val client: IngresseClient) {
      * @param onError - error callback
      */
     fun getCashClosing(request: CashClosing, onSuccess: (CashClosingJSON) -> Unit, onError: ErrorBlock, onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
-
         val call = service.getCashClosing(
                 apikey = client.key,
                 userId = request.operator,

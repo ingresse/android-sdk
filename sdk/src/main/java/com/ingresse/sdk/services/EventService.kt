@@ -79,7 +79,6 @@ class EventService(private val client: IngresseClient) {
                                onError: ErrorBlock,
                                onTokenExpired: Block,
                                onConnectionError: (error: Throwable) -> Unit) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call  = service.getEventListByProducer(
             title = request?.title,
@@ -139,7 +138,6 @@ class EventService(private val client: IngresseClient) {
                             onError: ErrorBlock,
                             onTokenExpired: Block,
                             onConnectionError: (error: Throwable) -> Unit) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call  = service.getEventField(eventId, "description")
 
@@ -188,7 +186,6 @@ class EventService(private val client: IngresseClient) {
                        onError: ErrorBlock,
                        onTokenExpired: Block,
                        onConnectionError: (error: Throwable) -> Unit) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val call = service.getEventField(eventId, "admins")
         val callback = object: IngresseCallback<DataJSON<EventJSON>?> {
