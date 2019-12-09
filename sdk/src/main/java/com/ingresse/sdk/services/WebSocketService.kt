@@ -28,7 +28,6 @@ class WebSocketService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      */
     fun getTransaction(transactionId: String, onSuccess: (transactionId: String, status: String) -> Unit ) {
-        if (client.authToken.isEmpty()) return
         val url = URLBuilder(host, client.environment)
             .addPath("/websocket")
             .addParameter("token", client.authToken)

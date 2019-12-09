@@ -123,7 +123,6 @@ class UserService(private val client: IngresseClient) {
                     onError: ErrorBlock,
                     onConnectionError: (Throwable) -> Unit,
                     onTokenExpired: Block) {
-        if (client.authToken.isEmpty()) return onError(APIError.default)
 
         val fields = listOf("id", "name", "lastname",
                 "document", "email", "zip", "number",

@@ -20,8 +20,8 @@ object IngresseErrors {
 
     private val defaults: HashMap<String, String> = hashMapOf(
             Pair("title", "Ops!"),
-            Pair("error", "Ocorreu um problema durante a solicitação. Entre em contato com o organizador do evento e informe o código ao lado. [%d]"),
-            Pair("error_no_code", "Ocorreu um problema durante a solicitação. Entre em contato com o organizador do evento.")
+            Pair("error", "Ocorreu um problema durante a solicitação. Entre em contato com o suporte e informe o código ao lado. [%d]"),
+            Pair("error_no_code", "Ocorreu um problema durante a solicitação. Entre em contato com o suporte.")
     )
 
     @JvmStatic
