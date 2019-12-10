@@ -2,13 +2,19 @@ package com.ingresse.sdk.services
 
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.base.*
+import com.ingresse.sdk.base.IngresseCallback
+import com.ingresse.sdk.base.ResponseHits
+import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.base.Source
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
+import com.ingresse.sdk.helper.CANCELED_CALL
+import com.ingresse.sdk.helper.EXPIRED
+import com.ingresse.sdk.helper.SOCKET_CLOSED
 import com.ingresse.sdk.model.request.EventListByProducer
 import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.request.Event
@@ -77,6 +83,7 @@ class EventService(private val client: IngresseClient) {
                                request: EventListByProducer? = EventListByProducer(),
                                onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit,
                                onError: ErrorBlock,
+                               onCanceledCall: (() -> Unit)? = null
                                onTokenExpired: Block,
                                onConnectionError: (error: Throwable) -> Unit) {
 
@@ -103,14 +110,19 @@ class EventService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) {
                 if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
-                if (error.message == "expired") return onTokenExpired()
+                if (error.message == EXPIRED) return onTokenExpired()
 
                 onError(error)
             }
 
             override fun onRetrofitError(error: Throwable) {
                 if (!concurrent) mGetEventListByProducerCall = null else mConcurrentCalls.remove(call)
-                if (error is IOException) return onConnectionError(error)
+                if (error is IOException) {
+                    return when (error.localizedMessage) {
+                        CANCELED_CALL, SOCKET_CLOSED -> if (onCanceledCall != null) onCanceledCall() else return
+                        else -> onConnectionError(error)
+                    }
+                }
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
