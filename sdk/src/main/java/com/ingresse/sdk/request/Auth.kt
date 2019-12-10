@@ -29,8 +29,7 @@ interface Auth {
               @Field("password") password: String) : Call<String>
 
     /**
-     * Execute login with Facebook data
-     * Data retrieved from Facebook SDK
+     * Execute login with Facebook data retrieved from Facebook SDK
      *
      * @param email - Facebook user email
      * @param fbToken - Facebook token
