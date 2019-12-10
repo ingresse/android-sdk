@@ -29,6 +29,21 @@ interface Auth {
               @Field("password") password: String) : Call<String>
 
     /**
+     * Execute login with Facebook data
+     * Data retrieved from Facebook SDK
+     *
+     * @param email - Facebook user email
+     * @param fbToken - Facebook token
+     * @param fbUserId - Facebook user id
+     */
+    @FormUrlEncoded
+    @POST("/login/facebook")
+    fun loginWithFacebook(@Query("apikey") apikey: String,
+                          @Field("email") email: String,
+                          @Field("fbToken") fbToken: String,
+                          @Field("fbUserId") fbUserId: String) : Call<String>
+
+    /**
      * Renew user auth token
      *
      * @param userToken - Token of logged user
