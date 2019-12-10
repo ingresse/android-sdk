@@ -150,4 +150,28 @@ interface User {
                        @Query("usertoken") usertoken: String,
                        @Query("apikey") apikey: String,
                        @Body params: PasswordInfo): Call<String>
+
+    /**
+     * Create account
+     *
+     * @param name - name
+     * @param lastName - last name
+     * @param email - email
+     * @param password - password
+     * @param document - optional document
+     * @param ddi - phone ddi
+     * @param phone - complete phone
+     * @param newsletter - sign newsletter
+     */
+    @FormUrlEncoded
+    @POST("user")
+    fun createAccount(@Field("name") name: String,
+                      @Field("lastName") lastName: String,
+                      @Field("email") email: String,
+                      @Field("password") password: String,
+                      @Field("document") document: String?,
+                      @Field("ddi") ddi: String,
+                      @Field("phone") phone: String,
+                      @Field("news") newsletter: Boolean,
+                      @Query("apikey") apikey: String): Call<String>
 }
