@@ -77,6 +77,8 @@ class EventDetailsService(private val client: IngresseClient) {
                 apiError.message = error.localizedMessage
                 onError(apiError)
             }
+
+            override fun onTokenExpired() = onTokenExpired()
         }
 
         val type = object : TypeToken<Response<EventDetailsJSON>?>() {}.type
