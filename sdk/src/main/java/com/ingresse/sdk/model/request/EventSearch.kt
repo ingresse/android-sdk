@@ -1,11 +1,11 @@
 package com.ingresse.sdk.model.request
 
-data class EventSearch(val title: String? = null,
-                       val category: String? = null,
-                       val state: String? = null,
-                       val term: String? = null,
-                       val size: Int = 20,
-                       val from: String? = "now-6h",
-                       val to: String? = null,
-                       val orderBy: String = "sessions.dateTime",
-                       val offset: Int = 0)
+data class EventSearch(var title: String? = null,
+                       var category: String? = null,
+                       var state: String? = null,
+                       var term: String? = null,
+                       var size: Int = 20,
+                       var from: String? = "now-6h",
+                       var to: String? = null,
+                       var orderBy: String = "sessions.dateTime",
+                       var offset: Int = 0)
