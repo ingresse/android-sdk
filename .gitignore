@@ -21,6 +21,7 @@ local.properties
 *.DS_Store
 .idea/*
 .project
+.vscode/
 
 *.iml
 *.classpath

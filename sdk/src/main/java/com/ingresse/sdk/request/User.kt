@@ -59,6 +59,21 @@ interface User {
                           @Body params: UserAddressInfos): Call<String>
 
     /**
+     * Update user address
+     *
+     * @param userId - id from user
+     * @param method - info request action
+     * @param userToken - token from user
+     * @param params - object with infos to update
+     */
+    @POST("/user/{userId}")
+    fun updateUserAddress(@Path("userId") userId: String,
+                          @Query("method") method: String,
+                          @Query("apikey") apikey: String,
+                          @Query("usertoken") userToken: String,
+                          @Body params: UserAddressInfos): Call<String>
+
+    /**
      * Update planner infos
      *
      * @param userId - id from user
