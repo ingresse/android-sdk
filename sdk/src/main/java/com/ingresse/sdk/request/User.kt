@@ -1,9 +1,6 @@
 package com.ingresse.sdk.request
 
-import com.ingresse.sdk.model.request.UserAddressInfos
-import com.ingresse.sdk.model.request.UserBasicInfos
-import com.ingresse.sdk.model.request.UserPicture
-import com.ingresse.sdk.model.request.UserPlanner
+import com.ingresse.sdk.model.request.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -146,4 +143,50 @@ interface User {
                         @Query("pageSize") pageSize: Int? = null,
                         @Query("from") dateFrom: String? = null,
                         @Query("to") dateTo: String? = null): Call<String>
+
+    /**
+     * Validate password strength
+     *
+     * @param password - password to be validated
+     */
+    @POST("/password")
+    fun validatePasswordStrength(@Query("password") password: String,
+                                 @Query("apikey") apikey: String): Call<String>
+
+    /**
+     * Change password
+     *
+     * @param userId - id from user
+     * @param userToken - token from user
+     * @param params - old and new password to change
+     */
+    @POST("/user/{userId}")
+    fun changePassword(@Path("userId") userId: String,
+                       @Query("usertoken") usertoken: String,
+                       @Query("apikey") apikey: String,
+                       @Body params: PasswordInfo): Call<String>
+
+    /**
+     * Create account
+     *
+     * @param name - name
+     * @param lastName - last name
+     * @param email - email
+     * @param password - password
+     * @param document - optional document
+     * @param ddi - phone ddi
+     * @param phone - complete phone
+     * @param newsletter - sign newsletter
+     */
+    @FormUrlEncoded
+    @POST("user")
+    fun createAccount(@Field("name") name: String,
+                      @Field("lastName") lastName: String,
+                      @Field("email") email: String,
+                      @Field("password") password: String,
+                      @Field("document") document: String?,
+                      @Field("ddi") ddi: String,
+                      @Field("phone") phone: String,
+                      @Field("news") newsletter: Boolean,
+                      @Query("apikey") apikey: String): Call<String>
 }

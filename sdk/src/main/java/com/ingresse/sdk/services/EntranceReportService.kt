@@ -61,7 +61,6 @@ class EntranceReportService(private val client: IngresseClient) {
                           onError: (APIError) -> Unit,
                           onConnectionError: (Throwable) -> Unit,
                           onTokenExpired: Block) {
-
         mGetEntranceReportService = service.getEntranceReport(request.eventId, request.sessionId, request.itemId)
 
         val callback = object : IngresseCallback<ResponseEntranceReport?> {

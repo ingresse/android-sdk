@@ -19,10 +19,11 @@ class IngresseService(client: IngresseClient) {
     var transfer = TransferService(client)
     var user = UserService(client)
     var event = EventService(client)
+    var eventDetails = EventDetailsService(client)
     var ticket = TicketService(client)
     var report = ReportService(client)
     var history = HistoryService(client)
     var highlight = HighlightsService(client)
-    var webSocketService = WebSocketService(client)
     var zipCode = ZipCodeService(client)
+    var webSocketService = WebSocketService(client)
 }
