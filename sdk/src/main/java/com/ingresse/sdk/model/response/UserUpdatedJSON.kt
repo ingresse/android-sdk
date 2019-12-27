@@ -13,6 +13,7 @@ class UserUpdatedDataJSON(
     val email: String? = "",
     val cpf: String? = "",
     val document: String? = "",
+    val complement: String? = "",
     val phone: String? = "",
     val ddi: String? = "",
     val verified: Boolean? = false
