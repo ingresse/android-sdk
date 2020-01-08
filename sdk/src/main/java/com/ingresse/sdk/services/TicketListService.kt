@@ -55,6 +55,9 @@ class TicketListService(private val client: IngresseClient) {
         val call = service.getTicketList(
                 eventId = request.eventId,
                 sessionId = request.sessionId,
+                hideSessions = request.hideSessions,
+                dateToFilter = request.dateToFilter,
+                itemName = request.itemName,
                 passKey = request.passkey,
                 page = request.page,
                 pageSize = request.pageSize,

@@ -17,6 +17,9 @@ interface Sale {
     @GET("/event/{eventId}/session/{sessionId}/tickets")
     fun getTicketList(@Path("eventId") eventId: String,
                       @Path("sessionId") sessionId: String,
+                      @Query("hideSessions") hideSessions: Boolean,
+                      @Query("date") dateToFilter: String?,
+                      @Query("item") itemName: String?,
                       @Query("apikey") apikey: String,
                       @Query("passkey") passKey: String?,
                       @Query("page") page: Int,
