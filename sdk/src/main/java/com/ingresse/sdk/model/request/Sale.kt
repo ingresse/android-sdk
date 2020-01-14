@@ -4,6 +4,9 @@ class Sale {
     data class TicketList(
             var eventId: String,
             var sessionId: String,
+            var hideSessions: Boolean = false,
+            var dateToFilter: String? = null,
+            var itemName: String? = null,
             var passkey: String? = null,
             var pos: Boolean? = null,
             var page: Int = 1,
