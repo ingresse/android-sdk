@@ -12,6 +12,7 @@ data class UserDataJSON(
         val phone: String? = "",
         val type: String? = "",
         val street: String? = "",
+        val complement: String? = "",
         val number: String? = "",
         val district: String? = "",
         val city: String? = "",

@@ -26,11 +26,11 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
 
     init {
         val hmls = listOf(Environment.HML, Environment.HML_A, Environment.HML_B)
+        url = hostPrefix + environment.prefix + host.address
+
         if (host == Host.SEARCH && hmls.contains(environment)) {
             url = hostPrefix + environment.prefix + Host.SEARCH_HML.address
         }
-
-        url = hostPrefix + environment.prefix + host.address
     }
 
     fun addPath(path: String): URLBuilder {

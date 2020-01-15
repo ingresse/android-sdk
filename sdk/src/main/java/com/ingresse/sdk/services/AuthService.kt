@@ -11,6 +11,7 @@ import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.Login
+import com.ingresse.sdk.model.request.LoginWithFacebook
 import com.ingresse.sdk.model.response.CompanyLoginJSON
 import com.ingresse.sdk.model.response.LoginDataJSON
 import com.ingresse.sdk.model.response.LoginJSON
@@ -26,6 +27,7 @@ class AuthService(private val client: IngresseClient) {
     private var service: Auth
 
     private var mLoginCall: Call<String>? = null
+    private var mLoginWithFacebook: Call<String>? = null
     private var mCompanyLoginCall: Call<String>? = null
     private var mRenewAuthTokenCall: Call<String>? = null
 
@@ -42,6 +44,11 @@ class AuthService(private val client: IngresseClient) {
      * Method to cancel a login request
      */
     fun cancelLogin() = mLoginCall?.cancel()
+
+    /**
+     * Method to cancel a login with facebook request
+     */
+    fun cancelLoginWithFacebook() = mLoginWithFacebook?.cancel()
 
     /**
      * Method to cancel a company login request
@@ -128,6 +135,50 @@ class AuthService(private val client: IngresseClient) {
 
         val type = object: TypeToken<Response<LoginJSON>>() {}.type
         mLoginCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Login with Facebook
+     *
+     * @param onSuccess - success callback
+     * @param onError -  error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - token expired callback
+     */
+    fun loginWithFacebook(request: LoginWithFacebook, onSuccess: (LoginDataJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
+        mLoginWithFacebook = service.loginWithFacebook(
+                apikey = client.key,
+                email = request.email,
+                fbToken = request.fbToken,
+                fbUserId = request.fbUserId
+        )
+
+        val callback = object : IngresseCallback<Response<LoginJSON>?> {
+            override fun onSuccess(data: Response<LoginJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                if (!response.status) return onError(APIError.Builder()
+                        .setCode(0)
+                        .setMessage(response.message ?: "")
+                        .build())
+                if (response.data == null) return onError(APIError.default)
+                onSuccess(response.data)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<LoginJSON>?>() {}.type
+        mLoginWithFacebook?.enqueue(RetrofitCallback(type, callback))
     }
 
     /**
