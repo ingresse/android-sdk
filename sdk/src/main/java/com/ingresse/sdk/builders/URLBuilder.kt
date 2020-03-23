@@ -19,18 +19,11 @@ enum class Environment(val prefix: String) {
     INTEGRATION("integration2-")
 }
 
-enum class HostPrefix(val prefix: String) {
-    HTTP("http://"),
-    HTTPS("https://")
-}
-
 class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
     private var parameters: MutableMap<String, String> = mutableMapOf()
     private var path = ""
     private var url: String
-
-    private val hostPrefix = (if (environment == Environment.INTEGRATION) HostPrefix.HTTP
-    else HostPrefix.HTTPS).prefix
+    private val hostPrefix = "https://"
 
     init {
         val hmls = listOf(Environment.HML, Environment.HML_A, Environment.HML_B)
