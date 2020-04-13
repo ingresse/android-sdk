@@ -15,14 +15,15 @@ enum class Environment(val prefix: String) {
     HML_A("hmla-"),
     HML_B("hmlb-"),
     TEST("test-"),
-    STG("stg-")
+    STG("stg-"),
+    INTEGRATION("integration2-")
 }
 
 class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
-    private val hostPrefix = "https://"
     private var parameters: MutableMap<String, String> = mutableMapOf()
     private var path = ""
     private var url: String
+    private val hostPrefix = "https://"
 
     init {
         val hmls = listOf(Environment.HML, Environment.HML_A, Environment.HML_B)
