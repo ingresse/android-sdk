@@ -1,10 +1,10 @@
 package com.ingresse.sdk.base
 
 class ResponsePaged<T> {
-    var response: ResponseData<T>? = null
+    var responseData: ResponseData<T>? = null
 }
 
 class ResponseData<T> {
-    var data: T? = null
+    var data: ArrayList<T> = ArrayList()
     val paginationInfo: PaginationInfo? = null
 }

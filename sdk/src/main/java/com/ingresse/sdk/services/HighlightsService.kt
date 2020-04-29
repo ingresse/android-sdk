@@ -86,12 +86,12 @@ class HighlightsService(private val client: IngresseClient) {
 
         if (!concurrent) mGetHighlightEventsCall = call else mConcurrentCalls.add(call)
 
-        val callback = object: IngresseCallback<ResponsePaged<ArrayList<HighlightEventJSON>>?> {
-            override fun onSuccess(data: ResponsePaged<ArrayList<HighlightEventJSON>>?) {
+        val callback = object: IngresseCallback<ResponsePaged<HighlightEventJSON>?> {
+            override fun onSuccess(data: ResponsePaged<HighlightEventJSON>?) {
                 if (cancelAllCalled) return
 
-                val response = data?.response?.data ?: return onError(APIError.default)
-                val totalResults = data?.response?.paginationInfo?.lastPage ?: 0
+                val response = data?.responseData?.data ?: return onError(APIError.default)
+                val totalResults = data?.responseData?.paginationInfo?.lastPage ?: 0
 
                 if (!concurrent) mGetHighlightEventsCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response, totalResults)
@@ -114,7 +114,7 @@ class HighlightsService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<Array<HighlightEventJSON>>?>() {}.type
+        val type = object : TypeToken<ResponsePaged<HighlightEventJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }
