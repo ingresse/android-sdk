@@ -18,7 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
-class HighlightsService(private val client: IngresseClient) {
+class HighlightService(private val client: IngresseClient) {
     private val service: Highlight
     private var cancelAllCalled = false
 
@@ -79,7 +79,8 @@ class HighlightsService(private val client: IngresseClient) {
 
         val call  = service.getHighlightEvents(
             apikey = client.key,
-            state = request.state,
+            state = request.state.toLowerCase(),
+            method = request.method,
             page = request.page,
             pageSize = request.pageSize
         )
