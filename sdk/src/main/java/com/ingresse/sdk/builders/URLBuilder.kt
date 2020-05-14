@@ -76,7 +76,7 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
         }
 
         val stringParameter = parametersList.joinToString("&")
-        if (host == Host.LIVE_HML) return "$url$path?$stringParameter${environment.env}"
+        if (environment != Environment.PROD) return "$url$path?$stringParameter${environment.env}"
         return "$url$path?$stringParameter"
     }
 }
