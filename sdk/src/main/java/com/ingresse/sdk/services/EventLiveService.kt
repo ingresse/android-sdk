@@ -1,7 +1,7 @@
 package com.ingresse.sdk.services
 
 import com.ingresse.sdk.IngresseClient
-import com.ingresse.sdk.builders.ClientBuilder
+import com.ingresse.sdk.builders.Environment.*
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
@@ -23,10 +23,15 @@ class EventLiveService(private val client: IngresseClient) {
                         onSuccess: (String) -> Unit,
                         onError: (APIError) -> Unit) {
 
-        val liveUrl = URLBuilder(Host.LIVE_HML, client.environment)
+        var liveUrl = URLBuilder(Host.LIVE_HML, client.environment)
                 .addParameter(key = "apikey", value = client.key)
                 .addParameter(key = "userToken", value = userToken)
                 .addParameter(key = "ticketCode", value = ticketId)
+
+        if (client.environment != PROD) {
+            val env = client.environment.prefix.replace("-", "")
+            liveUrl = liveUrl.addParameter(key = "env", value = env)
+        }
 
         return try {
             val request = liveUrl.paramsBuild()

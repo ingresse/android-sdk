@@ -11,12 +11,12 @@ enum class Host(val address: String) {
     LIVE_HML("live-homolog.ingresse.com/")
 }
 
-enum class Environment(val prefix: String, val env: String = "") {
+enum class Environment(val prefix: String) {
     PROD(""),
     HML("hml-"),
-    HML_A("hmla-", "&env=hmla"),
-    HML_B("hmlb-", "&env=hmlb"),
-    HML_C("hmlc-", "&env=hmlc"),
+    HML_A("hmla-"),
+    HML_B("hmlb-"),
+    HML_C("hmlc-"),
     TEST("test-"),
     STG("stg-"),
     INTEGRATION("integration2-")
@@ -24,8 +24,6 @@ enum class Environment(val prefix: String, val env: String = "") {
 
 class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
     private var parameters: MutableMap<String, String> = mutableMapOf()
-    private var host = host
-    private var environment = environment
     private var path = ""
     private var url: String
     private val hostPrefix = "https://"
@@ -76,7 +74,6 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
         }
 
         val stringParameter = parametersList.joinToString("&")
-        if (environment != Environment.PROD) return "$url$path?$stringParameter${environment.env}"
         return "$url$path?$stringParameter"
     }
 }
