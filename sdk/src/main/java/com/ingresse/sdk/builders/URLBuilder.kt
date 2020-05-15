@@ -36,7 +36,7 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
 
         url = hostPrefix + environment.prefix + host.address
 
-        if (host == Host.LIVE || host == Host.LIVE_HML) { url = hostPrefix + host.address }
+        if (host == Host.LIVE && hmls.contains(environment)) { url = hostPrefix + Host.LIVE_HML.address }
 
         if (host == Host.SEARCH && hmls.contains(environment)) {
             url = hostPrefix + environment.prefix + Host.SEARCH_HML.address

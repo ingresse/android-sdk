@@ -23,7 +23,7 @@ class EventLiveService(private val client: IngresseClient) {
                         onSuccess: (String) -> Unit,
                         onError: (APIError) -> Unit) {
 
-        var liveUrl = URLBuilder(Host.LIVE_HML, client.environment)
+        var liveUrl = URLBuilder(Host.LIVE, client.environment)
                 .addParameter(key = "apikey", value = client.key)
                 .addParameter(key = "userToken", value = userToken)
                 .addParameter(key = "ticketCode", value = ticketId)
