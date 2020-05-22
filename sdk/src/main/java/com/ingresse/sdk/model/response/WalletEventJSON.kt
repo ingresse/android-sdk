@@ -10,10 +10,15 @@ data class WalletEventJSON(
     val poster: String? = "",
     val tickets: Int? = 0,
     val transfered: Int? = 0,
+    val live: EventLiveJSON?,
     val customTickets: List<WalletCustomTicketsJSON>? = emptyList(),
     val advertisement: AdvertisementJSON?,
     val sessions: WalletSessionJSON?,
     val venue: WalletVenueJSON?)
+
+data class EventLiveJSON(
+        val id: String? = "",
+        val enabled: Boolean? = false)
 
 data class WalletCustomTicketsJSON(
     val name: String? = "",

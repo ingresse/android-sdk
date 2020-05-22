@@ -14,6 +14,7 @@ import com.ingresse.sdk.helper.EXPIRED
 import com.ingresse.sdk.helper.SOCKET_CLOSED
 import com.ingresse.sdk.model.request.EventListByProducer
 import com.ingresse.sdk.model.response.EventJSON
+import com.ingresse.sdk.model.response.EventStaffJSON
 import com.ingresse.sdk.request.Event
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -182,7 +183,7 @@ class EventService(private val client: IngresseClient) {
     }
 
     /**
-     * Get event admins
+     * Get event staff: list of admin and entrance manager for selected event
      *
      * @param eventId - id of the event to fetch
      * @param onSuccess - success callback
@@ -190,31 +191,23 @@ class EventService(private val client: IngresseClient) {
      * @param onTokenExpired - token expired callback
      * @param onConnectionError - connection error callback
      */
-    fun getEventAdmins(eventId: String,
-                       onSuccess: (List<Int>) -> Unit,
-                       onError: ErrorBlock,
-                       onTokenExpired: Block,
-                       onConnectionError: (error: Throwable) -> Unit) {
-
-        val call = service.getEventField(eventId, "admins")
+    fun getEventStaff(eventId: String,
+                      onSuccess: (EventStaffJSON) -> Unit,
+                      onError: ErrorBlock,
+                      onTokenExpired: Block,
+                      onConnectionError: Block
+    ) {
+        val call = service.getEventField(eventId, "staff")
         val callback = object: IngresseCallback<DataJSON<EventJSON>?> {
             override fun onSuccess(data: DataJSON<EventJSON>?) {
-                if (cancelAllCalled) return
-                val response = data?.data?.admins ?: return onError(APIError.default)
+                val response = data?.data?.staff ?: return onError(APIError.default)
                 onSuccess(response)
-                mGetEventDescriptionCall = null
             }
 
-            override fun onError(error: APIError) {
-                mGetEventDescriptionCall = null
-                if (error.message == "expired") return onTokenExpired()
-
-                onError(error)
-            }
+            override fun onError(error: APIError) = onError(error)
 
             override fun onRetrofitError(error: Throwable) {
-                mGetEventDescriptionCall = null
-                if (error is IOException) return onConnectionError(error)
+                if (error is IOException) return onConnectionError()
 
                 val apiError = APIError()
                 apiError.message = error.localizedMessage

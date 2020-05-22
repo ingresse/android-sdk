@@ -2,7 +2,7 @@ package com.ingresse.sdk.model.response
 
 data class EventJSON(
         val categories: List<CategoryJSON>? = emptyList(),
-        val admins: List<Int>? = emptyList(),
+        val staff: EventStaffJSON? = null,
         val companyId: Int? = 1,
         val createdAt: String? = "",
         val description: String? = "",

@@ -26,4 +26,5 @@ class IngresseService(client: IngresseClient) {
     var highlight = HighlightService(client)
     var zipCode = ZipCodeService(client)
     var webSocketService = WebSocketService(client)
+    var live = EventLiveService(client)
 }
