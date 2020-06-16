@@ -1,13 +1,23 @@
 package com.ingresse.sdk.model.response
 
-data class PaymentTransactionJSON(
+import com.google.gson.annotations.SerializedName
+import com.ingresse.sdk.helper.CREDIT_CARD_METHOD
+
+data class PaymentTransactionJSON(var data: PaymentTransactionDataJSON? = null)
+
+data class PaymentTransactionDataJSON(
         var transactionId: String? = "",
         var status: String? = "",
-        var creditCard: PaymentMethodJSON? = null,
+        var availablePaymentMethods: PaymentMethodJSON? = null,
         var message: String? = ""
 )
 
 data class PaymentMethodJSON(
+        @SerializedName(CREDIT_CARD_METHOD)
+        var creditCard: CreditCardMethodJSON? = null
+)
+
+data class CreditCardMethodJSON(
         var type: String? = "",
         var installments: List<InstallmentJSON>? = emptyList()
 )

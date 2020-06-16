@@ -16,7 +16,7 @@ interface Payment {
     @POST("/shop")
     fun createTransaction(@Query("apikey") apikey: String,
                           @Query("usertoken") userToken: String,
-                          @Body body: TransactionParams): Call<String>
+                          @Body params: TransactionParams): Call<String>
 
     /**
      * Reserve ticket in payment

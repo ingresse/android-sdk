@@ -5,6 +5,7 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
@@ -14,13 +15,14 @@ import com.ingresse.sdk.model.request.CreateTransaction
 import com.ingresse.sdk.model.request.FreeTicket
 import com.ingresse.sdk.model.request.Payment
 import com.ingresse.sdk.model.response.PaymentJSON
+import com.ingresse.sdk.model.response.PaymentTransactionDataJSON
 import com.ingresse.sdk.model.response.PaymentTransactionJSON
-import com.ingresse.sdk.request.Payment as Service
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import com.ingresse.sdk.request.Payment as Service
+
 
 class PaymentService(private val client: IngresseClient) {
     private var host = Host.API
@@ -31,22 +33,17 @@ class PaymentService(private val client: IngresseClient) {
     private var mPaymentCall: Call<String>? = null
 
     init {
-        val builder = Retrofit.Builder()
+        val httpClient = ClientBuilder(client)
+                .addRequestHeaders()
+                .build()
+
+        val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
                 .baseUrl(URLBuilder(host, client.environment).build())
+                .build()
 
-        val clientBuilder = OkHttpClient.Builder()
-
-        if (client.debug) {
-            val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BODY
-
-            clientBuilder.addInterceptor(logging)
-        }
-
-        builder.client(clientBuilder.build())
-
-        val adapter = builder.build()
         service = adapter.create(Service::class.java)
     }
 
@@ -75,20 +72,20 @@ class PaymentService(private val client: IngresseClient) {
      * @param onTokenExpired - token expired callback
      */
     fun createPaymentTransaction(request: CreateTransaction,
-                          onSuccess: (PaymentTransactionJSON) -> Unit,
-                          onError: ErrorBlock,
-                          onNetworkFailure: (String) -> Unit,
-                          onTokenExpired: Block) {
+                                 onSuccess: (PaymentTransactionDataJSON) -> Unit,
+                                 onError: ErrorBlock,
+                                 onNetworkFailure: (String) -> Unit,
+                                 onTokenExpired: Block) {
 
         mCreateTransactionCall = service.createTransaction(
                 userToken = request.userToken,
                 apikey = client.key,
-                body = request.params
+                params = request.params
         )
 
         val callback = object : IngresseCallback<Response<PaymentTransactionJSON>?> {
             override fun onSuccess(data: Response<PaymentTransactionJSON>?) {
-                val response = data?.responseData ?: return onError(APIError.default)
+                val response = data?.responseData?.data ?: return onError(APIError.default)
                 onSuccess(response)
             }
 
