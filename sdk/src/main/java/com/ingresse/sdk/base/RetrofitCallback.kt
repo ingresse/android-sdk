@@ -1,12 +1,12 @@
 package com.ingresse.sdk.base
 
+import android.util.Log
 import com.google.gson.Gson
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.AUTHTOKEN_EXPIRED
 import com.ingresse.sdk.helper.ERROR_PREFIX
 import com.ingresse.sdk.helper.HttpStatusCode.TOO_MANY_REQUESTS
 import com.ingresse.sdk.helper.HttpStatusCode.UNAUTHORIZED
-import com.ingresse.sdk.helper.logException
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import retrofit2.Call
@@ -21,13 +21,13 @@ class RetrofitObserver<T>(val type: Type, val callback: IngresseCallback<T>): Si
         val gson = Gson()
 
         if (t.isEmpty()) {
-            t.logException("Empty body")
+            Log.e("Retrofit Observer: ", "Empty body")
             callback.onError(APIError.default)
             return
         }
 
         if (t.contains(AUTHTOKEN_EXPIRED, true)){
-            t.logException("User token expired")
+            Log.e("Retrofit Observer: ", "User token expired")
             return callback.onTokenExpired()
         }
 
@@ -36,7 +36,7 @@ class RetrofitObserver<T>(val type: Type, val callback: IngresseCallback<T>): Si
                 val obj = gson.fromJson<T>(t, type)
                 callback.onSuccess(obj)
             } catch (e: RuntimeException) {
-                t.logException("Error on parse success message")
+                Log.e("Retrofit Observer: ", "Error on parse success message")
                 callback.onError(APIError.default)
             }
 
@@ -52,7 +52,7 @@ class RetrofitObserver<T>(val type: Type, val callback: IngresseCallback<T>): Si
                 .setCategory(errorData.category ?: "")
                 .build()
 
-        t.logException(error.message)
+        Log.e("Retrofit Observer: ", error.message)
         callback.onError(error)
     }
 
@@ -71,17 +71,17 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
         if (responseCode != TOO_MANY_REQUESTS.code && responseCode != UNAUTHORIZED.code) {
             if (!errorBody.isNullOrEmpty()) {
                 if (errorBody.contains(AUTHTOKEN_EXPIRED, true)) {
-                    response.logException("User token expired")
+                    Log.e("Retrofit Observer: ", "User token expired")
                     return callback.onTokenExpired()
                 }
 
                 try {
                     val obj = gson.fromJson(errorBody, ErrorData::class.java)
                     val apiError = APIError.Builder().setCode(obj.code ?: 0).build()
-                    response.logException(apiError.message)
+                    Log.e("Retrofit Observer: ", apiError.message)
                     callback.onError(apiError)
                 } catch (e: RuntimeException) {
-                    response.logException("Error on parse error message")
+                    Log.e("Retrofit Observer: ", "Error on parse error message")
                     callback.onError(APIError.default)
                 }
 
@@ -89,7 +89,7 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
             }
 
             if (body.isNullOrEmpty()) {
-                response.logException("Empty body")
+                Log.e("Retrofit Observer: ", "Empty body")
                 callback.onError(APIError.default)
                 return
             }
@@ -100,7 +100,7 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
                     val obj = gson.fromJson<T>(body, type)
                     callback.onSuccess(obj)
                 } catch (e: RuntimeException) {
-                    response.logException("Error on parse success message")
+                    Log.e("Retrofit Observer: ", "Error on parse success message")
                     callback.onError(APIError.default)
                 }
 
@@ -109,7 +109,7 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
         }
 
         if (responseCode == TOO_MANY_REQUESTS.code) {
-            response.logException(TOO_MANY_REQUESTS.message)
+            Log.e("Retrofit Observer: ", TOO_MANY_REQUESTS.message)
             callback.onError(APIError.Builder()
                     .setCode(TOO_MANY_REQUESTS.code)
                     .build())
@@ -132,7 +132,8 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
                 .setCategory(errorData.category ?: "")
                 .build()
 
-        response.logException(error.message)
+
+        Log.e("Retrofit Observer: ", error.message)
         callback.onError(error)
     }
 
