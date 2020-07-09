@@ -18,7 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 
-class HighlightsService(private val client: IngresseClient) {
+class HighlightService(private val client: IngresseClient) {
     private val service: Highlight
     private var cancelAllCalled = false
 
@@ -72,28 +72,30 @@ class HighlightsService(private val client: IngresseClient) {
      */
     fun getHighlightEvents(concurrent: Boolean = false,
                            request: HighlightEvents,
-                           onSuccess: (Array<HighlightEventJSON>) -> Unit,
+                           onSuccess: (ArrayList<HighlightEventJSON>, Int) -> Unit,
                            onError: (APIError) -> Unit,
                            onConnectionError: (error: Throwable) -> Unit,
                            onTokenExpired: Block) {
 
         val call  = service.getHighlightEvents(
             apikey = client.key,
-            state = request.state,
+            state = request.state.toLowerCase(),
+            method = request.method,
             page = request.page,
             pageSize = request.pageSize
         )
 
         if (!concurrent) mGetHighlightEventsCall = call else mConcurrentCalls.add(call)
 
-        val callback = object: IngresseCallback<Response<Array<HighlightEventJSON>>?> {
-            override fun onSuccess(data: Response<Array<HighlightEventJSON>>?) {
+        val callback = object: IngresseCallback<ResponsePaged<HighlightEventJSON>?> {
+            override fun onSuccess(data: ResponsePaged<HighlightEventJSON>?) {
                 if (cancelAllCalled) return
 
-                val response = data?.responseData ?: return onError(APIError.default)
+                val response = data?.responseData?.data ?: return onError(APIError.default)
+                val totalResults = data?.responseData?.paginationInfo?.lastPage ?: 0
 
                 if (!concurrent) mGetHighlightEventsCall = null else mConcurrentCalls.remove(call)
-                onSuccess(response)
+                onSuccess(response, totalResults)
             }
 
             override fun onError(error: APIError) {
@@ -113,7 +115,7 @@ class HighlightsService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<Response<Array<HighlightEventJSON>>?>() {}.type
+        val type = object : TypeToken<ResponsePaged<HighlightEventJSON>?>() {}.type
         call.enqueue(RetrofitCallback(type, callback))
     }
 }

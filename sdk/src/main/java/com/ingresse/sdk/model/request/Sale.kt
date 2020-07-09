@@ -11,5 +11,5 @@ class Sale {
             var pos: Boolean? = null,
             var page: Int = 1,
             var pageSize: Int,
-            var userToken: String)
+            var userToken: String? = null)
 }

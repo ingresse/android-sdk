@@ -50,4 +50,40 @@ interface Auth {
     @GET("/login/renew-token")
     fun renewAuthToken(@Query("apikey") apikey: String,
                        @Query("usertoken") userToken: String) : Call<String>
+
+    /**
+     * Recover user password
+     *
+     * @param email - user email
+     */
+    @FormUrlEncoded
+    @POST("/recover-password")
+    fun recoverPassword(@Query("apikey") apikey: String,
+                        @Field("email") email: String) : Call<String>
+
+    /**
+     * Validate hash from email sent in recover password action
+     *
+     * @param email - user email
+     * @param hash - hash received from email
+     */
+    @FormUrlEncoded
+    @POST("/recover-validate")
+    fun validateHash(@Query("apikey") apikey: String,
+                     @Field("email") email: String,
+                     @Field("hash") hash: String) : Call<String>
+
+    /**
+     * Update user password
+     *
+     * @param email - user email
+     * @param password - password to update
+     * @param hash - hash received from email
+     */
+    @FormUrlEncoded
+    @POST("/recover-update-password")
+    fun updatePassword(@Query("apikey") apikey: String,
+                       @Field("email") email: String,
+                       @Field("password") password: String,
+                       @Field("hash") hash: String) : Call<String>
 }
