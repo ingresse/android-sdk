@@ -23,7 +23,7 @@ class IngresseService(client: IngresseClient) {
     var ticket = TicketService(client)
     var report = ReportService(client)
     var history = HistoryService(client)
-    var highlight = HighlightsService(client)
+    var highlight = HighlightService(client)
     var zipCode = ZipCodeService(client)
     var webSocketService = WebSocketService(client)
     var live = EventLiveService(client)

@@ -12,10 +12,9 @@ import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.Login
 import com.ingresse.sdk.model.request.LoginWithFacebook
-import com.ingresse.sdk.model.response.CompanyLoginJSON
-import com.ingresse.sdk.model.response.LoginDataJSON
-import com.ingresse.sdk.model.response.LoginJSON
-import com.ingresse.sdk.model.response.UserAuthTokenJSON
+import com.ingresse.sdk.model.request.UpdatePassword
+import com.ingresse.sdk.model.request.ValidateHash
+import com.ingresse.sdk.model.response.*
 import com.ingresse.sdk.request.Auth
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -30,6 +29,9 @@ class AuthService(private val client: IngresseClient) {
     private var mLoginWithFacebook: Call<String>? = null
     private var mCompanyLoginCall: Call<String>? = null
     private var mRenewAuthTokenCall: Call<String>? = null
+    private var mRecoverPasswordCall: Call<String>? = null
+    private var mValidateHashCall: Call<String>? = null
+    private var mUpdatePasswordCall: Call<String>? = null
 
     init {
         val adapter = Retrofit.Builder()
@@ -59,6 +61,21 @@ class AuthService(private val client: IngresseClient) {
      * Method to cancel a company login request
      */
     fun cancelRenewAuthToken() = mRenewAuthTokenCall?.cancel()
+
+    /**
+     * Method to cancel a recover password request
+     */
+    fun cancelRecoverPassword() = mRecoverPasswordCall?.cancel()
+
+    /**
+     * Method to cancel a validate hash request
+     */
+    fun cancelValidateHash() = mValidateHashCall?.cancel()
+
+    /**
+     * Method to cancel a update password request
+     */
+    fun cancelUpdatePassword() = mUpdatePasswordCall?.cancel()
 
     /**
      * Company login with email and password
@@ -213,5 +230,122 @@ class AuthService(private val client: IngresseClient) {
 
         val type = object: TypeToken<Response<UserAuthTokenJSON>>() {}.type
         mRenewAuthTokenCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Recover password
+     *
+     * @param email - user email
+     * @param onSuccess - success callback
+     * @param onError -  error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - token expired callback
+     */
+    fun recoverPassword(email: String, onSuccess: (AuthPasswordJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
+        mRecoverPasswordCall = service.recoverPassword(
+                apikey = client.key,
+                email = email
+        )
+
+        val callback = object : IngresseCallback<Response<AuthPasswordJSON>?> {
+            override fun onSuccess(data: Response<AuthPasswordJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<AuthPasswordJSON>?>() {}.type
+        mRecoverPasswordCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Validate recovery hash
+     *
+     * @param request - all parameters used in validate hash
+     * @param onSuccess - success callback
+     * @param onError -  error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - token expired callback
+     */
+    fun validateHash(request: ValidateHash, onSuccess: (ValidateHashJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
+        mValidateHashCall = service.validateHash(
+                apikey = client.key,
+                email = request.email,
+                hash = request.hash
+        )
+
+        val callback = object : IngresseCallback<Response<ValidateHashJSON>?> {
+            override fun onSuccess(data: Response<ValidateHashJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<ValidateHashJSON>?>() {}.type
+        mValidateHashCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    /**
+     * Update user password
+     *
+     * @param request - all parameters used in update password
+     * @param onSuccess - success callback
+     * @param onError -  error callback
+     * @param onConnectionError - connection error callback
+     * @param onTokenExpired - token expired callback
+     */
+    fun updatePassword(request: UpdatePassword, onSuccess: (AuthPasswordJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
+        mUpdatePasswordCall = service.updatePassword(
+                apikey = client.key,
+                email = request.email,
+                password = request.password,
+                hash = request.hash
+        )
+
+        val callback = object : IngresseCallback<Response<AuthPasswordJSON>?> {
+            override fun onSuccess(data: Response<AuthPasswordJSON>?) {
+                val response = data?.responseData ?: return onError(APIError.default)
+                onSuccess(response)
+            }
+
+            override fun onError(error: APIError) = onError(error)
+
+            override fun onRetrofitError(error: Throwable) {
+                if (error is IOException) return onConnectionError(error)
+
+                val apiError = APIError()
+                apiError.message = error.localizedMessage
+                onError(apiError)
+            }
+
+            override fun onTokenExpired() = onTokenExpired()
+        }
+
+        val type = object : TypeToken<Response<AuthPasswordJSON>?>() {}.type
+        mUpdatePasswordCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
