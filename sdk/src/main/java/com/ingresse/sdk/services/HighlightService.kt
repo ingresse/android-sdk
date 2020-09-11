@@ -9,6 +9,7 @@ import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.Block
+import com.ingresse.sdk.helper.EnumConverterFactory
 import com.ingresse.sdk.model.request.HighlightEvents
 import com.ingresse.sdk.model.response.EventJSON
 import com.ingresse.sdk.model.response.HighlightEventJSON
@@ -33,6 +34,7 @@ class HighlightService(private val client: IngresseClient) {
         val adapter = Retrofit.Builder()
             .client(httpClient)
             .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(EnumConverterFactory())
             .baseUrl(URLBuilder(Host.API, client.environment).build())
             .build()
 
