@@ -94,7 +94,7 @@ class HighlightService(private val client: IngresseClient) {
                 if (cancelAllCalled) return
 
                 val response = data?.responseData?.data ?: return onError(APIError.default)
-                val totalResults = data?.responseData?.paginationInfo?.lastPage ?: 0
+                val totalResults = data.responseData?.paginationInfo?.lastPage ?: 0
 
                 if (!concurrent) mGetHighlightEventsCall = null else mConcurrentCalls.remove(call)
                 onSuccess(response, totalResults)
