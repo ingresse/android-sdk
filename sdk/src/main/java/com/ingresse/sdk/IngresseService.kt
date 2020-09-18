@@ -1,6 +1,7 @@
 package com.ingresse.sdk
 
 import com.ingresse.sdk.services.*
+import com.ingresse.sdk.v2.repositories.HighlightEvents
 
 class IngresseService(client: IngresseClient) {
     var attributes = AttributesService(client)
@@ -27,4 +28,6 @@ class IngresseService(client: IngresseClient) {
     var zipCode = ZipCodeService(client)
     var webSocketService = WebSocketService(client)
     var live = EventLiveService(client)
+    var v2Highlight = HighlightEvents(client)
 }
+
