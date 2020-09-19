@@ -19,7 +19,7 @@ interface HighlightEvents {
     suspend fun getHighlightBannerEvents(
         @Query("apikey") apikey: String,
         @Query("state") state: String? = null,
-        @Query("method") method: String = "banner",
+        @Query("method") method: String,
         @Query("page") page: Int = INITIAL_PAGE,
         @Query("pageSize") pageSize: Int = PAGE_SIZE
     ): Response<String>

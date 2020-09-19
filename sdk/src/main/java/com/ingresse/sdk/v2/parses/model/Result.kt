@@ -1,26 +1,34 @@
 package com.ingresse.sdk.v2.parses.model
 
+import java.io.Serializable
+
 @Suppress("UNCHECKED_CAST")
-class Result<T> constructor(private val result: Any?) {
+class Result<T> constructor(private val result: Any?) : Serializable {
 
     companion object {
-        fun <T> success(result: T) = Result<T>(
-            Success(result)
-        )
+        fun <T> success(result: T) =
+            Result<T>(Success(result))
+
         fun <T> error(code: Int?, throwable: Throwable) =
-            Result<T>(
-                Failure(
-                    code,
-                    throwable
-                )
-            )
+            Result<T>(Failure(code, throwable))
+
         fun <T> tokenExpired() =
             Result<T>(TokenExpired())
+
+        fun <T> connectionError() =
+            Result<T>(ConnectionError())
     }
 
     private class Success<T>(val value: T)
-    private class Failure(val code: Int?, @JvmField val exception: Throwable)
+
+    private class Failure(
+        val code: Int?,
+        @JvmField val exception: Throwable
+    )
+
     private class TokenExpired
+
+    private class ConnectionError
 
     @PublishedApi
     internal val code: Int?
@@ -50,6 +58,11 @@ inline fun <T> Result<T>.onError(action: (Int?, Throwable) -> Unit): Result<T> {
 }
 
 inline fun <T> Result<T>.onTokenExpired(action: () -> Unit): Result<T> {
+    if (isTokenExpired) action()
+    return this
+}
+
+inline fun <T> Result<T>.connectionError(action: () -> Unit): Result<T> {
     if (isTokenExpired) action()
     return this
 }

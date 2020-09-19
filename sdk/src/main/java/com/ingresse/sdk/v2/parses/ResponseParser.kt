@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.io.IOException
 import java.lang.reflect.Type
 
 suspend fun <T> responseParser(
@@ -38,6 +39,8 @@ suspend fun <T> responseParser(
             }
 
             return@withContext gson.parseSuccessObject<T>(body, type)
+        } catch (ioException: IOException) {
+            Result.connectionError<T>()
         } catch (throwable: Throwable) {
             Result.error<T>(null, throwable)
         }
