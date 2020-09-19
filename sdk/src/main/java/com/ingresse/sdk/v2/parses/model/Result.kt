@@ -45,6 +45,7 @@ class Result<T> constructor(private val result: Any?) : Serializable {
     val isFailure: Boolean get() = result is Failure
     val isSuccess: Boolean get() = result is Success<*>
     val isTokenExpired: Boolean get() = result is TokenExpired
+    val isConnectionError: Boolean get() = result is ConnectionError
 }
 
 inline fun <T> Result<T>.onSuccess(action: (T) -> Unit): Result<T> {
@@ -63,6 +64,6 @@ inline fun <T> Result<T>.onTokenExpired(action: () -> Unit): Result<T> {
 }
 
 inline fun <T> Result<T>.connectionError(action: () -> Unit): Result<T> {
-    if (isTokenExpired) action()
+    if (isConnectionError) action()
     return this
 }
