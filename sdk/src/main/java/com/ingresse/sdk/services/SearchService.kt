@@ -70,6 +70,13 @@ class SearchService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "getSearchedEventsPlain(request = SearchEvents())",
+            imports = ["com.ingresse.sdk.v2.repositories"]
+        )
+    )
     fun searchEvents(concurrent: Boolean = false,
                      request: EventSearch,
                      onSuccess: (ArrayList<Source<EventJSON>>, Int) -> Unit,
