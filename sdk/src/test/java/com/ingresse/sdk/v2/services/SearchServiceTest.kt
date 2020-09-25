@@ -7,34 +7,17 @@ import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.*
-import org.junit.After
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.`when`
 
 @ExperimentalCoroutinesApi
-class SearchTest {
-
-    private val dispatcher = TestCoroutineDispatcher()
-    private val scope = TestCoroutineScope(dispatcher)
-
-    @Before
-    fun before() {
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @After
-    fun after() {
-        Dispatchers.resetMain()
-        scope.cleanupTestCoroutines()
-    }
+class SearchServiceTest {
 
     @Test
-    fun getEventsSuccessTest() = scope.runBlockingTest {
+    fun getEventsSuccessTest() {
         val jsonMock = mock<SearchEventsJSON> {
             `when`(mock.id).thenReturn(123456)
             `when`(mock.title).thenReturn("test title")
@@ -47,7 +30,7 @@ class SearchTest {
 
         val requestMock = mock<SearchEvents>()
 
-        val repositoryMock = mock<Search> {
+        val serviceMock = mock<SearchService> {
             onBlocking {
                 getEvents(
                     company = requestMock.company,
@@ -64,36 +47,38 @@ class SearchTest {
             } doReturn dataMock
         }
 
-        val result = kotlin.runCatching {
-            repositoryMock.getEvents(
-                company = requestMock.company,
-                title = requestMock.title,
-                state = requestMock.state,
-                category = requestMock.category,
-                term = requestMock.term,
-                size = requestMock.size,
-                from = requestMock.from,
-                to = requestMock.to,
-                orderBy = requestMock.orderBy,
-                offset = requestMock.offset
-            )
-        }.onSuccess {
-            val jsonResult = it.hits.first().source
+        runBlockingTest {
+            val result = kotlin.runCatching {
+                serviceMock.getEvents(
+                    company = requestMock.company,
+                    title = requestMock.title,
+                    state = requestMock.state,
+                    category = requestMock.category,
+                    term = requestMock.term,
+                    size = requestMock.size,
+                    from = requestMock.from,
+                    to = requestMock.to,
+                    orderBy = requestMock.orderBy,
+                    offset = requestMock.offset
+                )
+            }.onSuccess {
+                val jsonResult = it.hits.first().source
 
-            Assert.assertEquals(1, it.total)
-            Assert.assertEquals("test title", jsonResult.title)
-            Assert.assertEquals(123456, jsonResult.id)
+                Assert.assertEquals(1, it.total)
+                Assert.assertEquals("test title", jsonResult.title)
+                Assert.assertEquals(123456, jsonResult.id)
+            }
+
+            Assert.assertFalse(result.isFailure)
+            Assert.assertTrue(result.isSuccess)
         }
-
-        Assert.assertFalse(result.isFailure)
-        Assert.assertTrue(result.isSuccess)
     }
 
     @Test
-    fun getEventsFailTest() = scope.runBlockingTest {
+    fun getEventsFailTest() {
         val requestMock = mock<SearchEvents>()
 
-        val repositoryMock = mock<Search> {
+        val serviceMock = mock<SearchService> {
             onBlocking {
                 getEvents(
                     company = requestMock.company,
@@ -110,24 +95,26 @@ class SearchTest {
             } doThrow RuntimeException("Thrown an exception")
         }
 
-        val result = kotlin.runCatching {
-            repositoryMock.getEvents(
-                company = requestMock.company,
-                title = requestMock.title,
-                state = requestMock.state,
-                category = requestMock.category,
-                term = requestMock.term,
-                size = requestMock.size,
-                from = requestMock.from,
-                to = requestMock.to,
-                orderBy = requestMock.orderBy,
-                offset = requestMock.offset
-            )
-        }.onFailure {
-            Assert.assertEquals("Thrown an exception", it.message)
-        }
+        runBlockingTest {
+            val result = kotlin.runCatching {
+                serviceMock.getEvents(
+                    company = requestMock.company,
+                    title = requestMock.title,
+                    state = requestMock.state,
+                    category = requestMock.category,
+                    term = requestMock.term,
+                    size = requestMock.size,
+                    from = requestMock.from,
+                    to = requestMock.to,
+                    orderBy = requestMock.orderBy,
+                    offset = requestMock.offset
+                )
+            }.onFailure {
+                Assert.assertEquals("Thrown an exception", it.message)
+            }
 
-        Assert.assertFalse(result.isSuccess)
-        Assert.assertTrue(result.isFailure)
+            Assert.assertFalse(result.isSuccess)
+            Assert.assertTrue(result.isFailure)
+        }
     }
 }

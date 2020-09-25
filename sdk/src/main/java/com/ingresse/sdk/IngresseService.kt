@@ -24,7 +24,7 @@ import com.ingresse.sdk.services.TransferService
 import com.ingresse.sdk.services.UserService
 import com.ingresse.sdk.services.WebSocketService
 import com.ingresse.sdk.services.ZipCodeService
-import com.ingresse.sdk.v2.repositories.HighlightEvents
+import com.ingresse.sdk.v2.repositories.Highlights
 import com.ingresse.sdk.v2.repositories.Search
 
 class IngresseService(client: IngresseClient) {
@@ -52,6 +52,6 @@ class IngresseService(client: IngresseClient) {
     var zipCode = ZipCodeService(client)
     var webSocketService = WebSocketService(client)
     var live = EventLiveService(client)
-    var v2Highlight = HighlightEvents(client)
+    var v2Highlight = Highlights(client)
     var v2Search = Search(client)
 }

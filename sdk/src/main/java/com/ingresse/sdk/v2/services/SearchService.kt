@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface Search {
+interface SearchService {
     /**
      * Get information of some event by searching it's title
      *
