@@ -16,7 +16,7 @@ interface HighlightsService {
      * @param page - search page
      */
     @GET("/featured")
-    suspend fun getHighlightBannerEvents(
+    suspend fun getHighlights(
         @Query("apikey") apikey: String,
         @Query("state") state: String? = null,
         @Query("method") method: String,

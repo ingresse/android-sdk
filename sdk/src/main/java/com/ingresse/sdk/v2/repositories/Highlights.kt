@@ -39,7 +39,7 @@ class Highlights(private val client: IngresseClient) {
     ): Result<PagedResponse<HighlightBannerEventJSON>> {
         val type = object : TypeToken<PagedResponse<HighlightBannerEventJSON>>() {}.type
         return responseParser(dispatcher, type) {
-            service.getHighlightBannerEvents(
+            service.getHighlights(
                 apikey = client.key,
                 state = request.state,
                 method = request.method,
