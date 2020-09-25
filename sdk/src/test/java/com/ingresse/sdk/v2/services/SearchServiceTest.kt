@@ -11,10 +11,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito.`when`
+
 
 @ExperimentalCoroutinesApi
 class SearchServiceTest {
+
+    @Mock
+    val requestMock = mock<SearchEvents>()
 
     @Test
     fun getEventsSuccessTest() {
@@ -27,8 +32,6 @@ class SearchServiceTest {
             `when`(mock.hits).thenReturn(listOf(Source(jsonMock)))
             `when`(mock.total).thenReturn(1)
         }
-
-        val requestMock = mock<SearchEvents>()
 
         val serviceMock = mock<SearchService> {
             onBlocking {
@@ -76,8 +79,6 @@ class SearchServiceTest {
 
     @Test
     fun getEventsFailTest() {
-        val requestMock = mock<SearchEvents>()
-
         val serviceMock = mock<SearchService> {
             onBlocking {
                 getEvents(
