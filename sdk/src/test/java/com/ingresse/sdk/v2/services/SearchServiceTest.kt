@@ -22,7 +22,7 @@ class SearchServiceTest {
     val requestMock = mock<SearchEvents>()
 
     @Test
-    fun getEventsSuccessTest() {
+    fun getEvents_SuccessTest() {
         val jsonMock = mock<SearchEventsJSON> {
             `when`(mock.id).thenReturn(123456)
             `when`(mock.title).thenReturn("test title")
@@ -78,7 +78,7 @@ class SearchServiceTest {
     }
 
     @Test
-    fun getEventsFailTest() {
+    fun getEvents_FailTest() {
         val serviceMock = mock<SearchService> {
             onBlocking {
                 getEvents(
