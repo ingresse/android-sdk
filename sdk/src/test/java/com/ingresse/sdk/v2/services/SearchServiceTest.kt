@@ -14,7 +14,6 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 
-
 @ExperimentalCoroutinesApi
 class SearchServiceTest {
 
