@@ -10,6 +10,7 @@ import com.ingresse.sdk.v2.parses.model.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import retrofit2.Response
 import java.io.IOException
 import java.lang.reflect.Type
@@ -23,10 +24,10 @@ suspend fun <T> responseParser(
         try {
             val response: Response<String> = call.invoke()
             val body = response.body()
-            val errorBody = response.errorBody()?.toString()
+            val errorBody = response.errorBody()
             val gson = Gson()
 
-            if (!errorBody.isNullOrEmpty()) {
+            if (errorBody != null) {
                 return@withContext gson.parseErrorBody<T>(errorBody)
             }
 
