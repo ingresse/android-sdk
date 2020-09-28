@@ -13,10 +13,9 @@ import retrofit2.Response
 
 @Suppress("BlockingMethodInNonBlockingContext")
 @ExperimentalCoroutinesApi
-class HighlightsServiceTests {
+class HighlightsServiceTest {
 
-    @Mock
-    val apiKey = "ABC123456789"
+    private val apiKey = "ABC123456789"
 
     @Mock
     val requestMock = mock<HighlightBannerEvents>()

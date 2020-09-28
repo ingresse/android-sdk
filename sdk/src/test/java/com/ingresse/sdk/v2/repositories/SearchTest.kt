@@ -19,7 +19,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 
 @ExperimentalCoroutinesApi
-class SearchTests {
+class SearchTest {
 
     @Mock
     val dispatcher = TestCoroutineDispatcher()

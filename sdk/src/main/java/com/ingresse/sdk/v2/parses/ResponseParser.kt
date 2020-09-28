@@ -64,13 +64,14 @@ private fun <T> Gson.parseIngresseError(body: String): Result<T> {
     return Result.error(error.code, throwable)
 }
 
-private fun <T> Gson.parseErrorBody(errorBody: String): Result<T> {
-    if (errorBody.contains(AUTHTOKEN_EXPIRED, ignoreCase = true)) {
+private fun <T> Gson.parseErrorBody(errorBody: ResponseBody): Result<T> {
+    val result = fromJson(errorBody.charStream(), Error::class.java)
+    val message = "[${result.category}] ${result.message}"
+    val throwable = Throwable(message)
+
+    if (message.contains(AUTHTOKEN_EXPIRED, ignoreCase = true)) {
         return Result.tokenExpired()
     }
 
-    val result = fromJson(errorBody, Error::class.java)
-    val message = "[${result.category}] ${result.message}"
-    val throwable = Throwable(message)
     return Result.error(result.code, throwable)
 }
