@@ -56,11 +56,11 @@ class ResultParserTest {
             }
 
             result.onSuccess {
-                val jsonResult = it.hits.first().source
+                val jsonResult = it.hits?.first()?.source
 
                 Assert.assertEquals(1, it.total)
-                Assert.assertEquals("Test title", jsonResult.title)
-                Assert.assertEquals(123456, jsonResult.id)
+                Assert.assertEquals("Test title", jsonResult?.title)
+                Assert.assertEquals(123456, jsonResult?.id)
             }
 
             Assert.assertTrue(result.isSuccess)

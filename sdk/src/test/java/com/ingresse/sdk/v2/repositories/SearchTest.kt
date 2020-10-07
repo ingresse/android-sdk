@@ -51,11 +51,11 @@ class SearchTest {
             val result = kotlin.runCatching {
                 repositoryMock.getSearchedEventsPlain(requestMock)
             }.onSuccess {
-                val jsonResult = it.hits.first().source
+                val jsonResult = it.hits?.first()?.source
 
                 Assert.assertEquals(1, it.total)
-                Assert.assertEquals("test title", jsonResult.title)
-                Assert.assertEquals(123456, jsonResult.id)
+                Assert.assertEquals("test title", jsonResult?.title)
+                Assert.assertEquals(123456, jsonResult?.id)
             }
 
             Assert.assertFalse(result.isFailure)
@@ -96,11 +96,11 @@ class SearchTest {
         runBlockingTest {
             val result = repositoryMock.getSearchedEvents(dispatcher, requestMock)
             result.onSuccess {
-                val jsonResult = it.hits.first().source
+                val jsonResult = it.hits?.first()?.source
 
                 Assert.assertEquals(1, it.total)
-                Assert.assertEquals("test title", jsonResult.title)
-                Assert.assertEquals(123456, jsonResult.id)
+                Assert.assertEquals("test title", jsonResult?.title)
+                Assert.assertEquals(123456, jsonResult?.id)
             }
 
             Assert.assertTrue(result.isSuccess)

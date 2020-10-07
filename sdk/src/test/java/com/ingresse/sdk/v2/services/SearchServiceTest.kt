@@ -64,11 +64,11 @@ class SearchServiceTest {
                     offset = requestMock.offset
                 )
             }.onSuccess {
-                val jsonResult = it.hits.first().source
+                val jsonResult = it.hits?.first()?.source
 
                 Assert.assertEquals(1, it.total)
-                Assert.assertEquals("test title", jsonResult.title)
-                Assert.assertEquals(123456, jsonResult.id)
+                Assert.assertEquals("test title", jsonResult?.title)
+                Assert.assertEquals(123456, jsonResult?.id)
             }
 
             Assert.assertFalse(result.isFailure)
