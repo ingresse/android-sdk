@@ -3,6 +3,7 @@ package com.ingresse.sdk.v2.models.request
 import com.ingresse.sdk.v2.defaults.CURRENT_DATE_MINUS_SIX_HOURS
 import com.ingresse.sdk.v2.defaults.INGRESSE_COMPANY_NUMBER
 import com.ingresse.sdk.v2.defaults.PAGE_SIZE
+import com.ingresse.sdk.v2.defaults.SEARCH_QUERY_ORDER
 
 data class SearchEvents(
     val company: String,
@@ -36,7 +37,7 @@ data class SearchEvents(
         size = size ?: PAGE_SIZE,
         from = from ?: CURRENT_DATE_MINUS_SIX_HOURS,
         to = to,
-        orderBy = orderBy,
+        orderBy = orderBy ?: SEARCH_QUERY_ORDER,
         offset = offset ?: 0
     )
 }

@@ -5,7 +5,7 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
-import com.ingresse.sdk.v2.models.base.Data
+import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.request.SearchEvents
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
 import com.ingresse.sdk.v2.parses.model.Result
@@ -52,6 +52,8 @@ class Search(client: IngresseClient) {
     suspend fun getSearchedEvents(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         request: SearchEvents
-    ): Result<Data<SearchEventsJSON>> =
-        resultParser(dispatcher) { getSearchedEventsPlain(request) }
+    ): Result<ResponseHits<SearchEventsJSON>> =
+        resultParser(dispatcher) {
+            getSearchedEventsPlain(request)
+        }
 }
