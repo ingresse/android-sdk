@@ -1,6 +1,7 @@
 package com.ingresse.sdk.v2.repositories
 
 import com.ingresse.sdk.v2.models.base.Data
+import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.base.Source
 import com.ingresse.sdk.v2.models.request.SearchEvents
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
@@ -39,21 +40,26 @@ class SearchTest {
         Mockito.`when`(mock.total).thenReturn(1)
     }
 
+    @Mock
+    val responseMock = mock<ResponseHits<SearchEventsJSON>> {
+        Mockito.`when`(mock.data).thenReturn(dataMock)
+    }
+
     @Test
     fun getSearchedEventsPlain_SuccessTest() {
         val repositoryMock = mock<Search>() {
             onBlocking {
                 getSearchedEventsPlain(requestMock)
-            } doReturn dataMock
+            } doReturn responseMock
         }
 
         runBlockingTest {
             val result = kotlin.runCatching {
                 repositoryMock.getSearchedEventsPlain(requestMock)
             }.onSuccess {
-                val jsonResult = it.hits?.first()?.source
+                val jsonResult = it.data?.hits?.first()?.source
 
-                Assert.assertEquals(1, it.total)
+                Assert.assertEquals(1, it.data?.total)
                 Assert.assertEquals("test title", jsonResult?.title)
                 Assert.assertEquals(123456, jsonResult?.id)
             }
@@ -85,7 +91,7 @@ class SearchTest {
 
     @Test
     fun getSearchedEvents_SuccessTest() {
-        val resultMock = Result.success(dataMock)
+        val resultMock = Result.success(responseMock)
 
         val repositoryMock = mock<Search> {
             onBlocking {
@@ -96,9 +102,9 @@ class SearchTest {
         runBlockingTest {
             val result = repositoryMock.getSearchedEvents(dispatcher, requestMock)
             result.onSuccess {
-                val jsonResult = it.hits?.first()?.source
+                val jsonResult = it.data?.hits?.first()?.source
 
-                Assert.assertEquals(1, it.total)
+                Assert.assertEquals(1, it.data?.total)
                 Assert.assertEquals("test title", jsonResult?.title)
                 Assert.assertEquals(123456, jsonResult?.id)
             }
@@ -112,7 +118,7 @@ class SearchTest {
 
     @Test
     fun getSearchedEvents_FailTest() {
-        val resultMock: Result<Data<SearchEventsJSON>> =
+        val resultMock: Result<ResponseHits<SearchEventsJSON>> =
             Result.error(400, Throwable("Thrown an exception"))
 
         val repositoryMock  = mock<Search> {
@@ -137,7 +143,7 @@ class SearchTest {
 
     @Test
     fun getSearchedEvents_ConnectionErrorTest() {
-        val resultMock: Result<Data<SearchEventsJSON>> =
+        val resultMock: Result<ResponseHits<SearchEventsJSON>> =
             Result.connectionError()
 
         val repositoryMock = mock<Search> {
@@ -158,7 +164,7 @@ class SearchTest {
 
     @Test
     fun getSearchedEvents_TokenExpiredTest() {
-        val resultMock: Result<Data<SearchEventsJSON>> =
+        val resultMock: Result<ResponseHits<SearchEventsJSON>> =
             Result.tokenExpired()
 
         val repositoryMock = mock<Search> {

@@ -1,6 +1,7 @@
 package com.ingresse.sdk.v2.services
 
 import com.ingresse.sdk.v2.models.base.Data
+import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.base.Source
 import com.ingresse.sdk.v2.models.request.SearchEvents
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
@@ -32,6 +33,10 @@ class SearchServiceTest {
             `when`(mock.total).thenReturn(1)
         }
 
+        val responseMock = mock<ResponseHits<SearchEventsJSON>> {
+            `when`(mock.data).thenReturn(dataMock)
+        }
+
         val serviceMock = mock<SearchService> {
             onBlocking {
                 getEvents(
@@ -46,7 +51,7 @@ class SearchServiceTest {
                     orderBy = requestMock.orderBy,
                     offset = requestMock.offset
                 )
-            } doReturn dataMock
+            } doReturn responseMock
         }
 
         runBlockingTest {
@@ -64,9 +69,9 @@ class SearchServiceTest {
                     offset = requestMock.offset
                 )
             }.onSuccess {
-                val jsonResult = it.hits?.first()?.source
+                val jsonResult = it.data?.hits?.first()?.source
 
-                Assert.assertEquals(1, it.total)
+                Assert.assertEquals(1, it.data?.total)
                 Assert.assertEquals("test title", jsonResult?.title)
                 Assert.assertEquals(123456, jsonResult?.id)
             }

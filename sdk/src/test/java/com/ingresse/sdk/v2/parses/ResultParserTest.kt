@@ -1,6 +1,7 @@
 package com.ingresse.sdk.v2.parses
 
 import com.ingresse.sdk.v2.models.base.Data
+import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.base.Source
 import com.ingresse.sdk.v2.models.request.SearchEvents
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
@@ -44,10 +45,14 @@ class ResultParserTest {
             Mockito.`when`(mock.total).thenReturn(1)
         }
 
+        val responseMock = mock<ResponseHits<SearchEventsJSON>> {
+            Mockito.`when`(mock.data).thenReturn(dataMock)
+        }
+
         val repositoryMock = mock<Search> {
             onBlocking {
                 getSearchedEventsPlain(requestMock)
-            } doReturn dataMock
+            } doReturn responseMock
         }
 
         runBlockingTest {
@@ -56,9 +61,9 @@ class ResultParserTest {
             }
 
             result.onSuccess {
-                val jsonResult = it.hits?.first()?.source
+                val jsonResult = it.data?.hits?.first()?.source
 
-                Assert.assertEquals(1, it.total)
+                Assert.assertEquals(1, it.data?.total)
                 Assert.assertEquals("Test title", jsonResult?.title)
                 Assert.assertEquals(123456, jsonResult?.id)
             }

@@ -3,6 +3,7 @@ package com.ingresse.sdk.v2.repositories
 import com.ingresse.sdk.v2.models.base.PagedResponse
 import com.ingresse.sdk.v2.models.base.PaginationInfo
 import com.ingresse.sdk.v2.models.base.ResponseData
+import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.request.HighlightBannerEvents
 import com.ingresse.sdk.v2.models.response.HighlightBannerEventJSON
 import com.ingresse.sdk.v2.parses.model.Result
