@@ -11,3 +11,5 @@ const val UNAUTHORIZED_ERROR_CODE = 401
 const val HIGHLIGHT_BANNER_METHOD = "banner"
 const val CURRENT_DATE_MINUS_SIX_HOURS = "now-6h"
 const val SEARCH_QUERY_ORDER = "sessions.dateTime"
+
+const val EVENT_DETAILS_IDENTIFY_METHOD = "identify"
