@@ -1,12 +1,12 @@
 package com.ingresse.sdk.v2.services
 
-import com.ingresse.sdk.v2.models.base.Data
+import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface Search {
+interface SearchService {
     /**
      * Get information of some event by searching it's title
      *
@@ -31,5 +31,5 @@ interface Search {
         @Query("to") to: String?,
         @Query("orderBy") orderBy: String?,
         @Query("offset") offset: Int
-    ): Data<SearchEventsJSON>
+    ): ResponseHits<SearchEventsJSON>
 }

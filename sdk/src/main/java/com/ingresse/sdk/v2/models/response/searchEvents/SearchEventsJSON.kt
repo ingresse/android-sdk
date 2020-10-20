@@ -15,5 +15,5 @@ data class SearchEventsJSON(
     val status: StatusJSON?,
     val title: String?,
     val updatedAt: String?,
-    val usersPermission: String?
+    val usersPermission: List<Int>?
 )

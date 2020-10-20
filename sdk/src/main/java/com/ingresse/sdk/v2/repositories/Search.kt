@@ -5,19 +5,19 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
-import com.ingresse.sdk.v2.models.base.Data
+import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.request.SearchEvents
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.resultParser
-import com.ingresse.sdk.v2.services.Search
+import com.ingresse.sdk.v2.services.SearchService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class Search(client: IngresseClient) {
-    private val service: Search
+    private val service: SearchService
 
     init {
         val httpClient = ClientBuilder(client)
@@ -32,7 +32,7 @@ class Search(client: IngresseClient) {
             .baseUrl(URLBuilder(Host.SEARCH, client.environment).build())
             .build()
 
-        service = adapter.create(Search::class.java)
+        service = adapter.create(SearchService::class.java)
     }
 
     suspend fun getSearchedEventsPlain(request: SearchEvents) =
@@ -52,6 +52,8 @@ class Search(client: IngresseClient) {
     suspend fun getSearchedEvents(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         request: SearchEvents
-    ): Result<Data<SearchEventsJSON>> =
-        resultParser(dispatcher) { getSearchedEventsPlain(request) }
+    ): Result<ResponseHits<SearchEventsJSON>> =
+        resultParser(dispatcher) {
+            getSearchedEventsPlain(request)
+        }
 }
