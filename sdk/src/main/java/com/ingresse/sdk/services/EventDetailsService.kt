@@ -49,6 +49,13 @@ class EventDetailsService(private val client: IngresseClient) {
      * @param onTokenExpired - token expired callback
      * @param onConnectionError - connection error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "EventDetails(client).getEventDetailsById(request = EventDetailsById())",
+            imports = ["com.ingresse.sdk.v2.repositories"]
+        )
+    )
     fun getEventDetails(request: EventDetailsRequest, onSuccess: (EventDetailsJSON) -> Unit,
                         onError: (APIError) -> Unit,
                         onTokenExpired: () -> Unit,
