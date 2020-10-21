@@ -8,6 +8,7 @@ import com.ingresse.sdk.v2.models.response.userWallet.UserTicketJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.model.onError
 import com.ingresse.sdk.v2.parses.model.onSuccess
+import com.ingresse.sdk.v2.parses.model.onTokenExpired
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -126,7 +127,7 @@ class UserWalletTest {
     @Test
     fun getUserTickets_TokenExpiredTest() {
         val resultMock: Result<IngresseResponse<ResponseData<UserTicketJSON>>> =
-            Result.tokenExpired()
+            Result.tokenExpired(1234)
 
         val repositoryMock = mock<UserWallet> {
             onBlocking {
@@ -136,6 +137,9 @@ class UserWalletTest {
 
         runBlockingTest {
             val result = repositoryMock.getUserTickets(dispatcher, requestMock)
+            result.onTokenExpired { code ->
+                Assert.assertEquals(1234, code)
+            }
 
             Assert.assertTrue(result.isTokenExpired)
             Assert.assertFalse(result.isSuccess)

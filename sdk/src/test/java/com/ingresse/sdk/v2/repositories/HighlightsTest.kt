@@ -9,6 +9,7 @@ import com.ingresse.sdk.v2.models.response.HighlightBannerEventJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.model.onError
 import com.ingresse.sdk.v2.parses.model.onSuccess
+import com.ingresse.sdk.v2.parses.model.onTokenExpired
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -130,7 +131,7 @@ class HighlightsTest {
     @Test
     fun getHighlightBannerEvents_TokenExpiredTest() {
         val resultMock: Result<PagedResponse<HighlightBannerEventJSON>> =
-            Result.tokenExpired()
+            Result.tokenExpired(1234)
 
         val repositoryMock = mock<Highlights> {
             onBlocking {
@@ -140,6 +141,9 @@ class HighlightsTest {
 
         runBlockingTest {
             val result = repositoryMock.getHighlightBannerEvents(dispatcher, requestMock)
+            result.onTokenExpired { code ->
+                Assert.assertEquals(1234, code)
+            }
 
             Assert.assertTrue(result.isTokenExpired)
             Assert.assertFalse(result.isSuccess)

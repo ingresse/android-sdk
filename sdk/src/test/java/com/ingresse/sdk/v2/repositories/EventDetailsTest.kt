@@ -7,6 +7,7 @@ import com.ingresse.sdk.v2.models.response.eventDetails.EventDetailsJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.model.onError
 import com.ingresse.sdk.v2.parses.model.onSuccess
+import com.ingresse.sdk.v2.parses.model.onTokenExpired
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -187,7 +188,7 @@ class EventDetailsTest {
     @Test
     fun getEventDetailsById_TokenExpiredTest() {
         val resultMock: Result<IngresseResponse<EventDetailsJSON>> =
-            Result.tokenExpired()
+            Result.tokenExpired(1234)
 
         val repositoryMock = mock<EventDetails> {
             onBlocking {
@@ -197,6 +198,9 @@ class EventDetailsTest {
 
         runBlockingTest {
             val result = repositoryMock.getEventDetailsById(dispatcher, requestByIdMock)
+            result.onTokenExpired { code ->
+                Assert.assertEquals(1234, code)
+            }
 
             Assert.assertTrue(result.isTokenExpired)
             Assert.assertFalse(result.isSuccess)
@@ -208,7 +212,7 @@ class EventDetailsTest {
     @Test
     fun getEventDetailsByLink_TokenExpiredTest() {
         val resultMock: Result<IngresseResponse<EventDetailsJSON>> =
-            Result.tokenExpired()
+            Result.tokenExpired(1234)
 
         val repositoryMock = mock<EventDetails> {
             onBlocking {
@@ -218,6 +222,9 @@ class EventDetailsTest {
 
         runBlockingTest {
             val result = repositoryMock.getEventDetailsByLink(dispatcher, requestByLinkMock)
+            result.onTokenExpired { code ->
+                Assert.assertEquals(1234, code)
+            }
 
             Assert.assertTrue(result.isTokenExpired)
             Assert.assertFalse(result.isSuccess)

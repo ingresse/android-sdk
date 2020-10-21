@@ -12,8 +12,8 @@ class Result<T> constructor(private val result: Any?) : Serializable {
         fun <T> error(code: Int?, throwable: Throwable) =
             Result<T>(Failure(code, throwable))
 
-        fun <T> tokenExpired() =
-            Result<T>(TokenExpired())
+        fun <T> tokenExpired(code: Int?) =
+            Result<T>(TokenExpired(code))
 
         fun <T> connectionError() =
             Result<T>(ConnectionError())
@@ -26,7 +26,7 @@ class Result<T> constructor(private val result: Any?) : Serializable {
         @JvmField val exception: Throwable
     )
 
-    private class TokenExpired
+    private class TokenExpired(val code: Int?)
 
     private class ConnectionError
 
@@ -37,6 +37,10 @@ class Result<T> constructor(private val result: Any?) : Serializable {
     @PublishedApi
     internal val exception: Throwable
         get() = (result as Failure).exception
+
+    @PublishedApi
+    internal val tokenErrorCode: Int?
+        get() = (result as TokenExpired).code
 
     @PublishedApi
     internal val value: T
@@ -58,12 +62,12 @@ inline fun <T> Result<T>.onError(action: (Int?, Throwable) -> Unit): Result<T> {
     return this
 }
 
-inline fun <T> Result<T>.onTokenExpired(action: () -> Unit): Result<T> {
-    if (isTokenExpired) action()
+inline fun <T> Result<T>.onTokenExpired(action: (Int?) -> Unit): Result<T> {
+    if (isTokenExpired) action(tokenErrorCode)
     return this
 }
 
-inline fun <T> Result<T>.connectionError(action: () -> Unit): Result<T> {
+inline fun <T> Result<T>.onConnectionError(action: () -> Unit): Result<T> {
     if (isConnectionError) action()
     return this
 }

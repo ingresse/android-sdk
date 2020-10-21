@@ -41,9 +41,9 @@ suspend fun <T> responseParser(
 
             return@withContext gson.parseSuccessObject<T>(body, type)
         } catch (ioException: IOException) {
-            Result.connectionError<T>()
+            Result.connectionError()
         } catch (throwable: Throwable) {
-            Result.error<T>(null, throwable)
+            Result.error(null, throwable)
         }
     }
 
@@ -60,6 +60,11 @@ private fun <T> parseEmptyBodyError(): Result<T> {
 private fun <T> Gson.parseIngresseError(body: String): Result<T> {
     val result = fromJson(body, IngresseError::class.java)
     val error = result.responseError
+
+    if (Errors.tokenError.contains(error.code)) {
+        return Result.tokenExpired(error.code)
+    }
+
     val message = "[${error.category}] ${error.message}"
     val throwable = Throwable(message)
     return Result.error(error.code, throwable)
@@ -71,7 +76,7 @@ private fun <T> Gson.parseErrorBody(errorBody: ResponseBody): Result<T> {
     val throwable = Throwable(message)
 
     if (message.contains(AUTHTOKEN_EXPIRED, ignoreCase = true)) {
-        return Result.tokenExpired()
+        return Result.tokenExpired(result.code)
     }
 
     return Result.error(result.code, throwable)
