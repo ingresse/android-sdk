@@ -15,7 +15,7 @@ interface UserWalletService {
      * @param eventId - specify event tickets by event id
      */
     @GET("/user/{userId}/tickets")
-    fun <T> getUserTickets(
+    suspend fun <T> getUserTickets(
         @Path("userId") userId: Int,
         @Query("apikey") apikey: String,
         @Query("usertoken") token: String,

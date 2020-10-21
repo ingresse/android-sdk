@@ -20,7 +20,7 @@ interface HighlightsService {
         @Query("apikey") apikey: String,
         @Query("state") state: String? = null,
         @Query("method") method: String,
-        @Query("page") page: Int = INITIAL_PAGE,
-        @Query("pageSize") pageSize: Int = PAGE_SIZE
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
     ): Response<String>
 }

@@ -7,8 +7,8 @@ import com.ingresse.sdk.v2.defaults.PAGE_SIZE
 data class HighlightBannerEvents(
     val state: String,
     val method: String,
-    var page: Int,
-    var pageSize: Int
+    val page: Int,
+    val pageSize: Int
 ) {
     constructor(state: String) : this(
         state = state,

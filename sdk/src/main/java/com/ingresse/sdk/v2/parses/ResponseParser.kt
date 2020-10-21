@@ -1,9 +1,7 @@
 package com.ingresse.sdk.v2.parses
 
 import com.google.gson.Gson
-import com.ingresse.sdk.v2.defaults.AUTHTOKEN_EXPIRED
-import com.ingresse.sdk.v2.defaults.EMPTY_BODY_RESPONSE
-import com.ingresse.sdk.v2.defaults.INGRESSE_ERROR_PREFIX
+import com.ingresse.sdk.v2.defaults.*
 import com.ingresse.sdk.v2.models.base.Error
 import com.ingresse.sdk.v2.models.base.IngresseError
 import com.ingresse.sdk.v2.parses.model.Result

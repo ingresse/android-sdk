@@ -12,10 +12,10 @@ interface EventDetailsService {
      * @param fields - fields to get from details
      */
     @GET("/event/{eventId}")
-    fun <T> getEventDetailsById(
+    suspend fun <T> getEventDetailsById(
         @Path("eventId") eventId: String,
         @Query("apikey") apikey: String,
-        @Query("fields") fields: String? = null
+        @Query("fields") fields: String?
     ): T
 
     /**
@@ -26,10 +26,10 @@ interface EventDetailsService {
      * @param fields - fields to get from details
      */
     @GET("/event")
-    fun <T> getEventDetailsByLink(
+    suspend fun <T> getEventDetailsByLink(
         @Query("apikey") apikey: String,
         @Query("method") method: String,
         @Query("link") link: String,
-        @Query("fields") fields: String? = null
+        @Query("fields") fields: String?
     ): T
 }
