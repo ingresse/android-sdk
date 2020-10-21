@@ -27,6 +27,7 @@ import com.ingresse.sdk.services.ZipCodeService
 import com.ingresse.sdk.v2.repositories.EventDetails
 import com.ingresse.sdk.v2.repositories.Highlights
 import com.ingresse.sdk.v2.repositories.Search
+import com.ingresse.sdk.v2.repositories.UserWallet
 
 class IngresseService(var client: IngresseClient) {
     var attributes = AttributesService(client)
@@ -58,5 +59,6 @@ class IngresseService(var client: IngresseClient) {
         override val highlights = Highlights(client)
         override val search = Search(client)
         override val eventDetails = EventDetails(client)
+        override val userWallet = UserWallet(client)
     }
 }
