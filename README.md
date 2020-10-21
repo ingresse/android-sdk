@@ -23,7 +23,7 @@
 ## [ :electric_plug: ] Usage guide (V2)
 #### With plain functions inside repository
 ```kotlin
-val service = ServiceManager.service.v2Search
+val service = ServiceManager.service.V2().search
     
 fun getEvents() {
     val request = SearchEvents(state = "sp")
@@ -42,7 +42,7 @@ fun getEvents() {
 
 #### With `Result<T>` functions inside repository
 ```kotlin
-val service = ServiceManager.service.v2Search
+val service = ServiceManager.service.V2().search
     
 fun getEvents() {
     val request = SearchEvents(state = "sp")
