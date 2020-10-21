@@ -11,5 +11,5 @@ data class EventDetailsJSON(
     val date: List<DateJSON>?,
     val planner: PlannerJSON?,
     val venue: VenueJSON?,
-    val customTickets: List<CustomTicketsJSON>?
+    val customTickets: List<CustomTicketsJSON>?,
 )

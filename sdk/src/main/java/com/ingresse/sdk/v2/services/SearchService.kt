@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+@Suppress("LongParameterList")
 interface SearchService {
     /**
      * Get information of some event by searching it's title
@@ -30,6 +31,6 @@ interface SearchService {
         @Query("from") from: String?,
         @Query("to") to: String?,
         @Query("orderBy") orderBy: String?,
-        @Query("offset") offset: Int
+        @Query("offset") offset: Int,
     ): ResponseHits<SearchEventsJSON>
 }

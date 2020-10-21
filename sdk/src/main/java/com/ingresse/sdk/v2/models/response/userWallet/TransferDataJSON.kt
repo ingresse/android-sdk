@@ -9,15 +9,15 @@ data class TransferDataJSON(
     val status: String?,
     val history: List<TransferHistoryJSON>?,
     val socialId: List<UserSocialJSON>?,
-    val picture: String?
+    val picture: String?,
 )
 
 data class TransferHistoryJSON(
     val status: String?,
-    val creationDate: String?
+    val creationDate: String?,
 )
 
 data class UserSocialJSON(
     val id: String?,
-    val network: String?
+    val network: String?,
 )

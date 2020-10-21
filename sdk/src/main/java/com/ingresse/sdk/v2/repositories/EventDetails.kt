@@ -36,7 +36,7 @@ class EventDetails(private val client: IngresseClient) {
 
     suspend fun getEventDetailsById(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
-        request: EventDetailsById
+        request: EventDetailsById,
     ): Result<IngresseResponse<EventDetailsJSON>> {
         val type = object : TypeToken<IngresseResponse<EventDetailsJSON>>() {}.type
         return responseParser(dispatcher, type) {
@@ -50,7 +50,7 @@ class EventDetails(private val client: IngresseClient) {
 
     suspend fun getEventDetailsByLink(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
-        request: EventDetailsByLink
+        request: EventDetailsByLink,
     ): Result<IngresseResponse<EventDetailsJSON>> {
         val type = object : TypeToken<IngresseResponse<EventDetailsJSON>>() {}.type
         return responseParser(dispatcher, type) {

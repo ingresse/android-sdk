@@ -11,5 +11,5 @@ data class VenueJSON(
     val state: String?,
     val country: String?,
     val location: List<Double>?,
-    val stateId: String?
+    val stateId: String?,
 )

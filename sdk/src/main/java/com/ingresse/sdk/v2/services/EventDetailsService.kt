@@ -15,7 +15,7 @@ interface EventDetailsService {
     suspend fun <T> getEventDetailsById(
         @Path("eventId") eventId: String,
         @Query("apikey") apikey: String,
-        @Query("fields") fields: String?
+        @Query("fields") fields: String?,
     ): T
 
     /**
@@ -30,6 +30,6 @@ interface EventDetailsService {
         @Query("apikey") apikey: String,
         @Query("method") method: String,
         @Query("link") link: String,
-        @Query("fields") fields: String?
+        @Query("fields") fields: String?,
     ): T
 }

@@ -36,7 +36,7 @@ class UserWallet(private val client: IngresseClient) {
 
     suspend fun getUserTickets(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
-        request: UserTickets
+        request: UserTickets,
     ): Result<IngresseResponse<ResponseData<UserTicketJSON>>> {
         val type = object : TypeToken<IngresseResponse<ResponseData<UserTicketJSON>>>() {}.type
         return responseParser(dispatcher, type) {

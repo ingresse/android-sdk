@@ -12,5 +12,5 @@ data class EventVenueJSON(
     val latitude: Double?,
     val longitude: Double?,
     val hidden: Boolean?,
-    val complement: String?
+    val complement: String?,
 )

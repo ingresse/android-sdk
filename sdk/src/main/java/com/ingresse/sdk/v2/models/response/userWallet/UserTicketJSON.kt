@@ -24,5 +24,5 @@ data class UserTicketJSON(
     @SerializedName("transferedTo")
     val transferredTo: TransferDataJSON?,
     val currentHolder: TransferDataJSON?,
-    val live: LiveJSON?
+    val live: LiveJSON?,
 )

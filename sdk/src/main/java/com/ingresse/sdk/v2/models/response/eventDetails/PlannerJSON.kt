@@ -5,5 +5,5 @@ data class PlannerJSON(
     val logo: String?,
     val link: String?,
     val email: String?,
-    val phone: String?
+    val phone: String?,
 )

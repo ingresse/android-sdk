@@ -1,7 +1,10 @@
 package com.ingresse.sdk.v2.parses
 
 import com.google.gson.Gson
-import com.ingresse.sdk.v2.defaults.*
+import com.ingresse.sdk.v2.defaults.Errors
+import com.ingresse.sdk.v2.defaults.Errors.Companion.TOKEN_EXPIRED
+import com.ingresse.sdk.v2.defaults.Errors.Companion.EMPTY_BODY_RESPONSE
+import com.ingresse.sdk.v2.defaults.Errors.Companion.INGRESSE_ERROR_PREFIX
 import com.ingresse.sdk.v2.models.base.Error
 import com.ingresse.sdk.v2.models.base.IngresseError
 import com.ingresse.sdk.v2.parses.model.Result
@@ -13,10 +16,11 @@ import retrofit2.Response
 import java.io.IOException
 import java.lang.reflect.Type
 
+@Suppress("TooGenericExceptionCaught")
 suspend fun <T> responseParser(
     dispatcher: CoroutineDispatcher = Dispatchers.Default,
     type: Type,
-    call: suspend () -> Response<String>
+    call: suspend () -> Response<String>,
 ): Result<T> =
     withContext(dispatcher) {
         try {
@@ -73,7 +77,7 @@ private fun <T> Gson.parseErrorBody(errorBody: ResponseBody): Result<T> {
     val message = "[${result.category}] ${result.message}"
     val throwable = Throwable(message)
 
-    if (message.contains(AUTHTOKEN_EXPIRED, ignoreCase = true)) {
+    if (message.contains(TOKEN_EXPIRED, ignoreCase = true)) {
         return Result.tokenExpired(result.code)
     }
 

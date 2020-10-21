@@ -4,6 +4,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+@Suppress("LongParameterList")
 interface UserWalletService {
     /**
      * Gets user tickets
@@ -21,6 +22,6 @@ interface UserWalletService {
         @Query("usertoken") token: String,
         @Query("page") page: Int?,
         @Query("pageSize") pageSize: Int?,
-        @Query("eventId") eventId: Int?
+        @Query("eventId") eventId: Int?,
     ): T
 }

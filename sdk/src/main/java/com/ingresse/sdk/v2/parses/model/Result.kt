@@ -23,7 +23,7 @@ class Result<T> constructor(private val result: Any?) : Serializable {
 
     private class Failure(
         val code: Int?,
-        @JvmField val exception: Throwable
+        @JvmField val exception: Throwable,
     )
 
     private class TokenExpired(val code: Int?)

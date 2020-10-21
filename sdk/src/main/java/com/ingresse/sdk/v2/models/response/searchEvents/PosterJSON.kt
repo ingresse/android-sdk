@@ -4,5 +4,5 @@ data class PosterJSON(
     val large: String,
     val medium: String,
     val small: String,
-    val xLarge: String
+    val xLarge: String,
 )

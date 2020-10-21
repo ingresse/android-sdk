@@ -25,6 +25,7 @@ import java.io.IOException
 import java.lang.Exception
 
 @ExperimentalCoroutinesApi
+@Suppress("TooGenericExceptionThrown")
 class ResultParserTest {
 
     @Mock

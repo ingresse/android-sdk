@@ -122,7 +122,7 @@ class SearchTest {
         val resultMock: Result<ResponseHits<SearchEventsJSON>> =
             Result.error(400, Throwable("Thrown an exception"))
 
-        val repositoryMock  = mock<Search> {
+        val repositoryMock = mock<Search> {
             onBlocking {
                 getSearchedEvents(dispatcher, requestMock)
             } doReturn resultMock

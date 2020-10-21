@@ -35,7 +35,7 @@ class Highlights(private val client: IngresseClient) {
 
     suspend fun getHighlightBannerEvents(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
-        request: HighlightBannerEvents
+        request: HighlightBannerEvents,
     ): Result<PagedResponse<HighlightBannerEventJSON>> {
         val type = object : TypeToken<PagedResponse<HighlightBannerEventJSON>>() {}.type
         return responseParser(dispatcher, type) {
