@@ -3,10 +3,10 @@ package com.ingresse.sdk.v2.models.request
 import com.ingresse.sdk.v2.defaults.Values.QueryParams.EVENT_DETAILS_IDENTIFY_METHOD
 
 data class EventDetailsById(
-    val eventId: String,
+    val eventId: Int,
     val fields: String?,
 ) {
-    constructor(eventId: String) : this(
+    constructor(eventId: Int) : this(
         eventId = eventId,
         fields = null
     )

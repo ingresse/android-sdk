@@ -6,8 +6,10 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.v2.models.base.IngresseResponse
+import com.ingresse.sdk.v2.models.request.EventAttributes
 import com.ingresse.sdk.v2.models.request.EventDetailsById
 import com.ingresse.sdk.v2.models.request.EventDetailsByLink
+import com.ingresse.sdk.v2.models.response.eventAttributes.EventAttributesJSON
 import com.ingresse.sdk.v2.models.response.eventDetails.EventDetailsJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.responseParser
@@ -18,6 +20,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class EventDetails(private val client: IngresseClient) {
+
     private val service: EventDetailsService
 
     init {
@@ -59,6 +62,19 @@ class EventDetails(private val client: IngresseClient) {
                 method = request.link,
                 link = request.link,
                 fields = request.fields
+            )
+        }
+    }
+
+    suspend fun getEventAttributes(
+        dispatcher: CoroutineDispatcher = Dispatchers.Default,
+        request: EventAttributes
+    ): Result<IngresseResponse<EventAttributesJSON>> {
+        val type = object : TypeToken<IngresseResponse<EventAttributesJSON>>() {}.type
+        return responseParser(dispatcher, type) {
+            service.getEventAttributes(
+                apikey = client.key,
+                eventId = request.eventId
             )
         }
     }

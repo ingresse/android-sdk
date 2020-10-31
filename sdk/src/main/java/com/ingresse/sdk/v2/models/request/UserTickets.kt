@@ -4,14 +4,14 @@ import com.ingresse.sdk.v2.defaults.Values.Request.INITIAL_PAGE
 import com.ingresse.sdk.v2.defaults.Values.Request.PAGE_SIZE
 
 data class UserTickets(
-    val userId: Int,
+    val userId: String,
     val userToken: String,
     val eventId: Int?,
     val page: Int?,
     val pageSize: Int?,
 ) {
     constructor(
-        userId: Int,
+        userId: String,
         userToken: String,
     ) : this(
         userId = userId,
@@ -22,7 +22,7 @@ data class UserTickets(
     )
 
     constructor(
-        userId: Int,
+        userId: String,
         userToken: String,
         eventId: Int,
     ) : this(

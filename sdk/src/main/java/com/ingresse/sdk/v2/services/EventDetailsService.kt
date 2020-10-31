@@ -1,5 +1,6 @@
 package com.ingresse.sdk.v2.services
 
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -12,11 +13,11 @@ interface EventDetailsService {
      * @param fields - fields to get from details
      */
     @GET("/event/{eventId}")
-    suspend fun <T> getEventDetailsById(
-        @Path("eventId") eventId: String,
+    suspend fun getEventDetailsById(
+        @Path("eventId") eventId: Int,
         @Query("apikey") apikey: String,
         @Query("fields") fields: String?,
-    ): T
+    ): Response<String>
 
     /**
      * Get details from specified event by link
@@ -26,10 +27,21 @@ interface EventDetailsService {
      * @param fields - fields to get from details
      */
     @GET("/event")
-    suspend fun <T> getEventDetailsByLink(
+    suspend fun getEventDetailsByLink(
         @Query("apikey") apikey: String,
         @Query("method") method: String,
         @Query("link") link: String,
         @Query("fields") fields: String?,
-    ): T
+    ): Response<String>
+
+    /**
+     * Get attributes from specific event
+     *
+     * @param eventId - id of event
+     */
+    @GET("/event/{eventId}/attributes")
+    suspend fun getEventAttributes(
+        @Path("eventId") eventId: Int,
+        @Query("apikey") apikey: String
+    ): Response<String>
 }

@@ -1,10 +1,11 @@
 package com.ingresse.sdk.v2.parses
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.v2.defaults.Errors
-import com.ingresse.sdk.v2.defaults.Errors.Companion.TOKEN_EXPIRED
 import com.ingresse.sdk.v2.defaults.Errors.Companion.EMPTY_BODY_RESPONSE
 import com.ingresse.sdk.v2.defaults.Errors.Companion.INGRESSE_ERROR_PREFIX
+import com.ingresse.sdk.v2.defaults.Errors.Companion.TOKEN_EXPIRED
 import com.ingresse.sdk.v2.models.base.Error
 import com.ingresse.sdk.v2.models.base.IngresseError
 import com.ingresse.sdk.v2.parses.model.Result
