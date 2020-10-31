@@ -24,7 +24,7 @@ class UserWalletServiceTest {
     fun getUserTickets_SuccessTest() {
         val serviceMock = mock<UserWalletService> {
             onBlocking {
-                getUserTickets<Response<String>>(
+                getUserTickets(
                     userId = requestMock.userId,
                     apikey = apiKey,
                     token = requestMock.userToken,
@@ -36,7 +36,7 @@ class UserWalletServiceTest {
         }
 
         runBlockingTest {
-            val result = serviceMock.getUserTickets<Response<String>>(
+            val result = serviceMock.getUserTickets(
                 userId = requestMock.userId,
                 apikey = apiKey,
                 token = requestMock.userToken,
@@ -54,7 +54,7 @@ class UserWalletServiceTest {
     fun getUserTickets_FailTest() {
         val serviceMock = mock<UserWalletService> {
             onBlocking {
-                getUserTickets<Response<String>>(
+                getUserTickets(
                     userId = requestMock.userId,
                     apikey = apiKey,
                     token = requestMock.userToken,
@@ -66,7 +66,7 @@ class UserWalletServiceTest {
         }
 
         runBlockingTest {
-            val result = serviceMock.getUserTickets<Response<String>>(
+            val result = serviceMock.getUserTickets(
                 userId = requestMock.userId,
                 apikey = apiKey,
                 token = requestMock.userToken,

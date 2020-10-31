@@ -28,7 +28,7 @@ class EventDetailsServiceTest {
     fun getEventDetailsById_SuccessTest() {
         val serviceMock = mock<EventDetailsService> {
             onBlocking {
-                getEventDetailsById<Response<String>>(
+                getEventDetailsById(
                     eventId = requestByIdMock.eventId,
                     apikey = apiKey,
                     fields = requestByIdMock.fields
@@ -37,7 +37,7 @@ class EventDetailsServiceTest {
         }
 
         runBlockingTest {
-            val result = serviceMock.getEventDetailsById<Response<String>>(
+            val result = serviceMock.getEventDetailsById(
                 eventId = requestByIdMock.eventId,
                 apikey = apiKey,
                 fields = requestByIdMock.fields
@@ -52,7 +52,7 @@ class EventDetailsServiceTest {
     fun getEventDetailsByLink_SuccessTest() {
         val serviceMock = mock<EventDetailsService> {
             onBlocking {
-                getEventDetailsByLink<Response<String>>(
+                getEventDetailsByLink(
                     apikey = apiKey,
                     method = requestByLinkMock.method,
                     link = requestByLinkMock.link,
@@ -62,7 +62,7 @@ class EventDetailsServiceTest {
         }
 
         runBlockingTest {
-            val result = serviceMock.getEventDetailsByLink<Response<String>>(
+            val result = serviceMock.getEventDetailsByLink(
                 apikey = apiKey,
                 method = requestByLinkMock.method,
                 link = requestByLinkMock.link,
@@ -78,7 +78,7 @@ class EventDetailsServiceTest {
     fun getEventDetailsById_FailTest() {
         val serviceMock = mock<EventDetailsService> {
             onBlocking {
-                getEventDetailsById<Response<String>>(
+                getEventDetailsById(
                     eventId = requestByIdMock.eventId,
                     apikey = apiKey,
                     fields = requestByIdMock.fields
@@ -87,7 +87,7 @@ class EventDetailsServiceTest {
         }
 
         runBlockingTest {
-            val result = serviceMock.getEventDetailsById<Response<String>>(
+            val result = serviceMock.getEventDetailsById(
                 eventId = requestByIdMock.eventId,
                 apikey = apiKey,
                 fields = requestByIdMock.fields
@@ -103,7 +103,7 @@ class EventDetailsServiceTest {
     fun getEventDetailsByLink_FailTest() {
         val serviceMock = mock<EventDetailsService> {
             onBlocking {
-                getEventDetailsByLink<Response<String>>(
+                getEventDetailsByLink(
                     apikey = apiKey,
                     method = requestByLinkMock.method,
                     link = requestByLinkMock.link,
@@ -113,7 +113,7 @@ class EventDetailsServiceTest {
         }
 
         runBlockingTest {
-            val result = serviceMock.getEventDetailsByLink<Response<String>>(
+            val result = serviceMock.getEventDetailsByLink(
                 apikey = apiKey,
                 method = requestByLinkMock.method,
                 link = requestByLinkMock.link,
