@@ -1,8 +1,10 @@
 package com.ingresse.sdk.v2.repositories
 
 import com.ingresse.sdk.v2.models.base.IngresseResponse
+import com.ingresse.sdk.v2.models.request.EventAttributes
 import com.ingresse.sdk.v2.models.request.EventDetailsById
 import com.ingresse.sdk.v2.models.request.EventDetailsByLink
+import com.ingresse.sdk.v2.models.response.eventAttributes.EventAttributesJSON
 import com.ingresse.sdk.v2.models.response.eventDetails.EventDetailsJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.model.onError
@@ -31,19 +33,22 @@ class EventDetailsTest {
     val requestByLinkMock = mock<EventDetailsByLink>()
 
     @Mock
-    val jsonMock = mock<EventDetailsJSON> {
+    val requestAttributesMock = mock<EventAttributes>()
+
+    @Mock
+    val detailsJsonMock = mock<EventDetailsJSON> {
         Mockito.`when`(mock.id).thenReturn(123456)
         Mockito.`when`(mock.title).thenReturn("test title")
     }
 
     @Mock
-    val ingresseResponseMock = mock<IngresseResponse<EventDetailsJSON>> {
-        Mockito.`when`(mock.responseData).thenReturn(jsonMock)
+    val detailsResponseMock = mock<IngresseResponse<EventDetailsJSON>> {
+        Mockito.`when`(mock.responseData).thenReturn(detailsJsonMock)
     }
 
     @Test
     fun getEventDetailsById_SuccessTest() {
-        val resultMock = Result.success(ingresseResponseMock)
+        val resultMock = Result.success(detailsResponseMock)
 
         val repositoryMock = mock<EventDetails> {
             onBlocking {
@@ -69,7 +74,7 @@ class EventDetailsTest {
 
     @Test
     fun getEventDetailsByLink_SuccessTest() {
-        val resultMock = Result.success(ingresseResponseMock)
+        val resultMock = Result.success(detailsResponseMock)
 
         val repositoryMock = mock<EventDetails> {
             onBlocking {
@@ -222,6 +227,113 @@ class EventDetailsTest {
 
         runBlockingTest {
             val result = repositoryMock.getEventDetailsByLink(dispatcher, requestByLinkMock)
+            result.onTokenExpired { code ->
+                Assert.assertEquals(1234, code)
+            }
+
+            Assert.assertTrue(result.isTokenExpired)
+            Assert.assertFalse(result.isSuccess)
+            Assert.assertFalse(result.isFailure)
+            Assert.assertFalse(result.isConnectionError)
+        }
+    }
+
+    @Test
+    fun getEventAttributes_SuccessTest() {
+        val jsonMock = mock<EventAttributesJSON> {
+            Mockito.`when`(mock.liveEnabled).thenReturn(true)
+            Mockito.`when`(mock.cashlessEnabled).thenReturn(false)
+            Mockito.`when`(mock.insuranceEnabled).thenReturn(false)
+        }
+
+        val responseMock = mock<IngresseResponse<EventAttributesJSON>> {
+            Mockito.`when`(mock.responseData).thenReturn(jsonMock)
+        }
+
+        val resultMock = Result.success(responseMock)
+
+        val repositoryMock = mock<EventDetails> {
+            onBlocking {
+                getEventAttributes(dispatcher, requestAttributesMock)
+            } doReturn resultMock
+        }
+
+        runBlockingTest {
+            val result = repositoryMock.getEventAttributes(dispatcher, requestAttributesMock)
+            result.onSuccess {
+                val jsonResult = it.responseData
+
+                Assert.assertEquals(true, jsonResult?.liveEnabled)
+                Assert.assertEquals(false, jsonResult?.cashlessEnabled)
+                Assert.assertEquals(false, jsonResult?.insuranceEnabled)
+            }
+
+            Assert.assertTrue(result.isSuccess)
+            Assert.assertFalse(result.isFailure)
+            Assert.assertFalse(result.isConnectionError)
+            Assert.assertFalse(result.isTokenExpired)
+        }
+    }
+
+    @Test
+    fun getEventAttributes_FailTest() {
+        val resultMock: Result<IngresseResponse<EventAttributesJSON>> =
+            Result.error(400, Throwable("Thrown an exception"))
+
+        val repositoryMock = mock<EventDetails> {
+            onBlocking {
+                getEventAttributes(dispatcher, requestAttributesMock)
+            } doReturn resultMock
+        }
+
+        runBlockingTest {
+            val result = repositoryMock.getEventAttributes(dispatcher, requestAttributesMock)
+            result.onError { code, throwable ->
+                Assert.assertEquals(400, code)
+                Assert.assertEquals("Thrown an exception", throwable.message)
+            }
+
+            Assert.assertTrue(result.isFailure)
+            Assert.assertFalse(result.isSuccess)
+            Assert.assertFalse(result.isConnectionError)
+            Assert.assertFalse(result.isTokenExpired)
+        }
+    }
+
+    @Test
+    fun getEventAttributes_ConnectionErrorTest() {
+        val resultMock: Result<IngresseResponse<EventAttributesJSON>> =
+            Result.connectionError()
+
+        val repositoryMock = mock<EventDetails> {
+            onBlocking {
+                getEventAttributes(dispatcher, requestAttributesMock)
+            } doReturn resultMock
+        }
+
+        runBlockingTest {
+            val result = repositoryMock.getEventAttributes(dispatcher, requestAttributesMock)
+
+            Assert.assertTrue(result.isConnectionError)
+            Assert.assertFalse(result.isSuccess)
+            Assert.assertFalse(result.isFailure)
+            Assert.assertFalse(result.isTokenExpired)
+        }
+    }
+
+    @Test
+    fun getEventAttributes_TokenExpiredTest() {
+        val resultMock: Result<IngresseResponse<EventAttributesJSON>> =
+            Result.tokenExpired(1234)
+
+        val repositoryMock = mock<EventDetails> {
+            onBlocking {
+                getEventAttributes(dispatcher, requestAttributesMock)
+            } doReturn resultMock
+        }
+
+        runBlockingTest {
+            val result = repositoryMock.getEventAttributes(dispatcher, requestAttributesMock)
             result.onTokenExpired { code ->
                 Assert.assertEquals(1234, code)
             }

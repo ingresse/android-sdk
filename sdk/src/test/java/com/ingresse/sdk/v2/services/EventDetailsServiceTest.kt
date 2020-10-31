@@ -1,5 +1,6 @@
 package com.ingresse.sdk.v2.services
 
+import com.ingresse.sdk.v2.models.request.EventAttributes
 import com.ingresse.sdk.v2.models.request.EventDetailsById
 import com.ingresse.sdk.v2.models.request.EventDetailsByLink
 import com.nhaarman.mockitokotlin2.doReturn
@@ -23,6 +24,9 @@ class EventDetailsServiceTest {
 
     @Mock
     val requestByLinkMock = mock<EventDetailsByLink>()
+
+    @Mock
+    val requestAttributes = mock<EventAttributes>()
 
     @Test
     fun getEventDetailsById_SuccessTest() {
@@ -118,6 +122,51 @@ class EventDetailsServiceTest {
                 method = requestByLinkMock.method,
                 link = requestByLinkMock.link,
                 fields = requestByLinkMock.fields
+            )
+
+            Assert.assertFalse(result.isSuccessful)
+            Assert.assertEquals(400, result.code())
+            Assert.assertEquals("Test body", result.errorBody()?.string())
+        }
+    }
+
+    @Test
+    fun getEventAttributes_SuccessTest() {
+        val serviceMock = mock<EventDetailsService> {
+            onBlocking {
+                getEventAttributes(
+                    eventId = requestAttributes.eventId,
+                    apikey = apiKey,
+                )
+            } doReturn Response.success("Test body")
+        }
+
+        runBlockingTest {
+            val result = serviceMock.getEventAttributes(
+                eventId = requestAttributes.eventId,
+                apikey = apiKey,
+            )
+
+            Assert.assertTrue(result.isSuccessful)
+            Assert.assertEquals("Test body", result.body())
+        }
+    }
+
+    @Test
+    fun getEventAttributes_FailTest() {
+        val serviceMock = mock<EventDetailsService> {
+            onBlocking {
+                getEventAttributes(
+                    eventId = requestAttributes.eventId,
+                    apikey = apiKey,
+                )
+            } doReturn Response.error(400, "Test body".toResponseBody())
+        }
+
+        runBlockingTest {
+            val result = serviceMock.getEventAttributes(
+                eventId = requestAttributes.eventId,
+                apikey = apiKey,
             )
 
             Assert.assertFalse(result.isSuccessful)
