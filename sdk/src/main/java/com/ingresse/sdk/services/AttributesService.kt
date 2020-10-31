@@ -54,6 +54,13 @@ class AttributesService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "EventDetails(client).getEventAttributes(request = EventAttributes())",
+            imports = ["com.ingresse.sdk.v2.repositories"]
+        )
+    )
     fun getEventAttributes(request: EventAttributes,
                            onSuccess: (List<EventAttributesJSON>) -> Unit,
                            onError: ErrorBlock,
@@ -133,6 +140,13 @@ class AttributesService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "EventDetails(client).getEventAttributes(request = EventAttributes())",
+            imports = ["com.ingresse.sdk.v2.repositories"]
+        )
+    )
     fun getEventAttributesData(request: EventAttributes,
                               onSuccess: (EventAttributesDataJSON) -> Unit,
                               onError: ErrorBlock,
