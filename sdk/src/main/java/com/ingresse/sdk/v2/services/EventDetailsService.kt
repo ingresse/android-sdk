@@ -42,6 +42,6 @@ interface EventDetailsService {
     @GET("/event/{eventId}/attributes")
     suspend fun getEventAttributes(
         @Path("eventId") eventId: Int,
-        @Query("apikey") apikey: String
+        @Query("apikey") apikey: String,
     ): Response<String>
 }

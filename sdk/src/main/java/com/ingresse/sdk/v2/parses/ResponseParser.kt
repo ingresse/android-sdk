@@ -1,7 +1,6 @@
 package com.ingresse.sdk.v2.parses
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.v2.defaults.Errors
 import com.ingresse.sdk.v2.defaults.Errors.Companion.EMPTY_BODY_RESPONSE
 import com.ingresse.sdk.v2.defaults.Errors.Companion.INGRESSE_ERROR_PREFIX
