@@ -6,9 +6,10 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 
+@Suppress("TooGenericExceptionCaught")
 suspend fun <T> resultParser(
     dispatcher: CoroutineDispatcher,
-    call: suspend () -> T
+    call: suspend () -> T,
 ): Result<T> =
     withContext(dispatcher) {
         try {
@@ -16,10 +17,10 @@ suspend fun <T> resultParser(
             Result.success(result)
         } catch (httpException: HttpException) {
             val code = httpException.code()
-            Result.error<T>(code, httpException)
+            Result.error(code, httpException)
         } catch (ioException: IOException) {
-            Result.connectionError<T>()
+            Result.connectionError()
         } catch (throwable: Throwable) {
-            Result.error<T>(null, throwable)
+            Result.error(null, throwable)
         }
     }

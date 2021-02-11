@@ -1,6 +1,7 @@
 package com.ingresse.sdk.v2.models.response.searchEvents
 
 data class SearchEventsJSON(
+    val attributes: AttributesJSON?,
     val categories: List<CategoryJSON>?,
     val companyId: Int?,
     val createdAt: String?,
@@ -15,5 +16,5 @@ data class SearchEventsJSON(
     val status: StatusJSON?,
     val title: String?,
     val updatedAt: String?,
-    val usersPermission: List<Int>?
+    val usersPermission: List<Int>?,
 )

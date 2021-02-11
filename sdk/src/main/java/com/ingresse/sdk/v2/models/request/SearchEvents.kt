@@ -1,9 +1,9 @@
 package com.ingresse.sdk.v2.models.request
 
-import com.ingresse.sdk.v2.defaults.CURRENT_DATE_MINUS_SIX_HOURS
-import com.ingresse.sdk.v2.defaults.INGRESSE_COMPANY_NUMBER
-import com.ingresse.sdk.v2.defaults.PAGE_SIZE
-import com.ingresse.sdk.v2.defaults.SEARCH_QUERY_ORDER
+import com.ingresse.sdk.v2.defaults.Values.Company
+import com.ingresse.sdk.v2.defaults.Values.QueryParams.CURRENT_DATE_MINUS_SIX_HOURS
+import com.ingresse.sdk.v2.defaults.Values.QueryParams.SEARCH_QUERY_ORDER
+import com.ingresse.sdk.v2.defaults.Values.Request.PAGE_SIZE
 
 data class SearchEvents(
     val company: String,
@@ -15,7 +15,7 @@ data class SearchEvents(
     val from: String?,
     val to: String?,
     val orderBy: String?,
-    val offset: Int
+    val offset: Int,
 ) {
     constructor(
         company: String? = null,
@@ -27,9 +27,9 @@ data class SearchEvents(
         from: String? = null,
         to: String? = null,
         orderBy: String? = null,
-        offset: Int? = null
+        offset: Int? = null,
     ) : this(
-        company = company ?: INGRESSE_COMPANY_NUMBER,
+        company = company ?: Company.INGRESSE,
         title = title,
         state = state,
         category = category,

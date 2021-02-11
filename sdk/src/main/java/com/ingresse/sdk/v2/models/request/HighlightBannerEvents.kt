@@ -1,14 +1,14 @@
 package com.ingresse.sdk.v2.models.request
 
-import com.ingresse.sdk.v2.defaults.HIGHLIGHT_BANNER_METHOD
-import com.ingresse.sdk.v2.defaults.INITIAL_PAGE
-import com.ingresse.sdk.v2.defaults.PAGE_SIZE
+import com.ingresse.sdk.v2.defaults.Values.QueryParams.HIGHLIGHT_BANNER_METHOD
+import com.ingresse.sdk.v2.defaults.Values.Request.INITIAL_PAGE
+import com.ingresse.sdk.v2.defaults.Values.Request.PAGE_SIZE
 
 data class HighlightBannerEvents(
     val state: String,
     val method: String,
-    var page: Int,
-    var pageSize: Int
+    val page: Int,
+    val pageSize: Int,
 ) {
     constructor(state: String) : this(
         state = state,

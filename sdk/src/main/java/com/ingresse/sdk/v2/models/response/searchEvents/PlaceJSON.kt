@@ -10,5 +10,5 @@ data class PlaceJSON(
     val origin: String?,
     val state: String?,
     val street: String?,
-    val zip: String?
+    val zip: String?,
 )

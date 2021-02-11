@@ -51,7 +51,7 @@ class Search(client: IngresseClient) {
 
     suspend fun getSearchedEvents(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
-        request: SearchEvents
+        request: SearchEvents,
     ): Result<ResponseHits<SearchEventsJSON>> =
         resultParser(dispatcher) {
             getSearchedEventsPlain(request)
