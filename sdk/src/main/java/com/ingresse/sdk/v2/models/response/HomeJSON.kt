@@ -10,9 +10,9 @@ data class HomeJSON(
     ) {
 
         data class Items(
-            val id: Int,
+            val id: Int?,
             val category: String,
-            val slug: String,
+            val slug: String?,
             val totalItems: Int,
         )
     }
