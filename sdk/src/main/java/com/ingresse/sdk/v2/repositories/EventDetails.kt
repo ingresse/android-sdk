@@ -59,7 +59,7 @@ class EventDetails(private val client: IngresseClient) {
         return responseParser(dispatcher, type) {
             service.getEventDetailsByLink(
                 apikey = client.key,
-                method = request.link,
+                method = request.method,
                 link = request.link,
                 fields = request.fields
             )
