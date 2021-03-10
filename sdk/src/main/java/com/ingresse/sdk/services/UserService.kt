@@ -588,6 +588,16 @@ class UserService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      * @param onTokenExpired - user token expired callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "PasswordStrength(client).validateStrength(request = PasswordStrength())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.PasswordStrength",
+            ]
+        )
+    )
     fun validatePasswordStrength(request: String,
                                  onSuccess: (StrengthPasswordJSON) -> Unit,
                                  onError: ErrorBlock,
