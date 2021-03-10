@@ -6,7 +6,7 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.v2.models.base.IngresseResponse
-import com.ingresse.sdk.v2.models.request.PasswordStrength
+import com.ingresse.sdk.v2.models.request.ValidateStrength
 import com.ingresse.sdk.v2.models.response.PasswordStrengthJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.responseParser
@@ -35,7 +35,7 @@ class PasswordStrength(private val client: IngresseClient) {
 
     suspend fun validateStrength(
         dispatcher: CoroutineDispatcher,
-        request: PasswordStrength,
+        request: ValidateStrength,
     ): Result<IngresseResponse<PasswordStrengthJSON>> {
         val type = object : TypeToken<IngresseResponse<PasswordStrengthJSON>>() {}.type
         return responseParser(dispatcher, type) {
