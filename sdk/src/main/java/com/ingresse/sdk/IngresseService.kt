@@ -27,6 +27,8 @@ import com.ingresse.sdk.services.ZipCodeService
 import com.ingresse.sdk.v2.repositories.EventDetails
 import com.ingresse.sdk.v2.repositories.Highlights
 import com.ingresse.sdk.v2.repositories.Home
+import com.ingresse.sdk.v2.repositories.Password
+import com.ingresse.sdk.v2.repositories.PasswordStrength
 import com.ingresse.sdk.v2.repositories.Search
 import com.ingresse.sdk.v2.repositories.UserWallet
 
@@ -62,5 +64,7 @@ class IngresseService(var client: IngresseClient) {
         override val eventDetails = EventDetails(client)
         override val userWallet = UserWallet(client)
         override val home = Home(client)
+        override val password = Password(client)
+        override val passwordStrength = PasswordStrength(client)
     }
 }
