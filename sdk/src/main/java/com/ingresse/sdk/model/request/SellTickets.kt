@@ -24,10 +24,10 @@ data class POSTerminal(
     var nsu: String = ""): Parcelable {
 
     constructor(parcel: Parcel) : this() {
-        vendor = parcel.readString()
-        externalId = parcel.readString()
-        authorizationCode = parcel.readString()
-        nsu = parcel.readString()
+        vendor = parcel.readString().orEmpty()
+        externalId = parcel.readString().orEmpty()
+        authorizationCode = parcel.readString().orEmpty()
+        nsu = parcel.readString().orEmpty()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

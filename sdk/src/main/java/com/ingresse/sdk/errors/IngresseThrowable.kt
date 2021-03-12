@@ -13,7 +13,7 @@ data class IngresseThrowable(
     }
 
     constructor(response: Response<String>, reason: String? = "") : this() {
-        request = response.raw().request().toString()
+        request = response.raw().request.toString()
         this.response = response.body()
         this.reason = reason
     }

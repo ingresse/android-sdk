@@ -241,6 +241,16 @@ class AuthService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      * @param onTokenExpired - token expired callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Password(client).requestReset(request = RequestReset())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.RequestReset",
+            ]
+        )
+    )
     fun recoverPassword(email: String, onSuccess: (AuthPasswordJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
         mRecoverPasswordCall = service.recoverPassword(
                 apikey = client.key,
@@ -279,6 +289,16 @@ class AuthService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      * @param onTokenExpired - token expired callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Password(client).validateHash(request = ValidateHash())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.ValidateHash",
+            ]
+        )
+    )
     fun validateHash(request: ValidateHash, onSuccess: (ValidateHashJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
         mValidateHashCall = service.validateHash(
                 apikey = client.key,
@@ -318,6 +338,16 @@ class AuthService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      * @param onTokenExpired - token expired callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Password(client).updatePassword(request = UpdatePassword())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.UpdatePassword",
+            ]
+        )
+    )
     fun updatePassword(request: UpdatePassword, onSuccess: (AuthPasswordJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
         mUpdatePasswordCall = service.updatePassword(
                 apikey = client.key,

@@ -11,7 +11,9 @@ data class HighlightEventJSON(
     val poster: String? = "",
     val date: List<HighlightEventDateJSON>? = emptyList(),
     val addedBy: HighlightAddedByJSON? = null,
-    val venue: HighlightVenueJSON? = null
+    val venue: HighlightVenueJSON? = null,
+    val banner: String? = null,
+    val target: String? = null
 )
 
 data class HighlightEventDateJSON(
