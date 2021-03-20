@@ -17,7 +17,7 @@ interface AuthService {
      */
     @FormUrlEncoded
     @POST("/company-login")
-    suspend fun companyLoginWithEmail(
+    suspend fun companyLogin(
         @Query("apikey") apikey: String,
         @Field("email") email: String,
         @Field("password") password: String,

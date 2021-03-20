@@ -11,7 +11,7 @@ data class CompanyLoginJSON(
         val token: String,
         val authToken: String,
         val company: CompanyJSON?,
-        val application: CompanyApplicationJSON
+        val application: CompanyApplicationJSON,
     ) {
 
         data class CompanyApplicationJSON(
@@ -27,9 +27,9 @@ data class CompanyLoginJSON(
         ) {
 
             data class CompanyLogoJSON(
-                val small: String = "",
-                val medium: String = "",
-                val large: String = "",
+                val small: String,
+                val medium: String,
+                val large: String,
             )
         }
     }

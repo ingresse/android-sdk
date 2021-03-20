@@ -32,13 +32,13 @@ class Auth(private val client: IngresseClient) {
         service = adapter.create(AuthService::class.java)
     }
 
-    suspend fun companyLoginWithEmail(
+    suspend fun companyLogin(
         dispatcher: CoroutineDispatcher,
         request: Login,
     ): Result<IngresseResponse<CompanyLoginJSON>> {
         val type = object : TypeToken<IngresseResponse<CompanyLoginJSON>>() {}.type
         return responseParser(dispatcher, type) {
-            service.companyLoginWithEmail(
+            service.companyLogin(
                 apikey = client.key,
                 email = request.email,
                 password = request.password
