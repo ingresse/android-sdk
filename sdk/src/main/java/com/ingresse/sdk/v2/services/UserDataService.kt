@@ -19,6 +19,6 @@ interface UserDataService {
         @Path("userId") userId: Int,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Query("fields") fields: String,
+        @Query("fields") fields: String?,
     ): Response<String>
 }
