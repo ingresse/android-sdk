@@ -24,6 +24,7 @@ import com.ingresse.sdk.services.TransferService
 import com.ingresse.sdk.services.UserService
 import com.ingresse.sdk.services.WebSocketService
 import com.ingresse.sdk.services.ZipCodeService
+import com.ingresse.sdk.v2.repositories.Auth
 import com.ingresse.sdk.v2.repositories.EventDetails
 import com.ingresse.sdk.v2.repositories.Highlights
 import com.ingresse.sdk.v2.repositories.Home
@@ -60,6 +61,7 @@ class IngresseService(var client: IngresseClient) {
     var live = EventLiveService(client)
 
     var v2 = object : V2Services {
+        override val authService = Auth(client)
         override val eventDetails = EventDetails(client)
         override val highlights = Highlights(client)
         override val home = Home(client)
