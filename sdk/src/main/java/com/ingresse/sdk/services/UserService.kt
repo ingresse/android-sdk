@@ -134,6 +134,16 @@ class UserService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      * @param onTokenExpired - user token expired callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "UserData(client).getUserData(request = Login())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.UserData",
+            ]
+        )
+    )
     fun getUserData(request: UserData,
                     onSuccess: (UserDataJSON) -> Unit,
                     onError: ErrorBlock,
