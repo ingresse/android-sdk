@@ -61,7 +61,7 @@ class IngresseService(var client: IngresseClient) {
     var live = EventLiveService(client)
 
     var v2 = object : V2Services {
-        override val authService = Auth(client)
+        override val auth = Auth(client)
         override val eventDetails = EventDetails(client)
         override val highlights = Highlights(client)
         override val home = Home(client)

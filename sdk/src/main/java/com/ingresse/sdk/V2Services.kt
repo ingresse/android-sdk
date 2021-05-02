@@ -11,7 +11,7 @@ import com.ingresse.sdk.v2.repositories.UserData
 import com.ingresse.sdk.v2.repositories.UserWallet
 
 interface V2Services {
-    val authService: Auth
+    val auth: Auth
     val eventDetails: EventDetails
     val highlights: Highlights
     val home: Home
