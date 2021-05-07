@@ -84,6 +84,16 @@ class AuthService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Auth(client).companyLoginWithEmail(request = Login())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.Login",
+            ]
+        )
+    )
     fun companyLoginWithEmail(request: Login, onSuccess: (CompanyLoginJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
         mCompanyLoginCall = service.companyLoginWithEmail(
             apikey = client.key,
@@ -120,6 +130,16 @@ class AuthService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Auth(client).login(request = Login())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.Login",
+            ]
+        )
+    )
     fun login(request: Login, onSuccess: (LoginDataJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
         mLoginCall = service.login(
                 apikey = client.key,
@@ -162,6 +182,16 @@ class AuthService(private val client: IngresseClient) {
      * @param onConnectionError - connection error callback
      * @param onTokenExpired - token expired callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Auth(client).loginWithFacebook(request = FacebookLogin())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.FacebookLogin",
+            ]
+        )
+    )
     fun loginWithFacebook(request: LoginWithFacebook, onSuccess: (LoginDataJSON) -> Unit, onError: ErrorBlock, onConnectionError: (Throwable) -> Unit, onTokenExpired: Block) {
         mLoginWithFacebook = service.loginWithFacebook(
                 apikey = client.key,
@@ -205,6 +235,16 @@ class AuthService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Auth(client).renewAuthToken(request = RenewAuthToken())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.RenewAuthToken",
+            ]
+        )
+    )
     fun renewAuthToken(userToken: String, onSuccess: (String) -> Unit, onError: ErrorBlock, onTokenExpired: Block) {
         mRenewAuthTokenCall = service.renewAuthToken(
             apikey = client.key,
