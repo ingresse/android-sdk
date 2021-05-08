@@ -30,7 +30,7 @@ class Event(client: IngresseClient) {
         val adapter = Retrofit.Builder()
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
-            .baseUrl(URLBuilder(Host.SEARCH, client.environment).build())
+            .baseUrl(URLBuilder(Host.EVENTS, client.environment).build())
             .build()
 
         service = adapter.create(EventService::class.java)
