@@ -49,7 +49,7 @@ class Event(client: IngresseClient) {
             offset = request.offset
         )
 
-    suspend fun getSearchedEvents(
+    suspend fun getProducerEventList(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         request: SearchEvents,
     ): Result<ResponseHits<SearchEventsJSON>> =
