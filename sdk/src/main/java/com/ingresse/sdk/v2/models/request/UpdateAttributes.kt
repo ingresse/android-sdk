@@ -12,38 +12,33 @@ data class UpdateAttributes(
     ) : this(
         eventId = eventId,
         attributes = listOf(
-            Attribute(
-                Attribute.DefaultAttributes
-                    .TICKET_TRANSFER_ENABLED,
+            Attribute.BooleanAttr(
+                DefaultAttributes
+                    .TICKET_TRANSFER_ENABLED
+                    .attrName,
                 transferIsEnabled
             ),
-            Attribute(
-                Attribute.DefaultAttributes
-                    .TICKET_TRANSFER_REQUIRED,
+            Attribute.BooleanAttr(
+                DefaultAttributes
+                    .TICKET_TRANSFER_REQUIRED
+                    .attrName,
                 transferIsRequired
             )
         )
     )
 
-    data class Attribute(
-        val name: String,
-        val value: Any,
-    ) {
+    sealed class Attribute {
 
-        constructor(
-            attribute: DefaultAttributes,
-            value: Any,
-        ) : this(
-            name = attribute.attrName,
-            value = value
-        )
+        data class BooleanAttr(val name: String, val value: Boolean) : Attribute()
+        data class FloatAttr(val name: String, val value: Float) : Attribute()
+        data class StringAttr(val name: String, val value: String) : Attribute()
+    }
 
-        enum class DefaultAttributes(val attrName: String) {
+    enum class DefaultAttributes(val attrName: String) {
 
-            RETENTION_PERCENTAGE("retention_percentage"),
-            RETENTION_THRESHOLD("retention_threshold"),
-            TICKET_TRANSFER_ENABLED("ticket_transfer_enabled"),
-            TICKET_TRANSFER_REQUIRED("ticket_transfer_required")
-        }
+        RETENTION_PERCENTAGE("retention_percentage"),
+        RETENTION_THRESHOLD("retention_threshold"),
+        TICKET_TRANSFER_ENABLED("ticket_transfer_enabled"),
+        TICKET_TRANSFER_REQUIRED("ticket_transfer_required");
     }
 }

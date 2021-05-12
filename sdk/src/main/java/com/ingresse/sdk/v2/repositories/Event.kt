@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class Event(client: IngresseClient) {
     private val service: EventService
@@ -32,6 +33,7 @@ class Event(client: IngresseClient) {
 
         val adapter = Retrofit.Builder()
             .client(httpClient)
+            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
             .baseUrl(URLBuilder(Host.EVENTS, client.environment).build())
             .build()
