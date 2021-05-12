@@ -1,8 +1,13 @@
 package com.ingresse.sdk.v2.services
 
+import com.ingresse.sdk.v2.models.base.RegularData
 import com.ingresse.sdk.v2.models.base.ResponseHits
+import com.ingresse.sdk.v2.models.request.UpdateAttributes
+import com.ingresse.sdk.v2.models.response.eventAttributes.UnspecifiedTypeJSON
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -43,4 +48,16 @@ interface EventService {
         @Path("eventId") eventId: Int,
         @Query("fields") fields: String?,
     ): ResponseHits<SearchEventsJSON>
+
+    /**
+     * Update specific event attributes
+     *
+     * @param eventId - Id from event
+     * @param attributes - list of attributes to update
+     */
+    @PUT("/{eventId}/attributes")
+    suspend fun updateEventAttributes(
+        @Path("eventId") eventId: Int,
+        @Body attributes: List<UpdateAttributes.Attribute>,
+    ): RegularData<List<UnspecifiedTypeJSON>>
 }
