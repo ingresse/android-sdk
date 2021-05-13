@@ -58,6 +58,6 @@ interface EventService {
     @PUT("/{eventId}/attributes")
     suspend fun updateEventAttributes(
         @Path("eventId") eventId: Int,
-        @Body attributes: List<UpdateAttributes.Attribute>,
+        @Body attributes: UpdateAttributes.Attribute,
     ): RegularData<List<UnspecifiedTypeJSON>>
 }
