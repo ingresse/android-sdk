@@ -5,19 +5,16 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
-import com.ingresse.sdk.v2.models.base.RegularData
 import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.request.ProducerEventDetails
 import com.ingresse.sdk.v2.models.request.SearchEvents
 import com.ingresse.sdk.v2.models.request.UpdateAttributes
-import com.ingresse.sdk.v2.models.response.eventAttributes.UnspecifiedTypeJSON
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.resultParser
 import com.ingresse.sdk.v2.services.EventService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
