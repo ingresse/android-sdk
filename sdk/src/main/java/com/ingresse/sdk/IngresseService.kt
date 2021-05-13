@@ -33,6 +33,7 @@ import com.ingresse.sdk.v2.repositories.Home
 import com.ingresse.sdk.v2.repositories.Password
 import com.ingresse.sdk.v2.repositories.PasswordStrength
 import com.ingresse.sdk.v2.repositories.Search
+import com.ingresse.sdk.v2.repositories.Ticket
 import com.ingresse.sdk.v2.repositories.UserData
 import com.ingresse.sdk.v2.repositories.UserWallet
 
@@ -72,6 +73,7 @@ class IngresseService(var client: IngresseClient) {
         override val password = Password(client)
         override val passwordStrength = PasswordStrength(client)
         override val search = Search(client)
+        override val ticket = Ticket(client)
         override val userData = UserData(client)
         override val userWallet = UserWallet(client)
     }
