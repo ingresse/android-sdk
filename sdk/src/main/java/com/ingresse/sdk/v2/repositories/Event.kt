@@ -85,7 +85,7 @@ class Event(client: IngresseClient) {
     suspend fun updateEventAttributes(
         dispatcher: CoroutineDispatcher,
         request: UpdateAttributes,
-    ): Result<Response<String>> =
+    ): Result<ResponseHits<SearchEventsJSON>> =
         resultParser(dispatcher) {
             updateEventAttributesPlain(request)
         }

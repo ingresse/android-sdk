@@ -60,5 +60,5 @@ interface EventService {
     suspend fun updateEventAttributes(
         @Path("eventId") eventId: Int,
         @Body attributes: UpdateAttributes.Attributes,
-    ): Response<String>
+    ): ResponseHits<SearchEventsJSON>
 }
