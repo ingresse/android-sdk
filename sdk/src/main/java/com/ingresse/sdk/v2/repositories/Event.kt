@@ -17,6 +17,7 @@ import com.ingresse.sdk.v2.parses.resultParser
 import com.ingresse.sdk.v2.services.EventService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -84,7 +85,7 @@ class Event(client: IngresseClient) {
     suspend fun updateEventAttributes(
         dispatcher: CoroutineDispatcher,
         request: UpdateAttributes,
-    ): Result<RegularData<String>> =
+    ): Result<Response<String>> =
         resultParser(dispatcher) {
             updateEventAttributesPlain(request)
         }

@@ -5,6 +5,7 @@ import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.request.UpdateAttributes
 import com.ingresse.sdk.v2.models.response.eventAttributes.UnspecifiedTypeJSON
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PUT
@@ -59,5 +60,5 @@ interface EventService {
     suspend fun updateEventAttributes(
         @Path("eventId") eventId: Int,
         @Body attributes: UpdateAttributes.Attributes,
-    ): RegularData<String>
+    ): Response<String>
 }
