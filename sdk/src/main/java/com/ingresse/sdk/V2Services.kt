@@ -1,6 +1,7 @@
 package com.ingresse.sdk
 
 import com.ingresse.sdk.v2.repositories.Auth
+import com.ingresse.sdk.v2.repositories.CheckinReportThreshold
 import com.ingresse.sdk.v2.repositories.Event
 import com.ingresse.sdk.v2.repositories.EventDetails
 import com.ingresse.sdk.v2.repositories.Highlights
@@ -15,6 +16,7 @@ interface V2Services {
     val auth: Auth
     val event: Event
     val eventDetails: EventDetails
+    val checkinReportThreshold: CheckinReportThreshold
     val highlights: Highlights
     val home: Home
     val password: Password

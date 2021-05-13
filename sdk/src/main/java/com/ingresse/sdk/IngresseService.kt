@@ -25,6 +25,7 @@ import com.ingresse.sdk.services.UserService
 import com.ingresse.sdk.services.WebSocketService
 import com.ingresse.sdk.services.ZipCodeService
 import com.ingresse.sdk.v2.repositories.Auth
+import com.ingresse.sdk.v2.repositories.CheckinReportThreshold
 import com.ingresse.sdk.v2.repositories.Event
 import com.ingresse.sdk.v2.repositories.EventDetails
 import com.ingresse.sdk.v2.repositories.Highlights
@@ -65,6 +66,7 @@ class IngresseService(var client: IngresseClient) {
         override val auth = Auth(client)
         override val event = Event(client)
         override val eventDetails = EventDetails(client)
+        override val checkinReportThreshold = CheckinReportThreshold(client)
         override val highlights = Highlights(client)
         override val home = Home(client)
         override val password = Password(client)
