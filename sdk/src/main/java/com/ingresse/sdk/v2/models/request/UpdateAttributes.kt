@@ -2,36 +2,39 @@ package com.ingresse.sdk.v2.models.request
 
 data class UpdateAttributes(
     val eventId: Int,
-    val attributes: List<Attribute>,
+    val attributes: Attributes,
 ) {
 
-    constructor(
-        eventId: Int,
-        transferIsEnabled: Boolean,
-        transferIsRequired: Boolean,
-    ) : this(
-        eventId = eventId,
-        attributes = listOf(
-            Attribute.BooleanAttr(
-                DefaultAttributes
-                    .TICKET_TRANSFER_ENABLED
-                    .attrName,
-                transferIsEnabled
-            ),
-            Attribute.BooleanAttr(
-                DefaultAttributes
-                    .TICKET_TRANSFER_REQUIRED
-                    .attrName,
-                transferIsRequired
+    data class Attributes(
+        val attributes: List<AttributeType>,
+    ) {
+
+        constructor(
+            transferIsEnabled: Boolean,
+            transferIsRequired: Boolean,
+        ) : this(
+            attributes = listOf(
+                AttributeType.BooleanAttr(
+                    DefaultAttributes
+                        .TICKET_TRANSFER_ENABLED
+                        .attrName,
+                    transferIsEnabled
+                ),
+                AttributeType.BooleanAttr(
+                    DefaultAttributes
+                        .TICKET_TRANSFER_REQUIRED
+                        .attrName,
+                    transferIsRequired
+                )
             )
         )
-    )
+    }
 
-    sealed class Attribute {
+    sealed class AttributeType {
 
-        data class BooleanAttr(val name: String, val value: Boolean) : Attribute()
-        data class FloatAttr(val name: String, val value: Float) : Attribute()
-        data class StringAttr(val name: String, val value: String) : Attribute()
+        data class BooleanAttr(val name: String, val value: Boolean) : AttributeType()
+        data class FloatAttr(val name: String, val value: Float) : AttributeType()
+        data class StringAttr(val name: String, val value: String) : AttributeType()
     }
 
     enum class DefaultAttributes(val attrName: String) {
