@@ -59,5 +59,5 @@ interface EventService {
     suspend fun updateEventAttributes(
         @Path("eventId") eventId: Int,
         @Body attributes: UpdateAttributes.Attributes,
-    ): RegularData<List<UnspecifiedTypeJSON>>
+    ): RegularData<String>
 }

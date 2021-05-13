@@ -15,16 +15,16 @@ data class UpdateAttributes(
         ) : this(
             attributes = listOf(
                 AttributeType.BooleanAttr(
-                    DefaultAttributes
+                    name = DefaultAttributes
                         .TICKET_TRANSFER_ENABLED
                         .attrName,
-                    transferIsEnabled
+                    value = transferIsEnabled
                 ),
                 AttributeType.BooleanAttr(
-                    DefaultAttributes
+                    name = DefaultAttributes
                         .TICKET_TRANSFER_REQUIRED
                         .attrName,
-                    transferIsRequired
+                    value = transferIsRequired
                 )
             )
         )

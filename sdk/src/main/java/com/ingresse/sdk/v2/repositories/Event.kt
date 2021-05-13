@@ -84,7 +84,7 @@ class Event(client: IngresseClient) {
     suspend fun updateEventAttributes(
         dispatcher: CoroutineDispatcher,
         request: UpdateAttributes,
-    ): Result<RegularData<List<UnspecifiedTypeJSON>>> =
+    ): Result<RegularData<String>> =
         resultParser(dispatcher) {
             updateEventAttributesPlain(request)
         }
