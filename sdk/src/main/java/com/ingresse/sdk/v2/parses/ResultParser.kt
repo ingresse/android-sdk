@@ -1,5 +1,6 @@
 package com.ingresse.sdk.v2.parses
 
+import com.ingresse.sdk.v2.defaults.Errors
 import com.ingresse.sdk.v2.parses.model.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -17,6 +18,9 @@ suspend fun <T> resultParser(
             Result.success(result)
         } catch (httpException: HttpException) {
             val code = httpException.code()
+            if (Errors.tokenError.contains(code)) {
+                return@withContext Result.tokenExpired(code)
+            }
             Result.error(code, httpException)
         } catch (ioException: IOException) {
             Result.connectionError()

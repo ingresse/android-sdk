@@ -8,6 +8,7 @@ import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.request.ProducerEventDetails
 import com.ingresse.sdk.v2.models.request.SearchEvents
+import com.ingresse.sdk.v2.models.request.UpdateAttributes
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.resultParser
@@ -69,5 +70,20 @@ class Event(client: IngresseClient) {
     ): Result<ResponseHits<SearchEventsJSON>> =
         resultParser(dispatcher) {
             getProducerEventDetailsPlain(request)
+        }
+
+    suspend fun updateEventAttributesPlain(
+        request: UpdateAttributes,
+    ) = service.updateEventAttributes(
+        eventId = request.eventId,
+        attributes = request.attributes
+    )
+
+    suspend fun updateEventAttributes(
+        dispatcher: CoroutineDispatcher,
+        request: UpdateAttributes,
+    ): Result<ResponseHits<SearchEventsJSON>> =
+        resultParser(dispatcher) {
+            updateEventAttributesPlain(request)
         }
 }
