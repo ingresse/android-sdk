@@ -5,6 +5,7 @@ import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.base.Source
 import com.ingresse.sdk.v2.models.request.ProducerEventDetails
 import com.ingresse.sdk.v2.models.request.SearchEvents
+import com.ingresse.sdk.v2.models.request.UpdateAttributes
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
@@ -24,6 +25,9 @@ class EventServiceTest {
 
     @Mock
     val detailsRequestMock = mock<ProducerEventDetails>()
+
+    @Mock
+    val updateRequestMock = mock<UpdateAttributes>()
 
     @Test
     fun getProducerEventList_SuccessTest() {
@@ -183,6 +187,76 @@ class EventServiceTest {
                 serviceMock.getProducerEventDetails(
                     eventId = detailsRequestMock.eventId,
                     fields = detailsRequestMock.fields
+                )
+            }.onFailure {
+                Assert.assertEquals("Thrown an exception", it.message)
+            }
+
+            Assert.assertFalse(result.isSuccess)
+            Assert.assertTrue(result.isFailure)
+        }
+    }
+
+    @Test
+    fun updateEventAttributes_SuccessTest() {
+        val jsonMock = mock<SearchEventsJSON> {
+            Mockito.`when`(mock.id).thenReturn(123456)
+            Mockito.`when`(mock.title).thenReturn("test title")
+        }
+
+        val dataMock = mock<Data<SearchEventsJSON>> {
+            Mockito.`when`(mock.hits).thenReturn(listOf(Source(jsonMock)))
+            Mockito.`when`(mock.total).thenReturn(1)
+        }
+
+        val responseMock = mock<ResponseHits<SearchEventsJSON>> {
+            Mockito.`when`(mock.data).thenReturn(dataMock)
+        }
+
+        val serviceMock = mock<EventService> {
+            onBlocking {
+                updateEventAttributes(
+                    eventId = updateRequestMock.eventId,
+                    attributes = updateRequestMock.attributes
+                )
+            } doReturn responseMock
+        }
+
+        runBlockingTest {
+            val result = kotlin.runCatching {
+                serviceMock.updateEventAttributes(
+                    eventId = updateRequestMock.eventId,
+                    attributes = updateRequestMock.attributes
+                )
+            }.onSuccess {
+                val jsonResult = it.data?.hits?.first()?.source
+
+                Assert.assertEquals(1, it.data?.total)
+                Assert.assertEquals("test title", jsonResult?.title)
+                Assert.assertEquals(123456, jsonResult?.id)
+            }
+
+            Assert.assertFalse(result.isFailure)
+            Assert.assertTrue(result.isSuccess)
+        }
+    }
+
+    @Test
+    fun updateEventAttributes_FailTest() {
+        val serviceMock = mock<EventService> {
+            onBlocking {
+                updateEventAttributes(
+                    eventId = updateRequestMock.eventId,
+                    attributes = updateRequestMock.attributes
+                )
+            } doThrow RuntimeException("Thrown an exception")
+        }
+
+        runBlockingTest {
+            val result = kotlin.runCatching {
+                serviceMock.updateEventAttributes(
+                    eventId = updateRequestMock.eventId,
+                    attributes = updateRequestMock.attributes
                 )
             }.onFailure {
                 Assert.assertEquals("Thrown an exception", it.message)
