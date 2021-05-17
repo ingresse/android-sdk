@@ -8,7 +8,9 @@ import kotlinx.coroutines.test.runBlockingTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
 
 @Suppress("BlockingMethodInNonBlockingContext")
