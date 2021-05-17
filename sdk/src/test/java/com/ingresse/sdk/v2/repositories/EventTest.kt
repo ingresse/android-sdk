@@ -5,6 +5,7 @@ import com.ingresse.sdk.v2.models.base.ResponseHits
 import com.ingresse.sdk.v2.models.base.Source
 import com.ingresse.sdk.v2.models.request.ProducerEventDetails
 import com.ingresse.sdk.v2.models.request.SearchEvents
+import com.ingresse.sdk.v2.models.request.UpdateAttributes
 import com.ingresse.sdk.v2.models.response.searchEvents.SearchEventsJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.model.onError
@@ -31,6 +32,9 @@ class EventTest {
 
     @Mock
     val detailsRequestMock = mock<ProducerEventDetails>()
+
+    @Mock
+    val updateRequestMock = mock<UpdateAttributes>()
 
     @Mock
     val jsonMock = mock<SearchEventsJSON> {
@@ -232,6 +236,103 @@ class EventTest {
 
         runBlockingTest {
             val result = repositoryMock.getProducerEventDetails(dispatcher, detailsRequestMock)
+            result.onTokenExpired { code ->
+                Assert.assertEquals(1234, code)
+            }
+
+            Assert.assertTrue(result.isTokenExpired)
+            Assert.assertFalse(result.isSuccess)
+            Assert.assertFalse(result.isFailure)
+            Assert.assertFalse(result.isConnectionError)
+        }
+    }
+
+    @Test
+    fun updateEventAttributes_SuccessTest() {
+        val resultMock = Result.success(responseMock)
+
+        val repositoryMock = mock<Event> {
+            onBlocking {
+                updateEventAttributes(dispatcher, updateRequestMock)
+            } doReturn resultMock
+        }
+
+        runBlockingTest {
+            val result = repositoryMock.updateEventAttributes(dispatcher, updateRequestMock)
+            result.onSuccess {
+                val jsonResult = it.data?.hits?.first()?.source
+
+                Assert.assertEquals(1, it.data?.total)
+                Assert.assertEquals("test title", jsonResult?.title)
+                Assert.assertEquals(123456, jsonResult?.id)
+            }
+
+            Assert.assertTrue(result.isSuccess)
+            Assert.assertFalse(result.isFailure)
+            Assert.assertFalse(result.isConnectionError)
+            Assert.assertFalse(result.isTokenExpired)
+        }
+    }
+
+    @Test
+    fun updateEventAttributes_FailTest() {
+        val resultMock: Result<ResponseHits<SearchEventsJSON>> =
+            Result.error(400, Throwable("Thrown an exception"))
+
+        val repositoryMock = mock<Event> {
+            onBlocking {
+                updateEventAttributes(dispatcher, updateRequestMock)
+            } doReturn resultMock
+        }
+
+        runBlockingTest {
+            val result = repositoryMock.updateEventAttributes(dispatcher, updateRequestMock)
+            result.onError { code, throwable ->
+                Assert.assertEquals(400, code)
+                Assert.assertEquals("Thrown an exception", throwable.message)
+            }
+
+            Assert.assertTrue(result.isFailure)
+            Assert.assertFalse(result.isSuccess)
+            Assert.assertFalse(result.isConnectionError)
+            Assert.assertFalse(result.isTokenExpired)
+        }
+    }
+
+    @Test
+    fun updateEventAttributes_ConnectionErrorTest() {
+        val resultMock: Result<ResponseHits<SearchEventsJSON>> =
+            Result.connectionError()
+
+        val repositoryMock = mock<Event> {
+            onBlocking {
+                updateEventAttributes(dispatcher, updateRequestMock)
+            } doReturn resultMock
+        }
+
+        runBlockingTest {
+            val result = repositoryMock.updateEventAttributes(dispatcher, updateRequestMock)
+
+            Assert.assertTrue(result.isConnectionError)
+            Assert.assertFalse(result.isSuccess)
+            Assert.assertFalse(result.isFailure)
+            Assert.assertFalse(result.isTokenExpired)
+        }
+    }
+
+    @Test
+    fun updateEventAttributes_TokenExpiredTest() {
+        val resultMock: Result<ResponseHits<SearchEventsJSON>> =
+            Result.tokenExpired(1234)
+
+        val repositoryMock = mock<Event> {
+            onBlocking {
+                updateEventAttributes(dispatcher, updateRequestMock)
+            } doReturn resultMock
+        }
+
+        runBlockingTest {
+            val result = repositoryMock.updateEventAttributes(dispatcher, updateRequestMock)
             result.onTokenExpired { code ->
                 Assert.assertEquals(1234, code)
             }
