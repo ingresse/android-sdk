@@ -77,6 +77,16 @@ class EventService(private val client: IngresseClient) {
      * @param onTokenExpired - token expired callback
      * @param onConnectionError - connection error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Event(client).getProducerEventList(request = SearchEvents())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.SearchEvents",
+            ]
+        )
+    )
     fun getEventListByProducer(concurrent: Boolean = false,
                                request: EventListByProducer? = EventListByProducer(),
                                onSuccess: (Pair<ArrayList<Source<EventJSON>>, Int>) -> Unit,
@@ -143,6 +153,16 @@ class EventService(private val client: IngresseClient) {
      * @param onTokenExpired - token expired callback
      * @param onConnectionError - connection error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Event(client).getProducerEventDetails(request = ProducerEventDetails())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.ProducerEventDetails",
+            ]
+        )
+    )
     fun getEventDescription(eventId: String,
                             onSuccess: (String) -> Unit,
                             onError: ErrorBlock,
@@ -191,6 +211,16 @@ class EventService(private val client: IngresseClient) {
      * @param onTokenExpired - token expired callback
      * @param onConnectionError - connection error callback
      */
+    @Deprecated(
+        message = "This call will no longer be maintained. Use V2 replacements.",
+        replaceWith = ReplaceWith(
+            expression = "Event(client).getProducerEventDetails(request = ProducerEventDetails())",
+            imports = [
+                "com.ingresse.sdk.v2.repositories",
+                "com.ingresse.sdk.v2.models.request.ProducerEventDetails",
+            ]
+        )
+    )
     fun getEventStaff(eventId: String,
                       onSuccess: (EventStaffJSON) -> Unit,
                       onError: ErrorBlock,

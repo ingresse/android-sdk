@@ -9,7 +9,8 @@ import java.lang.reflect.Type
 fun <A : Any, T> A.convertTo(type: Type): T? {
     return try {
         val gson = Gson()
-        gson.fromJson<T>(this.toString(), type)
+        val converted = gson.toJson(this)
+        gson.fromJson<T>(converted, type)
     } catch (exception: JsonParseException) {
         Log.getStackTraceString(exception)
         null

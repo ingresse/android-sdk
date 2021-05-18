@@ -26,10 +26,8 @@ data class UserDataJSON(
     val verified: Boolean?,
     val social: List<SocialAccountJSON>?,
     val planner: UserPlannerJSON?,
-    private val pictures: Any?,
+    val pictures: Any?,
 ) {
-
-    val userPictures = getPictures(pictures)
 
     data class UserPicturesJSON(
         val small: String?,
@@ -54,13 +52,9 @@ data class UserDataJSON(
         val cpf: String?,
         val cnpj: String?,
         val openField1: String?,
-        private val pictures: Any?,
-    ) {
-        val userPictures = getPictures(pictures)
-    }
-
-    companion object {
-        fun getPictures(pictures: Any?): UserPicturesJSON? =
-            pictures?.convertTo(object : TypeToken<UserPicturesJSON>() {}.type)
-    }
+        val pictures: Any?,
+    )
 }
+
+fun getPictures(pictures: Any?): UserDataJSON.UserPicturesJSON? =
+    pictures?.convertTo(object : TypeToken<UserDataJSON.UserPicturesJSON>() {}.type)
