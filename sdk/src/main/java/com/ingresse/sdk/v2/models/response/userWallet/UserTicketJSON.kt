@@ -25,4 +25,5 @@ data class UserTicketJSON(
     val transferredTo: TransferDataJSON?,
     val currentHolder: TransferDataJSON?,
     val live: LiveJSON?,
+    val transferable: Boolean?
 )
