@@ -21,7 +21,8 @@ data class UserTicketsJSON(
     val receivedFrom: HolderJSON? = null,
     val transferedTo: HolderJSON? = null,
     val currentHolder: HolderJSON? = null,
-    val live: EventLiveJSON?
+    val live: EventLiveJSON?,
+    val transferable: Boolean? = false
 )
 
 data class EventSessionUserTicketsJSON(
