@@ -25,5 +25,10 @@ data class UserTicketJSON(
     val transferredTo: TransferDataJSON?,
     val currentHolder: TransferDataJSON?,
     val live: LiveJSON?,
-    val transferable: Boolean?
+    val transferable: Boolean?,
+    val isResalable: Boolean?,
+    val resalableUrl: String?,
+    val isTransferable: Boolean?,
+    val isTransferCancelable: Boolean?,
+    val isReturnable: Boolean?
 )
