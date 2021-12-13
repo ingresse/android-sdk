@@ -19,7 +19,7 @@ data class SalesSummaryJSON(
     val totalPaymentCost: Float? = 0.0f,
     val totalSales: Float? = 0.0f,
     val totalPendingTickets: Int? = 0,
-    val partialRevenue: Int? = 0
+    val partialRevenue: Float? = 0.0f
 )
 
 data class SalesTicketTypeJSON(
