@@ -22,7 +22,12 @@ data class UserTicketsJSON(
     val transferedTo: HolderJSON? = null,
     val currentHolder: HolderJSON? = null,
     val live: EventLiveJSON?,
-    val transferable: Boolean? = false
+    val transferable: Boolean? = false,
+    val isResalable: Boolean? = false,
+    val resalableUrl: String? = "",
+    val isTransferable: Boolean? = false,
+    val isTransferCancelable: Boolean? = false,
+    val isReturnable: Boolean? = false
 )
 
 data class EventSessionUserTicketsJSON(
@@ -50,15 +55,15 @@ data class EventVenueJSON(
 )
 
 data class HolderJSON(
-        val transferId: Int? = 0,
-        val userId: Int? = 0,
-        val email: String? = "",
-        val name: String? = "",
-        val type: String? = "",
-        val status: String? = "",
-        val history: List<TransferHistoryJSON>? = emptyList(),
-        val socialId: List<UserSocialJSON>? = emptyList(),
-        val picture: String? = ""
+    val transferId: Int? = 0,
+    val userId: Int? = 0,
+    val email: String? = "",
+    val name: String? = "",
+    val type: String? = "",
+    val status: String? = "",
+    val history: List<TransferHistoryJSON>? = emptyList(),
+    val socialId: List<UserSocialJSON>? = emptyList(),
+    val picture: String? = ""
 )
 
 data class UserSocialJSON(
