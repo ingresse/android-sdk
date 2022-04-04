@@ -11,6 +11,7 @@ import com.ingresse.sdk.v2.repositories.PasswordStrength
 import com.ingresse.sdk.v2.repositories.Search
 import com.ingresse.sdk.v2.repositories.Ticket
 import com.ingresse.sdk.v2.repositories.UserData
+import com.ingresse.sdk.v2.repositories.UserTransaction
 import com.ingresse.sdk.v2.repositories.UserWallet
 
 interface V2Services {
@@ -26,4 +27,5 @@ interface V2Services {
     val ticket: Ticket
     val userData: UserData
     val userWallet: UserWallet
+    val userTransaction: UserTransaction
 }
