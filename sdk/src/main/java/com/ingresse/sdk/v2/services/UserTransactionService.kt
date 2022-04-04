@@ -2,6 +2,8 @@ package com.ingresse.sdk.v2.services
 
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserTransactionService {
@@ -21,5 +23,20 @@ interface UserTransactionService {
         @Query("status") status: String?,
         @Query("page") page: Int?,
         @Query("pageSize") pageSize: Int?
+    ): Response<String>
+
+    /**
+     * Refund transaction
+     *
+     * @param transactionId - transaction id
+     * @param token - token of logged user
+     * @param reason - reason for refund
+     */
+    @POST("/shop/{transactionId}/refund")
+    suspend fun refundTransaction(
+        @Path("transactionId") transactionId: String,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") token: String,
+        @Query("reason") reason: String
     ): Response<String>
 }

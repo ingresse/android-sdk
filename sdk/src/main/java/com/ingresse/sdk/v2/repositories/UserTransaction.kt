@@ -5,8 +5,11 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
+import com.ingresse.sdk.v2.models.base.IngresseResponse
 import com.ingresse.sdk.v2.models.base.PagedResponse
-import com.ingresse.sdk.v2.models.request.UserTransactionsRequest
+import com.ingresse.sdk.v2.models.request.RefundTransaction
+import com.ingresse.sdk.v2.models.request.UserTransactions
+import com.ingresse.sdk.v2.models.response.userTransactions.TransactionRefundedJSON
 import com.ingresse.sdk.v2.models.response.userTransactions.UserTransactionJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.responseParser
@@ -35,8 +38,8 @@ class UserTransaction(private val client: IngresseClient) {
 
     suspend fun getUserTransactions(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
-        request: UserTransactionsRequest
-        ): Result<PagedResponse<UserTransactionJSON>> {
+        request: UserTransactions
+    ): Result<PagedResponse<UserTransactionJSON>> {
         val type = object : TypeToken<PagedResponse<UserTransactionJSON>>() {}.type
         return responseParser(dispatcher, type) {
             service.getUserTransactions(
@@ -45,6 +48,21 @@ class UserTransaction(private val client: IngresseClient) {
                 status = request.status,
                 page = request.page,
                 pageSize = request.pageSize
+            )
+        }
+    }
+
+    suspend fun refundTransaction(
+        dispatcher: CoroutineDispatcher = Dispatchers.Default,
+        request: RefundTransaction
+    ): Result<IngresseResponse<TransactionRefundedJSON>> {
+        val type = object : TypeToken<IngresseResponse<TransactionRefundedJSON>>() {}.type
+        return responseParser(dispatcher, type) {
+            service.refundTransaction(
+                transactionId = request.transactionId,
+                apikey = client.key,
+                token = request.usertoken,
+                reason = request.reason
             )
         }
     }
