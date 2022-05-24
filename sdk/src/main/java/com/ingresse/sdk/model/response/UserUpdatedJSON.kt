@@ -15,6 +15,7 @@ class UserUpdatedDataJSON(
     val document: String? = "",
     val complement: String? = "",
     val phone: String? = "",
+    val birthdate: String? = "",
     val ddi: String? = "",
     val verified: Boolean? = false
 )

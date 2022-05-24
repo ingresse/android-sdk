@@ -13,10 +13,12 @@ interface User {
      * @param fields - desired fields to get data
      */
     @GET("/user/{userId}")
-    fun getUserData(@Path("userId") userId: Int,
-                    @Query("apikey") apikey: String,
-                    @Query("usertoken") userToken: String,
-                    @Query("fields") fields: String): Call<String>
+    fun getUserData(
+        @Path("userId") userId: Int,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") userToken: String,
+        @Query("fields") fields: String
+    ): Call<String>
 
     /**
      * Update user basic infos
@@ -26,10 +28,12 @@ interface User {
      * @param params - object with infos to update
      */
     @POST("/user/{userId}")
-    fun updateBasicInfos(@Path("userId") userId: String,
-                         @Query("apikey") apikey: String,
-                         @Query("usertoken") userToken: String,
-                         @Body params: UserBasicInfos): Call<String>
+    fun updateBasicInfos(
+        @Path("userId") userId: String,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") userToken: String,
+        @Body params: UserBasicInfos
+    ): Call<String>
 
     /**
      * Update user picture
@@ -37,11 +41,13 @@ interface User {
      * @param userId - id from user
      */
     @POST("/user/{userId}")
-    fun updateUserPicture(@Path("userId") userId: String,
-                         @Query("apikey") apikey: String,
-                         @Query("usertoken") userToken: String,
-                         @Body params: UserPicture): Call<String>
-                 
+    fun updateUserPicture(
+        @Path("userId") userId: String,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") userToken: String,
+        @Body params: UserPicture
+    ): Call<String>
+
     /**
      * Update user address
      *
@@ -50,10 +56,12 @@ interface User {
      * @param params - object with infos to update
      */
     @POST("/user/{userId}")
-    fun updateUserAddress(@Path("userId") userId: String,
-                          @Query("apikey") apikey: String,
-                          @Query("usertoken") userToken: String,
-                          @Body params: UserAddressInfos): Call<String>
+    fun updateUserAddress(
+        @Path("userId") userId: String,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") userToken: String,
+        @Body params: UserAddressInfos
+    ): Call<String>
 
     /**
      * Update user address
@@ -64,11 +72,13 @@ interface User {
      * @param params - object with infos to update
      */
     @POST("/user/{userId}")
-    fun updateUserAddress(@Path("userId") userId: String,
-                          @Query("method") method: String,
-                          @Query("apikey") apikey: String,
-                          @Query("usertoken") userToken: String,
-                          @Body params: UserAddressInfos): Call<String>
+    fun updateUserAddress(
+        @Path("userId") userId: String,
+        @Query("method") method: String,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") userToken: String,
+        @Body params: UserAddressInfos
+    ): Call<String>
 
     /**
      * Update planner infos
@@ -78,10 +88,12 @@ interface User {
      * @param params - planner fields to update
      */
     @POST("/user/{userId}")
-    fun updateUserPlannerInfos(@Path("userId") userId: String,
-                               @Query("apikey") apikey: String,
-                               @Query("usertoken") userToken: String,
-                               @Body params: UserPlanner): Call<String>
+    fun updateUserPlannerInfos(
+        @Path("userId") userId: String,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") userToken: String,
+        @Body params: UserPlanner
+    ): Call<String>
 
     /**
      * Get cash closing for specified date offset
@@ -92,11 +104,13 @@ interface User {
      * @param userToken - token from user
      */
     @GET("/balance")
-    fun getCashClosing(@Query("apikey") apikey: String,
-                       @Query("operator") userId: String,
-                       @Query("from") from: String,
-                       @Query("to") to: String,
-                       @Query("usertoken") userToken: String): Call<String>
+    fun getCashClosing(
+        @Query("apikey") apikey: String,
+        @Query("operator") userId: String,
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("usertoken") userToken: String
+    ): Call<String>
 
     /**
      * Gets user tickets
@@ -107,12 +121,14 @@ interface User {
      * @param token - token from user
      */
     @GET("/user/{userId}/tickets")
-    fun getUserTickets(@Path("userId") userId: String,
-                       @Query("apikey") apikey: String,
-                       @Query("page") page: Int? = null,
-                       @Query("pageSize") pageSize: Int? = null,
-                       @Query("eventId") eventId: Int? = null,
-                       @Query("usertoken") token: String): Call<String>
+    fun getUserTickets(
+        @Path("userId") userId: String,
+        @Query("apikey") apikey: String,
+        @Query("page") page: Int? = null,
+        @Query("pageSize") pageSize: Int? = null,
+        @Query("eventId") eventId: Int? = null,
+        @Query("usertoken") token: String
+    ): Call<String>
 
     /**
      * Get user event attributes
@@ -122,10 +138,12 @@ interface User {
      * @param filters - event filter
      */
     @GET("/event/{eventId}/attributes")
-    fun getEventAttributes(@Path("eventId") eventId: String,
-                           @Query("apikey") apikey: String,
-                           @Query("usertoken") userToken: String? = null,
-                           @Query("filters") filters: String? = null): Call<String>
+    fun getEventAttributes(
+        @Path("eventId") eventId: String,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") userToken: String? = null,
+        @Query("filters") filters: String? = null
+    ): Call<String>
 
     /**
      * Gets wallet user events.
@@ -136,13 +154,15 @@ interface User {
      * @param pageSize chosen by user.
      */
     @GET("/user/{userId}/wallet")
-    fun getWalletEvents(@Path("userId") userId: String,
-                        @Query("apikey") apikey: String,
-                        @Query("usertoken") token: String,
-                        @Query("page") page: Int? = null,
-                        @Query("pageSize") pageSize: Int? = null,
-                        @Query("from") dateFrom: String? = null,
-                        @Query("to") dateTo: String? = null): Call<String>
+    fun getWalletEvents(
+        @Path("userId") userId: String,
+        @Query("apikey") apikey: String,
+        @Query("usertoken") token: String,
+        @Query("page") page: Int? = null,
+        @Query("pageSize") pageSize: Int? = null,
+        @Query("from") dateFrom: String? = null,
+        @Query("to") dateTo: String? = null
+    ): Call<String>
 
     /**
      * Validate password strength
@@ -150,8 +170,10 @@ interface User {
      * @param password - password to be validated
      */
     @POST("/password")
-    fun validatePasswordStrength(@Query("password") password: String,
-                                 @Query("apikey") apikey: String): Call<String>
+    fun validatePasswordStrength(
+        @Query("password") password: String,
+        @Query("apikey") apikey: String
+    ): Call<String>
 
     /**
      * Change password
@@ -161,10 +183,12 @@ interface User {
      * @param params - old and new password to change
      */
     @POST("/user/{userId}")
-    fun changePassword(@Path("userId") userId: String,
-                       @Query("usertoken") usertoken: String,
-                       @Query("apikey") apikey: String,
-                       @Body params: PasswordInfo): Call<String>
+    fun changePassword(
+        @Path("userId") userId: String,
+        @Query("usertoken") usertoken: String,
+        @Query("apikey") apikey: String,
+        @Body params: PasswordInfo
+    ): Call<String>
 
     /**
      * Create account
@@ -180,13 +204,16 @@ interface User {
      */
     @FormUrlEncoded
     @POST("user")
-    fun createAccount(@Field("name") name: String,
-                      @Field("lastName") lastName: String,
-                      @Field("email") email: String,
-                      @Field("password") password: String,
-                      @Field("document") document: String?,
-                      @Field("ddi") ddi: String,
-                      @Field("phone") phone: String,
-                      @Field("news") newsletter: Boolean,
-                      @Query("apikey") apikey: String): Call<String>
+    fun createAccount(
+        @Field("name") name: String,
+        @Field("lastName") lastName: String,
+        @Field("email") email: String,
+        @Field("password") password: String,
+        @Field("document") document: String?,
+        @Field("ddi") ddi: String,
+        @Field("phone") phone: String,
+        @Field("birthdate") birthdate: String?,
+        @Field("news") newsletter: Boolean,
+        @Query("apikey") apikey: String
+    ): Call<String>
 }
