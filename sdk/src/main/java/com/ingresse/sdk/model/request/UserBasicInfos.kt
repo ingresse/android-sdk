@@ -9,5 +9,8 @@ data class UserBasicInfos(
     var ddi: String? = null,
     var phone: String? = null,
     var birthdate: String? = null,
-    var cpf: String? = null
+    var cpf: String? = null,
+    var document: String? = null,
+    var gender: String? = null,
+    var nationality: String? = null
 )

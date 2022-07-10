@@ -1,5 +1,6 @@
 package com.ingresse.sdk.v2.services
 
+import com.ingresse.sdk.v2.models.request.UpdateUserData
 import com.ingresse.sdk.v2.models.request.UserData
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -19,6 +20,9 @@ class UserDataServiceTest {
 
     @Mock
     val userDataRequestMock = mock<UserData>()
+
+    @Mock
+    val updateUserDataMock = mock<UpdateUserData>()
 
     @Test
     fun getUserData_SuccessTest() {
@@ -64,6 +68,59 @@ class UserDataServiceTest {
                 userId = userDataRequestMock.userId,
                 userToken = userDataRequestMock.userToken,
                 fields = userDataRequestMock.fields,
+                apikey = apikey
+            )
+
+            Assert.assertFalse(result.isSuccessful)
+            Assert.assertEquals(400, result.code())
+            Assert.assertEquals("Test body", result.errorBody()?.string())
+        }
+    }
+
+    @Test
+    fun updateUserData_SuccessTest() {
+        val serviceMock = mock<UserDataService> {
+            onBlocking {
+                updateUserData(
+                    userId = updateUserDataMock.userId,
+                    userToken = userDataRequestMock.userToken,
+                    params = updateUserDataMock,
+                    apikey = apikey
+                )
+            } doReturn Response.success("Test body")
+        }
+
+        runBlockingTest {
+            val result = serviceMock.updateUserData(
+                userId = updateUserDataMock.userId,
+                userToken = userDataRequestMock.userToken,
+                params = updateUserDataMock,
+                apikey = apikey
+            )
+
+            Assert.assertTrue(result.isSuccessful)
+            Assert.assertEquals("Test body", result.body())
+        }
+    }
+
+    @Test
+    fun updateUserData_FailTest() {
+        val serviceMock = mock<UserDataService> {
+            onBlocking {
+                updateUserData(
+                    userId = updateUserDataMock.userId,
+                    userToken = userDataRequestMock.userToken,
+                    params = updateUserDataMock,
+                    apikey = apikey
+                )
+            } doReturn Response.error(400, "Test body".toResponseBody())
+        }
+
+        runBlockingTest {
+            val result = serviceMock.updateUserData(
+                userId = updateUserDataMock.userId,
+                userToken = userDataRequestMock.userToken,
+                params = updateUserDataMock,
                 apikey = apikey
             )
 
