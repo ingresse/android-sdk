@@ -12,5 +12,6 @@ data class UpdateUserData(
     val cpf: String? = null,
     val document: String? = null,
     val gender: String? = null,
-    val nationality: String? = null
+    val nationality: String? = null,
+    val type: Int? = null
 )
