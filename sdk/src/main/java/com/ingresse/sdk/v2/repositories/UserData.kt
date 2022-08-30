@@ -8,8 +8,8 @@ import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.v2.models.base.IngresseResponse
 import com.ingresse.sdk.v2.models.request.UpdateUserData
 import com.ingresse.sdk.v2.models.request.UserData
-import com.ingresse.sdk.v2.models.response.UpdateUserDataJSON
-import com.ingresse.sdk.v2.models.response.UserDataJSON
+import com.ingresse.sdk.v2.models.response.GetUserJSON
+import com.ingresse.sdk.v2.parses.emptyResponseParser
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.responseParser
 import com.ingresse.sdk.v2.services.UserDataService
@@ -40,14 +40,13 @@ class UserData(private val client: IngresseClient) {
     suspend fun getUserData(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         request: UserData,
-    ): Result<IngresseResponse<UserDataJSON>> {
-        val type = object : TypeToken<IngresseResponse<UserDataJSON>>() {}.type
+    ): Result<IngresseResponse<GetUserJSON>> {
+        val type = object : TypeToken<IngresseResponse<GetUserJSON>>() {}.type
         return responseParser(dispatcher, type) {
             service.getUserData(
                 userId = request.userId,
                 apikey = client.key,
                 userToken = request.userToken,
-                fields = request.fields
             )
         }
     }
@@ -55,14 +54,13 @@ class UserData(private val client: IngresseClient) {
     suspend fun updateUserData(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         request: UpdateUserData
-    ): Result<IngresseResponse<UpdateUserDataJSON>> {
-        val type = object : TypeToken<IngresseResponse<UpdateUserDataJSON>>() {}.type
-        return responseParser(dispatcher, type) {
+    ): Result<Unit> {
+        return emptyResponseParser(dispatcher) {
             service.updateUserData(
                 userId = request.userId,
                 apikey = client.key,
                 userToken = request.userToken,
-                params = request
+                params = request.params
             )
         }
     }

@@ -3,8 +3,8 @@ package com.ingresse.sdk.v2.repositories
 import com.ingresse.sdk.v2.models.base.IngresseResponse
 import com.ingresse.sdk.v2.models.request.UpdateUserData
 import com.ingresse.sdk.v2.models.request.UserData
+import com.ingresse.sdk.v2.models.response.GetUserJSON
 import com.ingresse.sdk.v2.models.response.UpdateUserDataJSON
-import com.ingresse.sdk.v2.models.response.UserDataJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.model.onError
 import com.ingresse.sdk.v2.parses.model.onSuccess
@@ -34,11 +34,11 @@ class UserDataTest {
 
     @Test
     fun getUserData_SuccessTest() {
-        val userDataJson = mock<UserDataJSON> {
+        val userDataJson = mock<GetUserJSON> {
             `when`(mock.id).thenReturn(123456)
         }
 
-        val ingresseResponseMock = mock<IngresseResponse<UserDataJSON>> {
+        val ingresseResponseMock = mock<IngresseResponse<GetUserJSON>> {
             `when`(mock.responseData).thenReturn(userDataJson)
         }
 
@@ -67,7 +67,7 @@ class UserDataTest {
 
     @Test
     fun getUserData_FailTest() {
-        val resultMock: Result<IngresseResponse<UserDataJSON>> =
+        val resultMock: Result<IngresseResponse<GetUserJSON>> =
             Result.error(400, Throwable("Thrown an exception"))
 
         val repositoryMock = mock<UserDataRepository> {
@@ -92,7 +92,7 @@ class UserDataTest {
 
     @Test
     fun getUserData_ConnectionErrorTest() {
-        val resultMock: Result<IngresseResponse<UserDataJSON>> =
+        val resultMock: Result<IngresseResponse<GetUserJSON>> =
             Result.connectionError()
 
         val repositoryMock = mock<UserDataRepository> {
@@ -113,7 +113,7 @@ class UserDataTest {
 
     @Test
     fun getUserData_TokenExpiredTest() {
-        val resultMock: Result<IngresseResponse<UserDataJSON>> =
+        val resultMock: Result<IngresseResponse<GetUserJSON>> =
             Result.tokenExpired(1234)
 
         val repositoryMock = mock<UserDataRepository> {
@@ -148,7 +148,7 @@ class UserDataTest {
             `when`(mock.responseData).thenReturn(userDataJson)
         }
 
-        val resultMock = Result.success(ingresseResponseMock)
+        val resultMock = Result.success(Unit)
 
         val repositoryMock = mock<UserDataRepository> {
             onBlocking {
@@ -159,9 +159,7 @@ class UserDataTest {
         runBlockingTest {
             val result = repositoryMock.updateUserData(dispatcher, updateUserDataMock)
             result.onSuccess {
-                val jsonResult = it.responseData
-
-                Assert.assertEquals(123456, jsonResult?.data?.id)
+                Assert.assertTrue(true)
             }
 
             Assert.assertTrue(result.isSuccess)
@@ -173,7 +171,7 @@ class UserDataTest {
 
     @Test
     fun updateUserData_FailTest() {
-        val resultMock: Result<IngresseResponse<UpdateUserDataJSON>> =
+        val resultMock: Result<Unit> =
             Result.error(400, Throwable("Thrown an exception"))
 
         val repositoryMock = mock<UserDataRepository> {
@@ -198,7 +196,7 @@ class UserDataTest {
 
     @Test
     fun updateUserData_ConnectionErrorTest() {
-        val resultMock: Result<IngresseResponse<UpdateUserDataJSON>> =
+        val resultMock: Result<Unit> =
             Result.connectionError()
 
         val repositoryMock = mock<UserDataRepository> {
@@ -219,7 +217,7 @@ class UserDataTest {
 
     @Test
     fun updateUserData_TokenExpiredTest() {
-        val resultMock: Result<IngresseResponse<UpdateUserDataJSON>> =
+        val resultMock: Result<Unit> =
             Result.tokenExpired(1234)
 
         val repositoryMock = mock<UserDataRepository> {

@@ -10,6 +10,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import retrofit2.Response
 
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -22,7 +23,9 @@ class UserDataServiceTest {
     val userDataRequestMock = mock<UserData>()
 
     @Mock
-    val updateUserDataMock = mock<UpdateUserData>()
+    val updateUserDataMock = mock<UpdateUserData>() {
+        `when`(mock.params).thenReturn(mock())
+    }
 
     @Test
     fun getUserData_SuccessTest() {
@@ -31,7 +34,6 @@ class UserDataServiceTest {
                 getUserData(
                     userId = userDataRequestMock.userId,
                     userToken = userDataRequestMock.userToken,
-                    fields = userDataRequestMock.fields,
                     apikey = apikey
                 )
             } doReturn Response.success("Test body")
@@ -41,7 +43,6 @@ class UserDataServiceTest {
             val result = serviceMock.getUserData(
                 userId = userDataRequestMock.userId,
                 userToken = userDataRequestMock.userToken,
-                fields = userDataRequestMock.fields,
                 apikey = apikey
             )
 
@@ -57,7 +58,6 @@ class UserDataServiceTest {
                 getUserData(
                     userId = userDataRequestMock.userId,
                     userToken = userDataRequestMock.userToken,
-                    fields = userDataRequestMock.fields,
                     apikey = apikey
                 )
             } doReturn Response.error(400, "Test body".toResponseBody())
@@ -67,7 +67,6 @@ class UserDataServiceTest {
             val result = serviceMock.getUserData(
                 userId = userDataRequestMock.userId,
                 userToken = userDataRequestMock.userToken,
-                fields = userDataRequestMock.fields,
                 apikey = apikey
             )
 
@@ -84,22 +83,22 @@ class UserDataServiceTest {
                 updateUserData(
                     userId = updateUserDataMock.userId,
                     userToken = userDataRequestMock.userToken,
-                    params = updateUserDataMock,
+                    params = updateUserDataMock.params,
                     apikey = apikey
                 )
-            } doReturn Response.success("Test body")
+            } doReturn Response.success(null)
         }
 
         runBlockingTest {
             val result = serviceMock.updateUserData(
                 userId = updateUserDataMock.userId,
                 userToken = userDataRequestMock.userToken,
-                params = updateUserDataMock,
+                params = updateUserDataMock.params,
                 apikey = apikey
             )
 
             Assert.assertTrue(result.isSuccessful)
-            Assert.assertEquals("Test body", result.body())
+            Assert.assertEquals(null, result.body())
         }
     }
 
@@ -110,7 +109,7 @@ class UserDataServiceTest {
                 updateUserData(
                     userId = updateUserDataMock.userId,
                     userToken = userDataRequestMock.userToken,
-                    params = updateUserDataMock,
+                    params = updateUserDataMock.params,
                     apikey = apikey
                 )
             } doReturn Response.error(400, "Test body".toResponseBody())
@@ -120,7 +119,7 @@ class UserDataServiceTest {
             val result = serviceMock.updateUserData(
                 userId = updateUserDataMock.userId,
                 userToken = userDataRequestMock.userToken,
-                params = updateUserDataMock,
+                params = updateUserDataMock.params,
                 apikey = apikey
             )
 
