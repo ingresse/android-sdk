@@ -6,8 +6,10 @@ import com.ingresse.sdk.builders.ClientBuilder
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.v2.models.base.IngresseResponse
+import com.ingresse.sdk.v2.models.request.CreateUser
 import com.ingresse.sdk.v2.models.request.UpdateUserData
 import com.ingresse.sdk.v2.models.request.UserData
+import com.ingresse.sdk.v2.models.response.CreateUserJSON
 import com.ingresse.sdk.v2.models.response.GetUserJSON
 import com.ingresse.sdk.v2.parses.emptyResponseParser
 import com.ingresse.sdk.v2.parses.model.Result
@@ -25,6 +27,7 @@ class UserData(private val client: IngresseClient) {
     init {
         val httpClient = ClientBuilder(client)
             .addRequestHeaders()
+            .addTimeout(TIMEOUT)
             .build()
 
         val adapter = Retrofit.Builder()
@@ -63,5 +66,23 @@ class UserData(private val client: IngresseClient) {
                 params = request.params
             )
         }
+    }
+
+    suspend fun createUser(
+        dispatcher: CoroutineDispatcher = Dispatchers.Default,
+        request: CreateUser
+    ): Result<IngresseResponse<CreateUserJSON>> {
+        val type = object : TypeToken<IngresseResponse<CreateUserJSON>>() {}.type
+        return responseParser(dispatcher, type) {
+            service.createUser(
+                apikey = client.key,
+                params = request
+            )
+        }
+    }
+
+    companion object {
+
+        const val TIMEOUT = 60L
     }
 }
