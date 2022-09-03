@@ -6,7 +6,7 @@ import java.io.Serializable
 class Result<T> constructor(private val result: Any?) : Serializable {
 
     companion object {
-        fun <T> success(result: T) =
+        fun <T> success(result: T?) =
             Result<T>(Success(result))
 
         fun <T> error(code: Int?, throwable: Throwable) =

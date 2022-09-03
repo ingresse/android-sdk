@@ -141,7 +141,7 @@ class UserDataTest {
 
     @Test
     fun updateUserData_SuccessTest() {
-        val resultMock = Result.success(Unit)
+        val resultMock = Result.success<Void>(null)
 
         val repositoryMock = mock<UserDataRepository> {
             onBlocking {
@@ -164,7 +164,7 @@ class UserDataTest {
 
     @Test
     fun updateUserData_FailTest() {
-        val resultMock: Result<Unit> =
+        val resultMock: Result<Void> =
             Result.error(400, Throwable("Thrown an exception"))
 
         val repositoryMock = mock<UserDataRepository> {
@@ -189,7 +189,7 @@ class UserDataTest {
 
     @Test
     fun updateUserData_ConnectionErrorTest() {
-        val resultMock: Result<Unit> =
+        val resultMock: Result<Void> =
             Result.connectionError()
 
         val repositoryMock = mock<UserDataRepository> {
@@ -210,7 +210,7 @@ class UserDataTest {
 
     @Test
     fun updateUserData_TokenExpiredTest() {
-        val resultMock: Result<Unit> =
+        val resultMock: Result<Void> =
             Result.tokenExpired(1234)
 
         val repositoryMock = mock<UserDataRepository> {
