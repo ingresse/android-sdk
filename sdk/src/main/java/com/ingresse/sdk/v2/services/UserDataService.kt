@@ -38,7 +38,7 @@ interface UserDataService {
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
         @Body params: UpdateUserData.Params
-    ): Response<Void>
+    ): Response<String>
 
     /**
      * Create user

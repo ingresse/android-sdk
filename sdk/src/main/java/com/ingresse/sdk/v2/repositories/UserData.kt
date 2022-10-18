@@ -11,7 +11,6 @@ import com.ingresse.sdk.v2.models.request.UpdateUserData
 import com.ingresse.sdk.v2.models.request.UserData
 import com.ingresse.sdk.v2.models.response.CreateUserJSON
 import com.ingresse.sdk.v2.models.response.GetUserJSON
-import com.ingresse.sdk.v2.parses.emptyResponseParser
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.responseParser
 import com.ingresse.sdk.v2.services.UserDataService
@@ -57,8 +56,9 @@ class UserData(private val client: IngresseClient) {
     suspend fun updateUserData(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         request: UpdateUserData
-    ): Result<Unit> {
-        return emptyResponseParser(dispatcher) {
+    ): Result<Void> {
+        val type = object : TypeToken<Void>() {}.type
+        return responseParser(dispatcher, type) {
             service.updateUserData(
                 userId = request.userId,
                 apikey = client.key,

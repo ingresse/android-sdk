@@ -33,11 +33,15 @@ suspend fun <T> responseParser(
                 return@withContext gson.parseErrorBody<T>(errorBody)
             }
 
-            if (body.isNullOrEmpty()) {
+            if (response.code() == 204 && body.isNullOrEmpty()) {
+                return@withContext Result.success<T>(null)
+            }
+
+            if (response.code() == 200 && body.isNullOrEmpty()) {
                 return@withContext parseEmptyBodyError<T>()
             }
 
-            if (body.contains(INGRESSE_ERROR_PREFIX)) {
+            if (body?.contains(INGRESSE_ERROR_PREFIX) == true) {
                 return@withContext gson.parseIngresseError<T>(body)
             }
 
@@ -49,34 +53,7 @@ suspend fun <T> responseParser(
         }
     }
 
-@Suppress("TooGenericExceptionCaught")
-suspend fun emptyResponseParser(
-    dispatcher: CoroutineDispatcher = Dispatchers.Default,
-    call: suspend () -> Response<Void>,
-): Result<Unit> =
-    withContext(dispatcher) {
-        try {
-            val response: Response<Void> = call.invoke()
-            val errorBody = response.errorBody()
-            val gson = Gson()
-
-            if (errorBody != null) {
-                return@withContext gson.parseErrorBody(errorBody)
-            }
-
-            if (response.code() in 200..204) {
-                return@withContext Result.success(Unit)
-            }
-
-            return@withContext Result.error(0, Throwable("Invalid response"))
-        } catch (ioException: IOException) {
-            Result.connectionError()
-        } catch (throwable: Throwable) {
-            Result.error(null, throwable)
-        }
-    }
-
-private fun <T> Gson.parseSuccessObject(body: String, type: Type): Result<T> {
+private fun <T> Gson.parseSuccessObject(body: String?, type: Type): Result<T> {
     val result = fromJson<T>(body, type)
     return Result.success(result)
 }
