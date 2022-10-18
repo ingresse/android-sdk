@@ -1,5 +1,6 @@
 package com.ingresse.sdk.v2.services
 
+import com.ingresse.sdk.v2.models.request.CreateUser
 import com.ingresse.sdk.v2.models.request.UpdateUserData
 import com.ingresse.sdk.v2.models.request.UserData
 import com.nhaarman.mockitokotlin2.doReturn
@@ -26,6 +27,9 @@ class UserDataServiceTest {
     val updateUserDataMock = mock<UpdateUserData>() {
         `when`(mock.params).thenReturn(mock())
     }
+
+    @Mock
+    val createUserMock = mock<CreateUser>()
 
     @Test
     fun getUserData_SuccessTest() {
@@ -120,6 +124,51 @@ class UserDataServiceTest {
                 userId = updateUserDataMock.userId,
                 userToken = userDataRequestMock.userToken,
                 params = updateUserDataMock.params,
+                apikey = apikey
+            )
+
+            Assert.assertFalse(result.isSuccessful)
+            Assert.assertEquals(400, result.code())
+            Assert.assertEquals("Test body", result.errorBody()?.string())
+        }
+    }
+
+    @Test
+    fun createUser_SuccessTest() {
+        val serviceMock = mock<UserDataService> {
+            onBlocking {
+                createUser(
+                    params = createUserMock,
+                    apikey = apikey
+                )
+            } doReturn Response.success("Test body")
+        }
+
+        runBlockingTest {
+            val result = serviceMock.createUser(
+                params = createUserMock,
+                apikey = apikey
+            )
+
+            Assert.assertTrue(result.isSuccessful)
+            Assert.assertEquals("Test body", result.body())
+        }
+    }
+
+    @Test
+    fun createUser_FailTest() {
+        val serviceMock = mock<UserDataService> {
+            onBlocking {
+                createUser(
+                    params = createUserMock,
+                    apikey = apikey
+                )
+            } doReturn Response.error(400, "Test body".toResponseBody())
+        }
+
+        runBlockingTest {
+            val result = serviceMock.createUser(
+                params = createUserMock,
                 apikey = apikey
             )
 

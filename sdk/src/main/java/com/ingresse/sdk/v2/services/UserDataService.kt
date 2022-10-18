@@ -1,9 +1,11 @@
 package com.ingresse.sdk.v2.services
 
+import com.ingresse.sdk.v2.models.request.CreateUser
 import com.ingresse.sdk.v2.models.request.UpdateUserData
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -37,4 +39,15 @@ interface UserDataService {
         @Query("usertoken") userToken: String,
         @Body params: UpdateUserData.Params
     ): Response<Void>
+
+    /**
+     * Create user
+     *
+     * @param params - data for account creation
+     */
+    @POST("/users")
+    suspend fun createUser(
+        @Query("apikey") apikey: String,
+        @Body params: CreateUser
+    ): Response<String>
 }

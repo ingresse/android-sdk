@@ -1,5 +1,9 @@
 package com.ingresse.sdk.v2.models.request
 
+import com.ingresse.sdk.v2.models.request.base.Identity
+import com.ingresse.sdk.v2.models.request.base.UserGender
+import com.ingresse.sdk.v2.models.request.base.UserNationality
+
 data class UpdateUserData(
     val userId: Int,
     val userToken: String,
@@ -48,40 +52,6 @@ data class UpdateUserData(
             picture = picture,
             address = address
         )
-
-        enum class UserNationality(val value: String) {
-            BRAZILIAN("BR"),
-            FOREIGN("UN")
-        }
-
-        enum class UserGender(val value: String) {
-            WOMAN_CISGENDER("FC"),
-            WOMAN_TRANSGENDER("FT"),
-            MAN_CISGENDER("MC"),
-            MAN_TRANSGENDER("MT"),
-            NON_BINARY("NB"),
-            OTHER("O")
-        }
-
-        data class Identity(
-            val type: Int,
-            val id: String,
-        ) {
-
-            constructor(
-                type: IdentityType,
-                id: String
-            ) : this(
-                type = type.value,
-                id = id
-            )
-
-            enum class IdentityType(val value: Int) {
-                CPF(1),
-                INTERNATIONAL_ID(2),
-                PASSPORT(3)
-            }
-        }
 
         data class Address(
             val street: String?,
