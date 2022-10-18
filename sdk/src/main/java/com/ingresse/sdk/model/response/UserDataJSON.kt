@@ -22,7 +22,11 @@ data class UserDataJSON(
     val verified: Boolean? = false,
     val pictures: Any? = null,
     val social: List<SocialAccountJSON>? = emptyList(),
-    val planner: UserPlannerJSON? = null
+    val planner: UserPlannerJSON? = null,
+    val gender: String? = "",
+    val nationality: String? = "",
+    val documentType: String? = "",
+    val username: String? = ""
 )
 
 data class UserPicturesJSON(

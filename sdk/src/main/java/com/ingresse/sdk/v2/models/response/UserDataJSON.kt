@@ -26,7 +26,11 @@ data class UserDataJSON(
     val verified: Boolean?,
     val social: List<SocialAccountJSON>?,
     val planner: UserPlannerJSON?,
+    val birthdate: String?,
     val pictures: Any?,
+    val gender: String?,
+    val nationality: String?,
+    val documentType: String?
 ) {
 
     data class UserPicturesJSON(

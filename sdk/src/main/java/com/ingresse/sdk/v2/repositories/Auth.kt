@@ -10,7 +10,6 @@ import com.ingresse.sdk.v2.models.request.Login
 import com.ingresse.sdk.v2.models.request.RenewAuthToken
 import com.ingresse.sdk.v2.models.response.AuthTokenJSON
 import com.ingresse.sdk.v2.models.response.login.CompanyLoginJSON
-import com.ingresse.sdk.v2.models.response.login.FBLoginDataJSON
 import com.ingresse.sdk.v2.models.response.login.LoginDataJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.responseParser
@@ -63,8 +62,8 @@ class Auth(private val client: IngresseClient) {
     suspend fun loginWithFacebook(
         dispatcher: CoroutineDispatcher,
         request: FacebookLogin,
-    ): Result<IngresseResponse<FBLoginDataJSON>> {
-        val type = object : TypeToken<IngresseResponse<FBLoginDataJSON>>() {}.type
+    ): Result<IngresseResponse<LoginDataJSON>> {
+        val type = object : TypeToken<IngresseResponse<LoginDataJSON>>() {}.type
         return responseParser(dispatcher, type) {
             service.loginWithFacebook(
                 apikey = client.key,

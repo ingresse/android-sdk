@@ -38,6 +38,10 @@ class Values {
         private const val PICTURES = "pictures"
         private const val PICTURE = "picture"
         private const val PLANNER = "planner"
+        private const val GENDER = "gender"
+        private const val NATIONALITY = "nationality"
+        private const val BIRTHDATE = "birthdate"
+        private const val DOCUMENT_TYPE = "documentType"
 
         val backstageDefaultFields = listOf(
             ID,
@@ -68,7 +72,11 @@ class Values {
             VERIFIED,
             FB_USER_ID,
             PICTURE,
-            PICTURES
+            PICTURES,
+            GENDER,
+            NATIONALITY,
+            BIRTHDATE,
+            DOCUMENT_TYPE
         ).joinToString(",")
     }
 

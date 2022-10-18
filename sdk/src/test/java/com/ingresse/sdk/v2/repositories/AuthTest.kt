@@ -6,7 +6,6 @@ import com.ingresse.sdk.v2.models.request.Login
 import com.ingresse.sdk.v2.models.request.RenewAuthToken
 import com.ingresse.sdk.v2.models.response.AuthTokenJSON
 import com.ingresse.sdk.v2.models.response.login.CompanyLoginJSON
-import com.ingresse.sdk.v2.models.response.login.FBLoginDataJSON
 import com.ingresse.sdk.v2.models.response.login.LoginDataJSON
 import com.ingresse.sdk.v2.parses.model.Result
 import com.ingresse.sdk.v2.parses.model.onError
@@ -54,16 +53,20 @@ class AuthTest {
     }
 
     @Mock
-    val loginDataMock = mock<LoginDataJSON> {
+    val loginDataMock = mock<LoginDataJSON.LoginData> {
         `when`(mock.userId).thenReturn("userId")
         `when`(mock.authToken).thenReturn("authToken")
         `when`(mock.token).thenReturn("token")
     }
 
     @Mock
-    val facebookDataMock = mock<FBLoginDataJSON> {
+    val loginDataJsonMock = mock<LoginDataJSON> {
         `when`(mock.data).thenReturn(loginDataMock)
-        `when`(mock.message).thenReturn("message")
+    }
+
+    @Mock
+    val facebookDataMock = mock<LoginDataJSON> {
+        `when`(mock.data).thenReturn(loginDataMock)
         `when`(mock.status).thenReturn(true)
     }
 
@@ -154,7 +157,7 @@ class AuthTest {
     @Test
     fun login_SuccessTest() {
         val ingresseResponseMock = mock<IngresseResponse<LoginDataJSON>> {
-            `when`(mock.responseData).thenReturn(loginDataMock)
+            `when`(mock.responseData).thenReturn(loginDataJsonMock)
         }
 
         val resultMock = Result.success(ingresseResponseMock)
@@ -170,9 +173,9 @@ class AuthTest {
             result.onSuccess {
                 val jsonResult = it.responseData
 
-                Assert.assertEquals("userId", jsonResult?.userId)
-                Assert.assertEquals("token", jsonResult?.token)
-                Assert.assertEquals("authToken", jsonResult?.authToken)
+                Assert.assertEquals("userId", jsonResult?.data?.userId)
+                Assert.assertEquals("token", jsonResult?.data?.token)
+                Assert.assertEquals("authToken", jsonResult?.data?.authToken)
             }
 
             Assert.assertTrue(result.isSuccess)
@@ -230,7 +233,7 @@ class AuthTest {
 
     @Test
     fun loginWithFacebook_SuccessTest() {
-        val ingresseResponseResult = mock<IngresseResponse<FBLoginDataJSON>> {
+        val ingresseResponseResult = mock<IngresseResponse<LoginDataJSON>> {
             `when`(mock.responseData).thenReturn(facebookDataMock)
         }
 
@@ -247,7 +250,6 @@ class AuthTest {
             resultMock.onSuccess {
                 val jsonResult = it.responseData
 
-                Assert.assertEquals("message", jsonResult?.message)
                 Assert.assertTrue(jsonResult?.status == true)
                 Assert.assertEquals("userId", jsonResult?.data?.userId)
                 Assert.assertEquals("token", jsonResult?.data?.token)
@@ -263,7 +265,7 @@ class AuthTest {
 
     @Test
     fun loginWithFacebook_FailTest() {
-        val resultMock: Result<IngresseResponse<FBLoginDataJSON>> =
+        val resultMock: Result<IngresseResponse<LoginDataJSON>> =
             Result.error(400, Throwable("Thrown an exception"))
 
         val repositoryMock = mock<Auth> {
@@ -288,7 +290,7 @@ class AuthTest {
 
     @Test
     fun loginWithFacebook_ConnectionErrorTest() {
-        val resultMock: Result<IngresseResponse<FBLoginDataJSON>> =
+        val resultMock: Result<IngresseResponse<LoginDataJSON>> =
             Result.connectionError()
 
         val repositoryMock = mock<Auth> {
