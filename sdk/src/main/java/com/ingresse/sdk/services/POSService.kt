@@ -40,7 +40,7 @@ class POSService(private val client: IngresseClient) {
     init {
         val httpClient = ClientBuilder(client)
                 .addRequestHeaders()
-                .addTimeout(60)
+                .addTimeout(THREE_MINUTES_TIMEOUT)
                 .build()
 
         val adapter = Retrofit.Builder()
@@ -211,5 +211,10 @@ class POSService(private val client: IngresseClient) {
 
         val type = object : TypeToken<Response<PlannerAttributesJSON>>() {}.type
         mGetPlannerAttributesCall?.enqueue(RetrofitCallback(type, callback))
+    }
+
+    companion object {
+
+        const val THREE_MINUTES_TIMEOUT: Long = 180
     }
 }
