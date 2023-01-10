@@ -33,11 +33,15 @@ suspend fun <T> responseParser(
                 return@withContext gson.parseErrorBody<T>(errorBody)
             }
 
-            if (body.isNullOrEmpty()) {
+            if (response.code() == 204 && body.isNullOrEmpty()) {
+                return@withContext Result.success<T>(null)
+            }
+
+            if (response.code() == 200 && body.isNullOrEmpty()) {
                 return@withContext parseEmptyBodyError<T>()
             }
 
-            if (body.contains(INGRESSE_ERROR_PREFIX)) {
+            if (body?.contains(INGRESSE_ERROR_PREFIX) == true) {
                 return@withContext gson.parseIngresseError<T>(body)
             }
 
@@ -49,7 +53,7 @@ suspend fun <T> responseParser(
         }
     }
 
-private fun <T> Gson.parseSuccessObject(body: String, type: Type): Result<T> {
+private fun <T> Gson.parseSuccessObject(body: String?, type: Type): Result<T> {
     val result = fromJson<T>(body, type)
     return Result.success(result)
 }
