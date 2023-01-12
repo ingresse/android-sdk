@@ -1,6 +1,7 @@
 package com.ingresse.sdk.model.response
 
 data class GuestCheckinJSON(
+        val id: String,
         val code: String,
         val status: Int,
         val checked: Int,
