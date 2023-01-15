@@ -27,7 +27,8 @@ data class UserTicketsJSON(
     val resalableUrl: String? = "",
     val isTransferable: Boolean? = false,
     val isTransferCancelable: Boolean? = false,
-    val isReturnable: Boolean? = false
+    val isReturnable: Boolean? = false,
+    val secret: String? = null
 )
 
 data class EventSessionUserTicketsJSON(
