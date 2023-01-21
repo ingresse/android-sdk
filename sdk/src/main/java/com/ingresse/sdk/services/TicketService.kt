@@ -176,6 +176,7 @@ class TicketService(private val client: IngresseClient) {
         mAuthenticationUserDeviceCall = service.authenticationUserDevice(
                 apikey = client.key,
                 userToken = request.userToken,
+                challenge = request.challenge,
                 code = request.code,
                 device = request.device
         )

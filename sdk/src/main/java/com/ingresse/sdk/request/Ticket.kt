@@ -22,9 +22,11 @@ interface Ticket {
      * @header X-INGRESSE-OTP - code to validate user device
      * @header X-INGRESSE-DEVICE - uuid user device data
      */
+    @FormUrlEncoded
     @POST("/two-factor")
     fun authenticationUserDevice(@Query("apikey") apikey: String,
                                  @Query("usertoken") userToken: String,
+                                 @Field("challenge") challenge: String?,
                                  @Header("X-INGRESSE-OTP") code: String? = null,
                                  @Header("X-INGRESSE-DEVICE") device: String? = null): Call<String>
 
