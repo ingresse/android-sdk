@@ -5,6 +5,7 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.v2.models.base.IngresseResponse
+import com.ingresse.sdk.v2.models.request.FaceBankLogin
 import com.ingresse.sdk.v2.models.request.FacebookLogin
 import com.ingresse.sdk.v2.models.request.Login
 import com.ingresse.sdk.v2.models.request.RenewAuthToken
@@ -70,6 +71,17 @@ class Auth(private val client: IngresseClient) {
                 email = request.email,
                 facebookToken = request.facebookToken,
                 facebookUserId = request.facebookUserId
+            )
+        }
+    }
+
+    suspend fun loginWithFaceBank(dispatcher: CoroutineDispatcher, request: FaceBankLogin): Result<IngresseResponse<LoginDataJSON>> {
+        val type = object : TypeToken<IngresseResponse<LoginDataJSON>>() {}.type
+        return responseParser(dispatcher, type) {
+            service.loginWithFaceBank(
+                apikey = client.key,
+                code = request.code,
+                redirectUri = request.redirectUri.toString()
             )
         }
     }
