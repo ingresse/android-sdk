@@ -4,5 +4,5 @@ import android.net.Uri
 
 data class FaceBankLogin(
     var code: String,
-    var redirectUri: Uri,
+    var redirectUri: String,
 )

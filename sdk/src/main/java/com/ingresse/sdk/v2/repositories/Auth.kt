@@ -81,7 +81,7 @@ class Auth(private val client: IngresseClient) {
             service.loginWithFaceBank(
                 apikey = client.key,
                 code = request.code,
-                redirectUri = request.redirectUri.toString()
+                redirectUri = request.redirectUri
             )
         }
     }
