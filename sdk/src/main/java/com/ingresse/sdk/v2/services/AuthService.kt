@@ -53,6 +53,14 @@ interface AuthService {
         @Field("fbUserId") facebookUserId: String,
     ): Response<String>
 
+    @FormUrlEncoded
+    @POST("/login/facebank")
+    suspend fun loginWithFaceBank(
+        @Query("apikey") apikey: String,
+        @Field("code") code: String,
+        @Field("redirectUri") redirectUri: String,
+    ): Response<String>
+
     /**
      * Renew user auth token
      *
