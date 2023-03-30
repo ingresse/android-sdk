@@ -43,12 +43,23 @@ class UserData(private val client: IngresseClient) {
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         request: UserData,
     ): Result<IngresseResponse<GetUserJSON>> {
+        val fields = listOf(
+            "id", "name", "lastname",
+            "document", "email", "zip", "number",
+            "complement", "city", "state", "street",
+            "district", "ddi", "phone", "verified", "fbUserId",
+            "type", "pictures", "picture", "planner", "birthdate"
+        )
+
+        val customFields = request.fields ?: fields.joinToString(",")
+
         val type = object : TypeToken<IngresseResponse<GetUserJSON>>() {}.type
         return responseParser(dispatcher, type) {
             service.getUserData(
                 userId = request.userId,
                 apikey = client.key,
                 userToken = request.userToken,
+                fields = customFields
             )
         }
     }
