@@ -1,6 +1,7 @@
 package com.ingresse.sdk
 
 import com.ingresse.sdk.v2.repositories.Auth
+import com.ingresse.sdk.v2.repositories.BackstageReports
 import com.ingresse.sdk.v2.repositories.CheckinReportThreshold
 import com.ingresse.sdk.v2.repositories.Event
 import com.ingresse.sdk.v2.repositories.EventDetails
@@ -28,4 +29,5 @@ interface V2Services {
     val userData: UserData
     val userWallet: UserWallet
     val userTransaction: UserTransaction
+    val backstageReports: BackstageReports
 }

@@ -20,11 +20,11 @@ import java.lang.reflect.Type
 suspend fun <T> responseParser(
     dispatcher: CoroutineDispatcher = Dispatchers.Default,
     type: Type,
-    call: suspend () -> Response<String>,
+    call: suspend () -> Response<*>,
 ): Result<T> =
     withContext(dispatcher) {
         try {
-            val response: Response<String> = call.invoke()
+            val response: Response<*> = call.invoke()
             val body = response.body()
             val errorBody = response.errorBody()
             val gson = Gson()
@@ -33,19 +33,31 @@ suspend fun <T> responseParser(
                 return@withContext gson.parseErrorBody<T>(errorBody)
             }
 
-            if (response.code() == 204 && body.isNullOrEmpty()) {
+            if (response.code() == 204 && body == null) {
                 return@withContext Result.success<T>(null)
             }
 
-            if (response.code() == 200 && body.isNullOrEmpty()) {
+            if (response.code() == 200 && body == null) {
                 return@withContext parseEmptyBodyError<T>()
             }
 
-            if (body?.contains(INGRESSE_ERROR_PREFIX) == true) {
-                return@withContext gson.parseIngresseError<T>(body)
+            if (body.toString().contains(INGRESSE_ERROR_PREFIX)) {
+                var parsedBody: String? = body.toString()
+
+                if (body is Map<*, *>) {
+                    parsedBody = gson.toJson(body).toString()
+                }
+
+                return@withContext gson.parseIngresseError<T>(parsedBody.orEmpty())
             }
 
-            return@withContext gson.parseSuccessObject<T>(body, type)
+            var parsedBody: String? = body.toString()
+
+            if (body is Map<*, *>) {
+                parsedBody = gson.toJson(body).toString()
+            }
+
+            return@withContext gson.parseSuccessObject<T>(parsedBody, type)
         } catch (ioException: IOException) {
             Result.connectionError()
         } catch (throwable: Throwable) {

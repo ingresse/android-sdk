@@ -25,6 +25,7 @@ import com.ingresse.sdk.services.UserService
 import com.ingresse.sdk.services.WebSocketService
 import com.ingresse.sdk.services.ZipCodeService
 import com.ingresse.sdk.v2.repositories.Auth
+import com.ingresse.sdk.v2.repositories.BackstageReports
 import com.ingresse.sdk.v2.repositories.CheckinReportThreshold
 import com.ingresse.sdk.v2.repositories.Event
 import com.ingresse.sdk.v2.repositories.EventDetails
@@ -78,5 +79,6 @@ class IngresseService(var client: IngresseClient) {
         override val userData = UserData(client)
         override val userWallet = UserWallet(client)
         override val userTransaction = UserTransaction(client)
+        override val backstageReports = BackstageReports(client)
     }
 }
