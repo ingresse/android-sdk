@@ -46,7 +46,8 @@ class BackstageReports(client: IngresseClient) {
         return responseParser(dispatcher, type) {
             service.getEntranceReport(
                 eventId = request.eventId,
-                sessionId = request.sessionId
+                sessionId = request.sessionId,
+                groupId = request.groupId
             )
         }
     }

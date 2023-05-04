@@ -3,6 +3,7 @@ package com.ingresse.sdk.v2.services
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface BackstageReportsService {
 
@@ -16,5 +17,6 @@ interface BackstageReportsService {
     suspend fun getEntranceReport(
         @Path("eventId") eventId: String,
         @Path("sessionId") sessionId: String,
+        @Query("ticket_group_id") groupId: String?,
     ): Response<*>
 }
