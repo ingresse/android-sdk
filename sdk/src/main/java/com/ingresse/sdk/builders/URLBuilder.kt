@@ -3,6 +3,7 @@ package com.ingresse.sdk.builders
 enum class Host(val address: String) {
     EVENTS("event.ingresse.com"),
     API("api.ingresse.com"),
+    API_FALLBACK("api2.ingresse.com"),
     CEP("cep.ingresse.com"),
     SEARCH("event-search.ingresse.com"),
     SEARCH_HML("event.ingresse.com/search/company/"),
@@ -13,6 +14,7 @@ enum class Host(val address: String) {
 
 enum class Environment(val prefix: String) {
     PROD(""),
+    FALLBACK(""),
     HML("hml-"),
     HML_A("hmla-"),
     HML_B("hmlb-"),
@@ -36,7 +38,13 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
 
         url = hostPrefix + environment.prefix + host.address
 
-        if (host == Host.LIVE && hmls.contains(environment)) { url = hostPrefix + Host.LIVE_HML.address }
+        if (host ==  Host.API && environment == Environment.FALLBACK) {
+            url = hostPrefix + Host.API_FALLBACK.address
+        }
+
+        if (host == Host.LIVE && hmls.contains(environment)) {
+            url = hostPrefix + Host.LIVE_HML.address
+        }
 
         if (host == Host.SEARCH && hmls.contains(environment)) {
             url = hostPrefix + environment.prefix + Host.SEARCH_HML.address
