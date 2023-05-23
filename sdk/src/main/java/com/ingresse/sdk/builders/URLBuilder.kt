@@ -8,7 +8,8 @@ enum class Host(val address: String) {
     SEARCH_HML("event.ingresse.com/search/company/"),
     CHECKIN("checkin.ingresse.com"),
     LIVE("live.ingresse.com/"),
-    LIVE_HML("live-homolog.ingresse.com/")
+    LIVE_HML("live-homolog.ingresse.com/"),
+    BACKSTAGE_REPORTS("backstage-reports.ingresse.com"),
 }
 
 enum class Environment(val prefix: String) {
