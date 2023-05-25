@@ -20,7 +20,8 @@ enum class Environment(val prefix: String) {
     HML_C("hmlc-"),
     TEST("test-"),
     STG("stg-"),
-    INTEGRATION("integration2-")
+    INTEGRATION("integration2-"),
+    GETNET("getnet-")
 }
 
 class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
@@ -37,7 +38,13 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
 
         url = hostPrefix + environment.prefix + host.address
 
-        if (host == Host.LIVE && hmls.contains(environment)) { url = hostPrefix + Host.LIVE_HML.address }
+        if (host != Host.API && environment == Environment.GETNET) {
+            url = hostPrefix + host.address
+        }
+
+        if (host == Host.LIVE && hmls.contains(environment)) {
+            url = hostPrefix + Host.LIVE_HML.address
+        }
 
         if (host == Host.SEARCH && hmls.contains(environment)) {
             url = hostPrefix + environment.prefix + Host.SEARCH_HML.address
