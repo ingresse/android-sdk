@@ -5,6 +5,7 @@ import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
 import com.ingresse.sdk.base.Response
 import com.ingresse.sdk.base.RetrofitCallback
+import com.ingresse.sdk.builders.ClientBuilder.Companion.TIMEOUT_DEFAULT
 import com.ingresse.sdk.builders.Host
 import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
@@ -15,6 +16,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 import com.ingresse.sdk.model.request.Sale as Requests
 import com.ingresse.sdk.model.response.Sale as Responses
 import com.ingresse.sdk.request.Sale as Service
@@ -31,6 +33,10 @@ class TicketListService(private val client: IngresseClient) {
                 .baseUrl(URLBuilder(host, client.environment).build())
 
         val clientBuilder = OkHttpClient.Builder()
+
+        clientBuilder.callTimeout(TIMEOUT_DEFAULT, TimeUnit.SECONDS)
+        clientBuilder.readTimeout(TIMEOUT_DEFAULT, TimeUnit.SECONDS)
+        clientBuilder.connectTimeout(TIMEOUT_DEFAULT, TimeUnit.SECONDS)
 
         if (client.debug) {
             val logging = HttpLoggingInterceptor()

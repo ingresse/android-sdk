@@ -18,11 +18,14 @@ import com.ingresse.sdk.model.response.CreateTransferJSON
 import com.ingresse.sdk.model.response.TicketGroupJSON
 import com.ingresse.sdk.request.AuthenticationUserDevice
 import com.ingresse.sdk.request.Ticket
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class TicketService(private val client: IngresseClient) {
     private val host = Host.API
@@ -43,9 +46,23 @@ class TicketService(private val client: IngresseClient) {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient)
                 .baseUrl(URLBuilder(host, client.environment).build())
-                .build()
 
-        service = adapter.create(Ticket::class.java)
+
+        val clientBuilder = OkHttpClient.Builder()
+
+        clientBuilder.callTimeout(ClientBuilder.TIMEOUT_DEFAULT, TimeUnit.SECONDS)
+        clientBuilder.readTimeout(ClientBuilder.TIMEOUT_DEFAULT, TimeUnit.SECONDS)
+        clientBuilder.connectTimeout(ClientBuilder.TIMEOUT_DEFAULT, TimeUnit.SECONDS)
+
+        if (client.debug) {
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BODY
+
+            clientBuilder.addInterceptor(logging)
+        }
+
+        adapter.client(clientBuilder.build())
+        service = adapter.build().create(Ticket::class.java)
     }
 
     /**
