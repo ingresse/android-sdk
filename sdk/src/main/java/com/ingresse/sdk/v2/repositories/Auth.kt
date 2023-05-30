@@ -1,5 +1,6 @@
 package com.ingresse.sdk.v2.repositories
 
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.builders.Host
@@ -51,11 +52,14 @@ class Auth(private val client: IngresseClient) {
         request: Login,
     ): Result<IngresseResponse<LoginDataJSON>> {
         val type = object : TypeToken<IngresseResponse<LoginDataJSON>>() {}.type
+
+
         return responseParser(dispatcher, type) {
             service.login(
                 apikey = client.key,
                 email = request.email,
-                password = request.password
+                password = request.password,
+                device = Gson().toJson(request.device)
             )
         }
     }
