@@ -52,8 +52,6 @@ class Auth(private val client: IngresseClient) {
         request: Login,
     ): Result<IngresseResponse<LoginDataJSON>> {
         val type = object : TypeToken<IngresseResponse<LoginDataJSON>>() {}.type
-
-
         return responseParser(dispatcher, type) {
             service.login(
                 apikey = client.key,
@@ -74,7 +72,8 @@ class Auth(private val client: IngresseClient) {
                 apikey = client.key,
                 email = request.email,
                 facebookToken = request.facebookToken,
-                facebookUserId = request.facebookUserId
+                facebookUserId = request.facebookUserId,
+                device = Gson().toJson(request.device)
             )
         }
     }
@@ -85,7 +84,8 @@ class Auth(private val client: IngresseClient) {
             service.loginWithFaceBank(
                 apikey = client.key,
                 code = request.code,
-                redirectUri = request.redirectUri
+                redirectUri = request.redirectUri,
+                device = Gson().toJson(request.device)
             )
         }
     }

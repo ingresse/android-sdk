@@ -22,6 +22,7 @@ interface AuthService {
         @Query("apikey") apikey: String,
         @Field("email") email: String,
         @Field("password") password: String,
+        @Header("X-INGRESSE-DEVICE") device: String? = null,
     ): Response<String>
 
     /**
@@ -36,7 +37,7 @@ interface AuthService {
         @Query("apikey") apikey: String,
         @Field("email") email: String,
         @Field("password") password: String,
-        @Header("X-INGRESSE-DEVICE") device: String? = null
+        @Header("X-INGRESSE-DEVICE") device: String? = null,
     ): Response<String>
 
     /**
@@ -53,6 +54,7 @@ interface AuthService {
         @Field("email") email: String,
         @Field("fbToken") facebookToken: String,
         @Field("fbUserId") facebookUserId: String,
+        @Header("X-INGRESSE-DEVICE") device: String? = null,
     ): Response<String>
 
     @FormUrlEncoded
@@ -61,6 +63,7 @@ interface AuthService {
         @Query("apikey") apikey: String,
         @Field("code") code: String,
         @Field("redirectUri") redirectUri: String,
+        @Header("X-INGRESSE-DEVICE") device: String? = null,
     ): Response<String>
 
     /**
