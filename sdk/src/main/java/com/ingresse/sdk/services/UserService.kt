@@ -162,23 +162,22 @@ class UserService(private val client: IngresseClient) {
             imports = [
                 "com.ingresse.sdk.v2.repositories",
                 "com.ingresse.sdk.v2.models.request.UserData",
-            ]
-        )
+            ],
+        ),
     )
     fun getUserData(
         request: UserData,
         onSuccess: (UserDataJSON) -> Unit,
         onError: ErrorBlock,
         onConnectionError: (Throwable) -> Unit,
-        onTokenExpired: Block
+        onTokenExpired: Block,
     ) {
-
         val fields = listOf(
             "id", "name", "lastname",
             "document", "email", "zip", "number",
             "complement", "city", "state", "street",
             "district", "ddi", "phone", "verified", "fbUserId",
-            "type", "pictures", "picture", "planner", "birthdate"
+            "type", "pictures", "picture", "planner", "birthdate",
         )
 
         val customFields = request.fields?.let { it } ?: fields.joinToString(",")
@@ -186,7 +185,7 @@ class UserService(private val client: IngresseClient) {
             userId = request.userId,
             apikey = client.key,
             userToken = request.userToken,
-            fields = customFields
+            fields = customFields,
         )
 
         val callback = object : IngresseCallback<Response<UserDataJSON>?> {
@@ -227,21 +226,21 @@ class UserService(private val client: IngresseClient) {
             imports = [
                 "com.ingresse.sdk.v2.repositories",
                 "com.ingresse.sdk.v2.models.request.UpdateUserData",
-            ]
-        )
+            ],
+        ),
     )
     fun updateBasicInfos(
         request: UserBasicInfos,
         onSuccess: (UserUpdatedDataJSON) -> Unit,
         onError: ErrorBlock,
         onNetworkError: Block,
-        onTokenExpired: Block
+        onTokenExpired: Block,
     ) {
         mUpdateBasicInfosCall = service.updateBasicInfos(
             userId = request.userId,
             apikey = client.key,
             userToken = request.userToken,
-            params = request
+            params = request,
         )
 
         val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
@@ -287,15 +286,14 @@ class UserService(private val client: IngresseClient) {
         onSuccess: (UserUpdatedDataJSON) -> Unit,
         onError: ErrorBlock,
         onNetworkError: Block,
-        onTokenExpired: Block
+        onTokenExpired: Block,
     ) {
-
         request.picture = "data:image/png;base64,${request.picture}"
         mUpdateUserPictureCall = service.updateUserPicture(
             userId = request.userId,
             apikey = client.key,
             userToken = request.userToken,
-            params = request
+            params = request,
         )
 
         val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
@@ -342,14 +340,13 @@ class UserService(private val client: IngresseClient) {
         onSuccess: (UserUpdatedDataJSON) -> Unit,
         onError: ErrorBlock,
         onConnectionError: (Throwable) -> Unit,
-        onTokenExpired: Block
+        onTokenExpired: Block,
     ) {
-
         mUpdateUserAddressCall = service.updateUserAddress(
             userId = request.userId,
             apikey = client.key,
             userToken = request.userToken,
-            params = request
+            params = request,
         )
 
         val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
@@ -404,14 +401,14 @@ class UserService(private val client: IngresseClient) {
         onSuccess: (UserUpdatedDataJSON) -> Unit,
         onError: ErrorBlock,
         onConnectionError: (error: Throwable) -> Unit,
-        onTokenExpired: Block
+        onTokenExpired: Block,
     ) {
         val plannerRequest = UserPlanner(request)
         mUpdateUserPlannerInfosCall = service.updateUserPlannerInfos(
             userId = request.userId,
             userToken = request.userToken,
             apikey = client.key,
-            params = plannerRequest
+            params = plannerRequest,
         )
 
         val callback = object : IngresseCallback<Response<UserUpdatedJSON>?> {
@@ -464,8 +461,8 @@ class UserService(private val client: IngresseClient) {
         message = "This call will no longer be maintained. Use V2 replacements.",
         replaceWith = ReplaceWith(
             expression = "UserWallet(client).getUserTickets(request = UserTickets())",
-            imports = ["com.ingresse.sdk.v2.repositories"]
-        )
+            imports = ["com.ingresse.sdk.v2.repositories"],
+        ),
     )
     fun getUserTicketsData(
         concurrent: Boolean = false,
@@ -474,16 +471,15 @@ class UserService(private val client: IngresseClient) {
         onError: (APIError) -> Unit,
         onConnectionError: (error: Throwable) -> Unit,
         onTokenExpired: Block,
-        onCanceledCall: (() -> Unit)? = null
+        onCanceledCall: (() -> Unit)? = null,
     ) {
-
         val call = service.getUserTickets(
             userId = request.userId,
             apikey = client.key,
             page = request.page,
             pageSize = request.pageSize,
             eventId = request.eventId,
-            token = request.userToken
+            token = request.userToken,
         )
 
         if (!concurrent) mUserTicketsCall = call else mConcurrentCalls.add(call)
@@ -535,22 +531,21 @@ class UserService(private val client: IngresseClient) {
         message = "This call will no longer be maintained. Use V2 replacements.",
         replaceWith = ReplaceWith(
             expression = "EventDetails(client).getEventAttributes(request = EventAttributes())",
-            imports = ["com.ingresse.sdk.v2.repositories"]
-        )
+            imports = ["com.ingresse.sdk.v2.repositories"],
+        ),
     )
     fun getEventAttributes(
         request: EventAttributes,
         onSuccess: (EventAttributesJSON) -> Unit,
         onError: ErrorBlock,
         onConnectionError: (error: Throwable) -> Unit,
-        onTokenExpired: Block
+        onTokenExpired: Block,
     ) {
-
         val call = service.getEventAttributes(
             eventId = request.eventId,
             apikey = client.key,
             userToken = request.userToken,
-            filters = request.filters?.joinToString(",")
+            filters = request.filters?.joinToString(","),
         )
 
         val callback = object : IngresseCallback<Response<EventAttributesJSON>?> {
@@ -591,9 +586,8 @@ class UserService(private val client: IngresseClient) {
         onError: (APIError) -> Unit,
         onConnectionError: (error: Throwable) -> Unit,
         onTokenExpired: Block,
-        onCanceledCall: (() -> Unit)? = null
+        onCanceledCall: (() -> Unit)? = null,
     ) {
-
         val call = service.getWalletEvents(
             apikey = client.key,
             userId = request.userId,
@@ -601,7 +595,7 @@ class UserService(private val client: IngresseClient) {
             page = request.page,
             pageSize = request.pageSize,
             dateFrom = request.from,
-            dateTo = request.to
+            dateTo = request.to,
         )
 
         if (!concurrent) mGetWalletEventsCall = call else mGetWalletEventsConcurrentCalls.add(call)
@@ -610,20 +604,32 @@ class UserService(private val client: IngresseClient) {
             override fun onSuccess(data: Response<Array<WalletEventJSON>>?) {
                 val response = data?.responseData ?: return onError(APIError.default)
 
-                if (!concurrent) mGetWalletEventsCall =
-                    null else mGetWalletEventsConcurrentCalls.remove(call)
+                if (!concurrent) {
+                    mGetWalletEventsCall =
+                        null
+                } else {
+                    mGetWalletEventsConcurrentCalls.remove(call)
+                }
                 onSuccess(response)
             }
 
             override fun onError(error: APIError) {
-                if (!concurrent) mGetWalletEventsCall =
-                    null else mGetWalletEventsConcurrentCalls.remove(call)
+                if (!concurrent) {
+                    mGetWalletEventsCall =
+                        null
+                } else {
+                    mGetWalletEventsConcurrentCalls.remove(call)
+                }
                 onError(error)
             }
 
             override fun onRetrofitError(error: Throwable) {
-                if (!concurrent) mGetWalletEventsCall =
-                    null else mGetWalletEventsConcurrentCalls.remove(call)
+                if (!concurrent) {
+                    mGetWalletEventsCall =
+                        null
+                } else {
+                    mGetWalletEventsConcurrentCalls.remove(call)
+                }
                 if (error is IOException) {
                     return when (error.localizedMessage) {
                         CANCELED_CALL, SOCKET_CLOSED -> if (onCanceledCall != null) onCanceledCall() else return
@@ -658,8 +664,8 @@ class UserService(private val client: IngresseClient) {
             imports = [
                 "com.ingresse.sdk.v2.repositories",
                 "com.ingresse.sdk.v2.models.request.PasswordStrength",
-            ]
-        )
+            ],
+        ),
     )
     fun validatePasswordStrength(
         request: String,
@@ -667,12 +673,11 @@ class UserService(private val client: IngresseClient) {
         onError: ErrorBlock,
         onConnectionError: (Throwable) -> Unit,
         onTokenExpired: Block,
-        onCanceledCall: (() -> Unit)? = null
+        onCanceledCall: (() -> Unit)? = null,
     ) {
-
         mValidatePasswordStrengthCall = service.validatePasswordStrength(
             password = request,
-            apikey = client.key
+            apikey = client.key,
         )
 
         val callback = object : IngresseCallback<Response<StrengthPasswordJSON>?> {
@@ -717,14 +722,13 @@ class UserService(private val client: IngresseClient) {
         onSuccess: Block,
         onError: ErrorBlock,
         onConnectionError: (Throwable) -> Unit,
-        onTokenExpired: Block
+        onTokenExpired: Block,
     ) {
-
         mChangePasswordCall = service.changePassword(
             userId = request.userId,
             usertoken = request.userToken,
             apikey = client.key,
-            params = request.password
+            params = request.password,
         )
 
         val callback = object : IngresseCallback<Ignored> {
@@ -760,7 +764,7 @@ class UserService(private val client: IngresseClient) {
         onSuccess: (CreateAccountJSON) -> Unit,
         onError: ErrorBlock,
         onConnectionError: (Throwable) -> Unit,
-        onTokenExpired: Block
+        onTokenExpired: Block,
     ) {
         mCreateAccountCall = service.createAccount(
             name = request.name,
@@ -772,7 +776,8 @@ class UserService(private val client: IngresseClient) {
             email = request.email,
             password = request.password,
             newsletter = request.newsletter,
-            apikey = client.key
+            terms = request.terms,
+            apikey = client.key,
         )
 
         val callback = object : IngresseCallback<Response<DataJSON<CreateAccountJSON>>?> {

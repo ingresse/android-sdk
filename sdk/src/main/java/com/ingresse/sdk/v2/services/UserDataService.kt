@@ -23,7 +23,7 @@ interface UserDataService {
         @Path("userId") userId: Int,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Query("fields") fields: String
+        @Query("fields") fields: String,
     ): Response<String>
 
     /**
@@ -38,7 +38,7 @@ interface UserDataService {
         @Path("userId") userId: Int,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Body params: UpdateUserData.Params
+        @Body params: UpdateUserData.Params,
     ): Response<String>
 
     /**
@@ -49,6 +49,6 @@ interface UserDataService {
     @POST("/users")
     suspend fun createUser(
         @Query("apikey") apikey: String,
-        @Body params: CreateUser
+        @Body params: CreateUser,
     ): Response<String>
 }
