@@ -605,8 +605,7 @@ class UserService(private val client: IngresseClient) {
                 val response = data?.responseData ?: return onError(APIError.default)
 
                 if (!concurrent) {
-                    mGetWalletEventsCall =
-                        null
+                    mGetWalletEventsCall = null
                 } else {
                     mGetWalletEventsConcurrentCalls.remove(call)
                 }
@@ -615,8 +614,7 @@ class UserService(private val client: IngresseClient) {
 
             override fun onError(error: APIError) {
                 if (!concurrent) {
-                    mGetWalletEventsCall =
-                        null
+                    mGetWalletEventsCall = null
                 } else {
                     mGetWalletEventsConcurrentCalls.remove(call)
                 }
@@ -625,8 +623,7 @@ class UserService(private val client: IngresseClient) {
 
             override fun onRetrofitError(error: Throwable) {
                 if (!concurrent) {
-                    mGetWalletEventsCall =
-                        null
+                    mGetWalletEventsCall = null
                 } else {
                     mGetWalletEventsConcurrentCalls.remove(call)
                 }
