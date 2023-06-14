@@ -16,12 +16,10 @@ data class LoginDataJSON(
 
         data class Device(
             val id: String?,
-            val uuid: String?,
             val name: String?,
-            @SerializedName("created_at")
-            val createdAt: String?,
-            val active: Boolean?,
-            val validated: Boolean?
+            @SerializedName("device_type")
+            val deviceType: String?,
+            val verified: Boolean?
         )
     }
 }
