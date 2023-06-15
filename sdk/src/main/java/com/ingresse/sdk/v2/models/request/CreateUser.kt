@@ -15,10 +15,11 @@ data class CreateUser(
     val nationality: String,
     val facebookUserId: String? = null,
     val news: Boolean? = null,
+    val terms: Boolean? = null,
     val token: String? = null,
     val birthdate: String,
     val gender: String,
-    val additionalFields: String? = null
+    val additionalFields: String? = null,
 ) {
 
     constructor(
@@ -32,10 +33,11 @@ data class CreateUser(
         nationality: UserNationality,
         facebookUserId: String? = null,
         news: Boolean? = null,
+        terms: Boolean? = null,
         token: String? = null,
         birthdate: String,
         gender: UserGender,
-        additionalFields: String? = null
+        additionalFields: String? = null,
     ) : this(
         name = name,
         lastName = lastName,
@@ -47,9 +49,10 @@ data class CreateUser(
         nationality = nationality.value,
         facebookUserId = facebookUserId,
         news = news,
+        terms = terms,
         token = token,
         birthdate = birthdate,
         gender = gender.value,
-        additionalFields = additionalFields
+        additionalFields = additionalFields,
     )
 }

@@ -9,5 +9,6 @@ data class CreateAccount(
     var birthdate: String? = null,
     var email: String,
     var password: String,
-    var newsletter: Boolean
+    var newsletter: Boolean,
+    var terms: Boolean
 )
