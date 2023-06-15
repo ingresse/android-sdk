@@ -17,7 +17,7 @@ interface User {
         @Path("userId") userId: Int,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Query("fields") fields: String,
+        @Query("fields") fields: String
     ): Call<String>
 
     /**
@@ -32,7 +32,7 @@ interface User {
         @Path("userId") userId: String,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Body params: UserBasicInfos,
+        @Body params: UserBasicInfos
     ): Call<String>
 
     /**
@@ -45,7 +45,7 @@ interface User {
         @Path("userId") userId: String,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Body params: UserPicture,
+        @Body params: UserPicture
     ): Call<String>
 
     /**
@@ -60,7 +60,7 @@ interface User {
         @Path("userId") userId: String,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Body params: UserAddressInfos,
+        @Body params: UserAddressInfos
     ): Call<String>
 
     /**
@@ -77,7 +77,7 @@ interface User {
         @Query("method") method: String,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Body params: UserAddressInfos,
+        @Body params: UserAddressInfos
     ): Call<String>
 
     /**
@@ -92,7 +92,7 @@ interface User {
         @Path("userId") userId: String,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String,
-        @Body params: UserPlanner,
+        @Body params: UserPlanner
     ): Call<String>
 
     /**
@@ -109,7 +109,7 @@ interface User {
         @Query("operator") userId: String,
         @Query("from") from: String,
         @Query("to") to: String,
-        @Query("usertoken") userToken: String,
+        @Query("usertoken") userToken: String
     ): Call<String>
 
     /**
@@ -127,7 +127,7 @@ interface User {
         @Query("page") page: Int? = null,
         @Query("pageSize") pageSize: Int? = null,
         @Query("eventId") eventId: Int? = null,
-        @Query("usertoken") token: String,
+        @Query("usertoken") token: String
     ): Call<String>
 
     /**
@@ -142,7 +142,7 @@ interface User {
         @Path("eventId") eventId: String,
         @Query("apikey") apikey: String,
         @Query("usertoken") userToken: String? = null,
-        @Query("filters") filters: String? = null,
+        @Query("filters") filters: String? = null
     ): Call<String>
 
     /**
@@ -161,7 +161,7 @@ interface User {
         @Query("page") page: Int? = null,
         @Query("pageSize") pageSize: Int? = null,
         @Query("from") dateFrom: String? = null,
-        @Query("to") dateTo: String? = null,
+        @Query("to") dateTo: String? = null
     ): Call<String>
 
     /**
@@ -172,7 +172,7 @@ interface User {
     @POST("/password")
     fun validatePasswordStrength(
         @Query("password") password: String,
-        @Query("apikey") apikey: String,
+        @Query("apikey") apikey: String
     ): Call<String>
 
     /**
@@ -187,7 +187,7 @@ interface User {
         @Path("userId") userId: String,
         @Query("usertoken") usertoken: String,
         @Query("apikey") apikey: String,
-        @Body params: PasswordInfo,
+        @Body params: PasswordInfo
     ): Call<String>
 
     /**
@@ -214,8 +214,6 @@ interface User {
         @Field("phone") phone: String,
         @Field("birthdate") birthdate: String?,
         @Field("news") newsletter: Boolean,
-        @Field("terms") terms: Boolean,
-        @Query("apikey") apikey: String,
-
+        @Query("apikey") apikey: String
     ): Call<String>
 }
