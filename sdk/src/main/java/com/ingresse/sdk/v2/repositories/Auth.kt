@@ -1,5 +1,6 @@
 package com.ingresse.sdk.v2.repositories
 
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.builders.Host
@@ -55,7 +56,8 @@ class Auth(private val client: IngresseClient) {
             service.login(
                 apikey = client.key,
                 email = request.email,
-                password = request.password
+                password = request.password,
+                device = Gson().toJson(request.device)
             )
         }
     }
@@ -70,7 +72,8 @@ class Auth(private val client: IngresseClient) {
                 apikey = client.key,
                 email = request.email,
                 facebookToken = request.facebookToken,
-                facebookUserId = request.facebookUserId
+                facebookUserId = request.facebookUserId,
+                device = Gson().toJson(request.device)
             )
         }
     }
@@ -81,7 +84,8 @@ class Auth(private val client: IngresseClient) {
             service.loginWithFaceBank(
                 apikey = client.key,
                 code = request.code,
-                redirectUri = request.redirectUri
+                redirectUri = request.redirectUri,
+                device = Gson().toJson(request.device)
             )
         }
     }

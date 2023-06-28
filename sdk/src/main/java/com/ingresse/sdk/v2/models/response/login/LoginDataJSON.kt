@@ -17,8 +17,8 @@ data class LoginDataJSON(
         data class Device(
             val id: String?,
             val name: String?,
-            @SerializedName("creationdate")
-            val creationDate: String?,
+            @SerializedName("device_type")
+            val deviceType: String?,
             val verified: Boolean?
         )
     }
