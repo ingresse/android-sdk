@@ -4,4 +4,5 @@ data class FacebookLogin(
     var email: String,
     var facebookToken: String,
     var facebookUserId: String,
+    val device: LoginDevice,
 )
