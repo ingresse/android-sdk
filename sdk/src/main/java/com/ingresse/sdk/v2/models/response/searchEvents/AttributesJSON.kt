@@ -2,7 +2,7 @@ package com.ingresse.sdk.v2.models.response.searchEvents
 
 data class AttributesJSON(
     private val liveEnabled: BooleanValueJSON?,
-    private val applyTicketValidationCpf : BooleanValueJSON?
+    private val validationCpfTicketbooth : BooleanValueJSON?
 ) {
     data class BooleanValueJSON(
         val name: String?,
@@ -10,5 +10,5 @@ data class AttributesJSON(
     )
 
     fun liveEnabled() = liveEnabled?.value
-    fun applyTicketValidationCpf() = applyTicketValidationCpf?.value
+    fun validationCpfTicketbooth() = validationCpfTicketbooth?.value
 }
