@@ -7,7 +7,7 @@ data class CreateTransaction(
 data class TransactionParams(
     var userId: String,
     var eventId: String,
-    var ticketOwnerDocument: String? = null,
+    var ticketOwnerDocument: String?,
     var passkey: String? = null,
     var tickets: List<ShopTicket>)
 

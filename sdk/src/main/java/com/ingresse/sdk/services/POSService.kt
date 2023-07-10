@@ -15,21 +15,19 @@ import com.ingresse.sdk.helper.ErrorBlock
 import com.ingresse.sdk.model.request.PlannerAttributes
 import com.ingresse.sdk.model.request.PrintTickets
 import com.ingresse.sdk.model.request.SellTickets
-import com.ingresse.sdk.model.request.TicketboothValidate
-import com.ingresse.sdk.model.request.TicketsValidate
+import com.ingresse.sdk.model.request.ValidateTicketsRequest
 import com.ingresse.sdk.model.response.PlannerAttributesJSON
 import com.ingresse.sdk.model.response.PrintTicketsJSON
 import com.ingresse.sdk.model.response.SellTicketsJSON
-import com.ingresse.sdk.model.response.TicketboothValidateJSON
+import com.ingresse.sdk.model.response.ValidateTicketsJSON
 import com.ingresse.sdk.request.POS
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.net.SocketTimeoutException
 
 private typealias ResponseSellTickets = Response<SellTicketsJSON>
-private typealias ResponseTicketboothValidate = Response<TicketboothValidateJSON>
+private typealias ResponseValidateTickets = Response<ValidateTicketsJSON>
 private typealias ResponsePrintTickets = Response<PrintTicketsJSON>
 private typealias ResponsePrintLog = Response<StatusJSON>
 
@@ -38,7 +36,7 @@ class POSService(private val client: IngresseClient) {
     private var service: POS
 
     private var mSellTicketsCall: Call<String>? = null
-    private var mTicketboothValidateCall: Call<String>? = null
+    private var mValidateTicketsCall: Call<String>? = null
     private var mPrintTicketsCall: Call<String>? = null
     private var mGetPlannerAttributesCall: Call<String>? = null
 
@@ -218,8 +216,6 @@ class POSService(private val client: IngresseClient) {
         mGetPlannerAttributesCall?.enqueue(RetrofitCallback(type, callback))
     }
 
-
-
     /**
      * Validate Tickets
      *
@@ -227,19 +223,19 @@ class POSService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      * @param onError - error callback
      */
-    fun validate(request: TicketboothValidate,
+    fun validate(request: ValidateTicketsRequest,
                  userToken : String,
-                 onSuccess: (TicketboothValidateJSON) -> Unit,
+                 onSuccess: (ValidateTicketsJSON) -> Unit,
                  onError: ErrorBlock,
                  onTokenExpired: Block) {
 
-        mTicketboothValidateCall = service.validate(
+        mValidateTicketsCall = service.validate(
             apikey = client.key,
             userToken = userToken,
             params = request)
 
-        val callback = object : IngresseCallback<ResponseTicketboothValidate?> {
-            override fun onSuccess(data: ResponseTicketboothValidate?) {
+        val callback = object : IngresseCallback<ResponseValidateTickets?> {
+            override fun onSuccess(data: ResponseValidateTickets?) {
                 val response = data?.responseData ?: return onError(APIError.default)
                 onSuccess(response)
             }
@@ -255,8 +251,8 @@ class POSService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object : TypeToken<ResponseTicketboothValidate>() {}.type
-        mTicketboothValidateCall?.enqueue(RetrofitCallback(type, callback))
+        val type = object : TypeToken<ResponseValidateTickets>() {}.type
+        mValidateTicketsCall?.enqueue(RetrofitCallback(type, callback))
     }
 
 

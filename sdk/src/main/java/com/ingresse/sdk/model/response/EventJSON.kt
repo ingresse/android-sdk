@@ -15,5 +15,4 @@ data class EventJSON(
         val status: StatusJSON? = StatusJSON(),
         val title: String? = "",
         val updatedAt: String? = "",
-        val usersPermission: List<Int>? = emptyList(),
-        val applyTicketValidationCpf : Boolean?)
+        val usersPermission: List<Int>? = emptyList())

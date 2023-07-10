@@ -1,7 +1,7 @@
 package com.ingresse.sdk.request
 
 import com.ingresse.sdk.model.request.SellTickets
-import com.ingresse.sdk.model.request.TicketboothValidate
+import com.ingresse.sdk.model.request.ValidateTicketsRequest
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -27,7 +27,7 @@ interface POS {
     @POST("/ticketbooth/validate")
     fun validate(@Query("apikey") apikey: String,
                  @Query("usertoken") userToken: String,
-                 @Body params: TicketboothValidate): Call<String>
+                 @Body params: ValidateTicketsRequest): Call<String>
 
     /**
      * Print tickets
