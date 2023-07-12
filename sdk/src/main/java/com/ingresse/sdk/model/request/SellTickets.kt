@@ -10,6 +10,7 @@ data class SellTickets(
     var userEmail: String? = null,
     var payment: String = "",
     var installments: String? = null,
+    var ticketOwnerDocument: String?,
     var tickets: List<TicketsToSell> = emptyList(),
     var pos: POSTerminal? = null)
 

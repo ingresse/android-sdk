@@ -23,7 +23,8 @@ class Sale {
             var status: String,
             var restrictions: RestrictionsJSON,
             var hidden: Boolean,
-            var dates: List<SessionJSON> = emptyList())
+            var dates: List<SessionJSON> = emptyList(),
+            var validationCpfTicket : Boolean)
 
     data class RestrictionsJSON(var minimum: Int, var maximum: Int)
 }
