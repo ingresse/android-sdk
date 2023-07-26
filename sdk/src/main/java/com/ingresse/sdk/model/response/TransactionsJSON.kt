@@ -2,7 +2,7 @@ package com.ingresse.sdk.model.response
 
 data class TransactionJSON(
         val amount: Long = 0,
-        val amount_discount: Long = 0,
+        val amountDiscount: Long = 0,
         val companyId: Int = 0,
         val createdAt: String? = "",
         val application: TApplicationJSON?,

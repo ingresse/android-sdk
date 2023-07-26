@@ -1,5 +1,7 @@
 package com.ingresse.sdk.v2.models.response.userTransactions
 
+import com.google.gson.annotations.SerializedName
+
 data class UserTransactionJSON(
     val event: EventJSON?,
     val sale: SaleJSON?,
@@ -31,7 +33,8 @@ data class UserTransactionJSON(
         val createdAt: String,
         val channel: String?,
         val canRefund: Boolean,
-        val amount_discount: Double
+        @SerializedName("amount_discount")
+        val amountDiscount: Double
     ) {
 
         data class PaymentJSON(
