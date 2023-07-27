@@ -33,7 +33,6 @@ data class UserTransactionJSON(
         val createdAt: String,
         val channel: String?,
         val canRefund: Boolean,
-        @SerializedName("amount_discount")
         val amountDiscount: Double
     ) {
 
