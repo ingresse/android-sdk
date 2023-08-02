@@ -41,16 +41,17 @@ data class TransactionRefundedJSON(
     val event: EventJSON?,
     val responseOperator: CustomerJSON?,
     val refund: RefundJSON?,
-    val session: SessionJSON?
+    val session: SessionJSON?,
+    val hasCoupon: Boolean?,
 ) {
 
     data class CreditCardJSON(
         val firstDigits: String?,
-        val lastDigits: String?
+        val lastDigits: String?,
     )
 
     data class BasketJSON(
-        val tickets: List<TicketJSON>
+        val tickets: List<TicketJSON>,
     ) {
 
         data class TicketJSON(
@@ -71,7 +72,7 @@ data class TransactionRefundedJSON(
 
             data class SessionJSON(
                 val id: Int,
-                val dateTime: DateTimeDetailsJSON?
+                val dateTime: DateTimeDetailsJSON?,
             ) {
 
                 data class DateTimeDetailsJSON(
@@ -96,7 +97,7 @@ data class TransactionRefundedJSON(
     ) {
 
         data class VenueJSON(
-            val name: String?
+            val name: String?,
         )
     }
 
@@ -115,12 +116,12 @@ data class TransactionRefundedJSON(
     data class RefundJSON(
         val date: String?,
         val operator: String?,
-        val reason: String?
+        val reason: String?,
     )
 
     data class SessionJSON(
         val id: Int,
-        val dateTime: DateTimeDetailsJSON?
+        val dateTime: DateTimeDetailsJSON?,
     ) {
 
         data class DateTimeDetailsJSON(
