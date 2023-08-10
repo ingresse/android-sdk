@@ -43,8 +43,15 @@ data class TransactionRefundedJSON(
     val refund: RefundJSON?,
     val session: SessionJSON?,
     val hasCoupon: Boolean?,
+    val amountDiscount: Double?,
+    val coupon: CouponJSON?,
 ) {
-
+    data class CouponJSON(
+        val id: String?,
+        val name: String?,
+        @SerializedName("value_discount")
+        val valueDiscount: String,
+    )
     data class CreditCardJSON(
         val firstDigits: String?,
         val lastDigits: String?,
@@ -68,8 +75,16 @@ data class TransactionRefundedJSON(
             val transferred: Boolean,
             val itemType: String?,
             val sessions: List<SessionJSON>?,
+            val hasCoupon: Boolean?,
+            val amountDiscount: Double?,
+            val coupon: CouponJSON,
         ) {
-
+            data class CouponJSON(
+                val id: String?,
+                val name: String?,
+                @SerializedName("value_discount")
+                val valueDiscount: String,
+            )
             data class SessionJSON(
                 val id: Int,
                 val dateTime: DateTimeDetailsJSON?,
