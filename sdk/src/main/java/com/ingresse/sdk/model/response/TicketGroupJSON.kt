@@ -17,7 +17,7 @@ data class TicketJSON(
     val beginSales: String? = "",
     val endSales: String? = "",
     val status: String? = "",
-    val restrictions: TicketRestrictions? = TicketRestrictions(),
+    val restrictions: TicketRestrictions?,
     val hidden: Boolean = false,
     val dates: List<TicketSession>? = emptyList()
 )
