@@ -1,7 +1,10 @@
 package com.ingresse.sdk.model.response
 
+import java.nio.ByteOrder
+
 data class TransactionJSON(
         val amount: Long = 0,
+        val amountOrder: Long = 0,
         val companyId: Int = 0,
         val createdAt: String? = "",
         val application: TApplicationJSON?,
