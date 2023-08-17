@@ -11,6 +11,7 @@ data class TransactionJSON(
         val id: String? = "",
         val event: TEventJSON?,
         val interest: Int? = 0,
+        val hasCoupon: Boolean = false,
         val interestToCustomer: Boolean = true,
         val passkey: TPasskeyJSON?,
         val payment: TPaymentJSON?,
