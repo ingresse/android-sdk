@@ -30,7 +30,10 @@ data class UserTransactionJSON(
         val payment: PaymentJSON,
         val createdAt: String,
         val channel: String?,
-        val canRefund: Boolean
+        val canRefund: Boolean,
+        val amountDiscount: Double,
+        val hasCoupon: Boolean
+
     ) {
 
         data class PaymentJSON(
