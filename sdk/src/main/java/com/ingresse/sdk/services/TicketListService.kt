@@ -30,7 +30,7 @@ class TicketListService(private val client: IngresseClient) {
     init {
         val builder = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
-                .baseUrl(URLBuilder(host, client.environment).build())
+                .baseUrl(URLBuilder(host, client.environment, client.customPrefix).build())
 
         val clientBuilder = OkHttpClient.Builder()
 

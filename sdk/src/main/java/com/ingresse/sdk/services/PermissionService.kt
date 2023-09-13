@@ -35,7 +35,7 @@ class PermissionService(private val client: IngresseClient) {
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .client(httpClient)
-                .baseUrl(URLBuilder(host, client.environment).build())
+                .baseUrl(URLBuilder(host, client.environment, client.customPrefix).build())
                 .build()
 
         service = adapter.create(Permission::class.java)

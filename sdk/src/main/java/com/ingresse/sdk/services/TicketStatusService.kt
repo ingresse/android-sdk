@@ -30,7 +30,7 @@ class TicketStatusService(val client: IngresseClient, timeout: Long = 2) {
     private var mCurrentCall: Call<String>? = null
 
     init {
-        val url = URLBuilder(host, client.environment).build()
+        val url = URLBuilder(host, client.environment, client.customPrefix).build()
         val builder = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

@@ -27,7 +27,7 @@ class Ticket(private val client: IngresseClient) {
         val adapter = Retrofit.Builder()
             .client(httpClient)
             .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(URLBuilder(Host.API, client.environment).build())
+            .baseUrl(URLBuilder(Host.API, client.environment, client.customPrefix).build())
             .build()
 
         service = adapter.create(TicketService::class.java)

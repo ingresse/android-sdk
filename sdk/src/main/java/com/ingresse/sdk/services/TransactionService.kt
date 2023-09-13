@@ -45,7 +45,7 @@ class TransactionService(private val client: IngresseClient) {
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addConverterFactory(EnumConverterFactory())
-                .baseUrl(URLBuilder(host, client.environment).build())
+                .baseUrl(URLBuilder(host, client.environment, client.customPrefix).build())
                 .build()
 
         service = adapter.create(Transaction::class.java)
