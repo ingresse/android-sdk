@@ -3,7 +3,7 @@ package com.ingresse.sdk.services
 import com.google.gson.reflect.TypeToken
 import com.ingresse.sdk.IngresseClient
 import com.ingresse.sdk.base.IngresseCallback
-import com.ingresse.sdk.base.Response
+import com.ingresse.sdk.base.ResponseDataPaged
 import com.ingresse.sdk.base.RetrofitCallback
 import com.ingresse.sdk.builders.ClientBuilder.Companion.TIMEOUT_DEFAULT
 import com.ingresse.sdk.builders.Host
@@ -54,7 +54,7 @@ class TicketListService(private val client: IngresseClient) {
     fun cancel() = mTicketListCall?.cancel()
 
     fun getTicketList(request: Requests.TicketList,
-                      onSuccess: (ArrayList<Responses.GroupJSON>) -> Unit,
+                      onSuccess: (ResponseDataPaged<ArrayList<Responses.GroupJSON>>) -> Unit,
                       onError: ErrorBlock,
                       onNetworkFailure: (String) -> Unit,
                       onTokenExpired: Block) {
@@ -68,14 +68,15 @@ class TicketListService(private val client: IngresseClient) {
                 page = request.page,
                 pageSize = request.pageSize,
                 pos = request.pos,
+                paginate = request.paginate,
                 userToken = request.userToken,
                 apikey = client.key)
 
         mTicketListCall = call
-        val callback = object: IngresseCallback<Response<ArrayList<Responses.GroupJSON>>> {
-            override fun onSuccess(data: Response<ArrayList<Responses.GroupJSON>>?) {
-                val results = data?.responseData ?: return onError(APIError.default)
-                onSuccess(results)
+        val callback = object: IngresseCallback<ResponseDataPaged<ArrayList<Responses.GroupJSON>>> {
+            override fun onSuccess(data: ResponseDataPaged<ArrayList<Responses.GroupJSON>>?) {
+                data?.responseData ?: return onError(APIError.default)
+                onSuccess(data)
             }
 
             override fun onError(error: APIError) = onError(error)
@@ -83,7 +84,7 @@ class TicketListService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
 
-        val type = object: TypeToken<Response<ArrayList<Responses.GroupJSON>>>() {}.type
+        val type = object: TypeToken<ResponseDataPaged<ArrayList<Responses.GroupJSON>>>() {}.type
         mTicketListCall?.enqueue(RetrofitCallback(type, callback))
     }
 }
