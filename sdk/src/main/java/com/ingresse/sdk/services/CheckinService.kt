@@ -34,7 +34,7 @@ class CheckinService(private val client: IngresseClient) {
     private var mConcurrentCalls: ArrayList<RetrofitObserver<CheckinResponse>> = ArrayList()
 
     init {
-        val url = URLBuilder(host, client.environment).build()
+        val url = URLBuilder(host, client.environment, client.customPrefix).build()
         val builder = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

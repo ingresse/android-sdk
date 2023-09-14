@@ -25,5 +25,6 @@ interface Sale {
                       @Query("page") page: Int,
                       @Query("pageSize") pageSize: Int,
                       @Query("pos") pos: Boolean?,
+                      @Query("paginate") paginate: Boolean?,
                       @Query("usertoken") userToken: String?): Call<String>
 }

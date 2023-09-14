@@ -28,7 +28,7 @@ class WebSocketService(private val client: IngresseClient) {
      * @param onSuccess - success callback
      */
     fun getTransaction(transactionId: String, onSuccess: (transactionId: String, status: String) -> Unit ) {
-        val url = URLBuilder(host, client.environment)
+        val url = URLBuilder(host, client.environment, client.customPrefix)
             .addPath("/websocket")
             .addParameter("token", client.authToken)
             .socketBuild()
