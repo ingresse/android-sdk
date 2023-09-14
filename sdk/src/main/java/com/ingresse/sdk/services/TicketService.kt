@@ -42,7 +42,7 @@ class TicketService(private val client: IngresseClient) {
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient)
-                .baseUrl(URLBuilder(host, client.environment).build())
+                .baseUrl(URLBuilder(host, client.environment, client.customPrefix).build())
                 .build()
 
         service = adapter.create(Ticket::class.java)

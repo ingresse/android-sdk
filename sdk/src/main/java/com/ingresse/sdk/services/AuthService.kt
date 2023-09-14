@@ -36,7 +36,7 @@ class AuthService(private val client: IngresseClient) {
     init {
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
-                .baseUrl(URLBuilder(host, client.environment).build())
+                .baseUrl(URLBuilder(host, client.environment, client.customPrefix).build())
                 .build()
 
         service = adapter.create(Auth::class.java)

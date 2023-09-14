@@ -34,7 +34,7 @@ class SearchService(private val client: IngresseClient) {
         val adapter = Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .client(httpClient)
-                .baseUrl(URLBuilder(Host.SEARCH, client.environment).build())
+                .baseUrl(URLBuilder(Host.SEARCH, client.environment, client.customPrefix).build())
                 .build()
 
         service = adapter.create(Search::class.java)

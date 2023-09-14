@@ -33,7 +33,7 @@ class UserData(private val client: IngresseClient) {
             .client(httpClient)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(URLBuilder(Host.API, client.environment).build())
+            .baseUrl(URLBuilder(Host.API, client.environment, client.customPrefix).build())
             .build()
 
         service = adapter.create(UserDataService::class.java)

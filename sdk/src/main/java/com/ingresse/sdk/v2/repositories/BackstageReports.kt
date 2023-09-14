@@ -32,7 +32,7 @@ class BackstageReports(client: IngresseClient) {
         val adapter = Retrofit.Builder()
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
-            .baseUrl(URLBuilder(Host.BACKSTAGE_REPORTS, client.environment).build())
+            .baseUrl(URLBuilder(Host.BACKSTAGE_REPORTS, client.environment, client.customPrefix).build())
             .build()
 
         service = adapter.create(BackstageReportsService::class.java)

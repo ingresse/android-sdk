@@ -20,10 +20,11 @@ enum class Environment(val prefix: String) {
     HML_C("hmlc-"),
     TEST("test-"),
     STG("stg-"),
-    INTEGRATION("integration2-")
+    INTEGRATION("integration2-"),
+    CUSTOM("custom"),
 }
 
-class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
+class URLBuilder(host: Host, environment: Environment = Environment.PROD, customPrefix: String?) {
     private var parameters: MutableMap<String, String> = mutableMapOf()
     private var path = ""
     private var url: String
@@ -33,14 +34,21 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD) {
         val hmls = listOf(Environment.HML,
                 Environment.HML_A,
                 Environment.HML_B,
-                Environment.HML_C)
+                Environment.HML_C,
+                Environment.CUSTOM,
+        )
 
-        url = hostPrefix + environment.prefix + host.address
+        var prefix = environment.prefix
+        if (environment == Environment.CUSTOM && customPrefix != null) {
+            prefix = if (host == Host.API) customPrefix else Environment.HML_A.prefix
+        }
+
+        url = hostPrefix + prefix + host.address
 
         if (host == Host.LIVE && hmls.contains(environment)) { url = hostPrefix + Host.LIVE_HML.address }
 
         if (host == Host.SEARCH && hmls.contains(environment)) {
-            url = hostPrefix + environment.prefix + Host.SEARCH_HML.address
+            url = hostPrefix + prefix + Host.SEARCH_HML.address
         }
     }
 

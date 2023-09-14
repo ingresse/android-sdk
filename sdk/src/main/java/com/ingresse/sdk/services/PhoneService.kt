@@ -33,7 +33,7 @@ class PhoneService(private val client: IngresseClient) {
                 .client(httpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(URLBuilder(host, client.environment).build())
+                .baseUrl(URLBuilder(host, client.environment, client.customPrefix).build())
                 .build()
 
         service = adapter.create(Phone::class.java)

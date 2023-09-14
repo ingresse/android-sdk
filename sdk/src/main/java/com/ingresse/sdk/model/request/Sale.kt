@@ -9,6 +9,7 @@ class Sale {
             var itemName: String? = null,
             var passkey: String? = null,
             var pos: Boolean? = null,
+            var paginate: Boolean? = null,
             var page: Int = 1,
             var pageSize: Int,
             var userToken: String? = null)

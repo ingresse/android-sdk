@@ -13,6 +13,6 @@ data class EventTickets(
     )
 
     companion object {
-        const val PASSPORT_SESSION_TYPE = "passport"
+        const val PASSPORT_SESSION_TYPE = "passports"
     }
 }

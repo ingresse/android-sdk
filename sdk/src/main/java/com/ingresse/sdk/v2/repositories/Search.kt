@@ -29,7 +29,7 @@ class Search(client: IngresseClient) {
         val adapter = Retrofit.Builder()
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
-            .baseUrl(URLBuilder(Host.SEARCH, client.environment).build())
+            .baseUrl(URLBuilder(Host.SEARCH, client.environment, client.customPrefix).build())
             .build()
 
         service = adapter.create(SearchService::class.java)
