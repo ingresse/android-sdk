@@ -107,6 +107,7 @@ interface User {
     fun getCashClosing(
         @Query("apikey") apikey: String,
         @Query("operator") userId: String,
+        @Query("event") eventId: String? = null,
         @Query("from") from: String,
         @Query("to") to: String,
         @Query("usertoken") userToken: String
