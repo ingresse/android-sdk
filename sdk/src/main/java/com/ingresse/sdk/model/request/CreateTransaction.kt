@@ -8,6 +8,7 @@ data class TransactionParams(
     var userId: String,
     var eventId: String,
     var ticketOwnerDocument: String?,
+    var ticketOwnerName: String?,
     var passkey: String? = null,
     var tickets: List<ShopTicket>)
 
