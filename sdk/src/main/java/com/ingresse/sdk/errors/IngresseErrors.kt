@@ -9,9 +9,9 @@ object IngresseErrors {
 
     init {
         val locale = Locale.getDefault().language
-        val fileName = "res/raw/errors_$locale.properties"
+        val fileName = "assets/errors_$locale.properties"
         try {
-            val input = getFile(fileName) ?: getFile("res/raw/errors_pt.properties")
+            val input = getFile(fileName) ?: getFile("assets/errors_pt.properties")
             errors.load(input)
         } catch (ignored: Exception) {}
     }
