@@ -81,6 +81,7 @@ class EntranceService(private val client: IngresseClient) {
                 apikey = client.key,
                 eventId = request.eventId,
                 sessionId = request.sessionId,
+                approved = request.approved,
                 page = request.page,
                 pageSize = request.pageSize,
                 userToken = request.userToken,
