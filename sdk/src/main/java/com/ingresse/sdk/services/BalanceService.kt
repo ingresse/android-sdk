@@ -50,6 +50,7 @@ class BalanceService(private val client: IngresseClient) {
         val call = service.getCashClosing(
                 apikey = client.key,
                 userId = request.operator,
+                eventId = request.eventId,
                 from = request.from,
                 to = request.to,
                 userToken = request.userToken)

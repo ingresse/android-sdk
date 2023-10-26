@@ -6,4 +6,6 @@ data class GuestList(
     val from: Long?,
     val page: Int,
     val pageSize: Int,
-    val userToken: String)
+    val userToken: String,
+    val approved: Int? = null,
+)
