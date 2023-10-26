@@ -21,6 +21,7 @@ interface Entrance {
                           @Query("apikey") apikey: String,
                           @Query("sessionid") sessionId: String,
                           @Query("usertoken") userToken: String,
+                          @Query("approved") approved: Int?,
                           @Query("page") page: Int,
                           @Query("pageSize") pageSize: Int,
                           @Query("from") dateFrom: Long?): Call<String>
