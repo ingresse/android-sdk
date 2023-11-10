@@ -1,6 +1,10 @@
 package com.ingresse.sdk.v2.models.response.searchEvents
 
+import com.google.gson.annotations.SerializedName
+
 data class SearchEventsJSON(
+    @SerializedName("accepted_currencies")
+    val acceptedCurrencies: String? = null,
     val attributes: AttributesJSON?,
     val categories: List<CategoryJSON>?,
     val companyId: Int?,

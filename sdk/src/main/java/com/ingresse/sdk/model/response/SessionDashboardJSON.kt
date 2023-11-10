@@ -1,6 +1,10 @@
 package com.ingresse.sdk.model.response
 
+import com.google.gson.annotations.SerializedName
+
 data class SessionDashboardJSON(
+    @SerializedName("accepted_currencies")
+    val acceptedCurrencies: String? = null,
     val event: String? = "",
     val sales: SalesDashboardJSON? = null
 )
