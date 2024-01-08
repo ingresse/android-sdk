@@ -109,7 +109,7 @@ class TicketService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<Array<TicketGroupJSON>>?>() {}.type
-        mGetEventTicketsCall?.enqueue(RetrofitCallback(type, callback))
+        mGetEventTicketsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -154,7 +154,7 @@ class TicketService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<CreateTransferJSON>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -207,6 +207,6 @@ class TicketService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<AuthenticationUserDeviceJSON>?>() {}.type
-        mAuthenticationUserDeviceCall?.enqueue(RetrofitCallback(type, callback))
+        mAuthenticationUserDeviceCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

@@ -105,7 +105,7 @@ class ReportService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<VisitsReportJSON>?>() {}.type
-        mGetVisitsReportService?.enqueue(RetrofitCallback(type, callback))
+        mGetVisitsReportService?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
 
@@ -141,7 +141,7 @@ class ReportService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseSessionDashboard>() {}.type
-        mGetSessionDashboardCall?.enqueue(RetrofitCallback(type, callback))
+        mGetSessionDashboardCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -178,6 +178,6 @@ class ReportService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseSalesTimeline>() {}.type
-        mGetSalesTimelineCall?.enqueue(RetrofitCallback(type, callback))
+        mGetSalesTimelineCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

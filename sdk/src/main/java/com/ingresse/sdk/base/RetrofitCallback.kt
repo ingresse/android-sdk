@@ -61,12 +61,24 @@ class RetrofitObserver<T>(val type: Type, val callback: IngresseCallback<T>): Si
     fun cancel() = disposable?.dispose()
 }
 
-class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : Callback<String> {
+class RetrofitCallback<T>(
+    val type: Type,
+    val callback: IngresseCallback<T>,
+    val logger: ErrorLogger?
+) : Callback<String> {
     override fun onResponse(call: Call<String>, response: Response<String>) {
         val errorBody = response.errorBody()?.string()
         val body = response.body()
         val responseCode = response.code()
         val gson = Gson()
+
+        if (!response.isSuccessful) {
+            logger?.logError(
+                response.raw().request.url.toUrl(),
+                errorBody,
+                responseCode
+            )
+        }
 
         if (responseCode != TOO_MANY_REQUESTS.code && responseCode != UNAUTHORIZED.code) {
             if (!errorBody.isNullOrEmpty()) {
@@ -116,9 +128,7 @@ class RetrofitCallback<T>(val type: Type, val callback: IngresseCallback<T>) : C
             return
         }
 
-        val errorResponse: Error
-
-        errorResponse = when {
+        val errorResponse: Error = when {
             responseCode != UNAUTHORIZED.code -> gson.fromJson(body, Error::class.java)
             errorBody?.contains(AUTHTOKEN_EXPIRED) == true -> return callback.onTokenExpired()
             else -> gson.fromJson(errorBody, Error::class.java)

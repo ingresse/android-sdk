@@ -89,6 +89,6 @@ class EventDetailsService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<EventDetailsJSON>?>() {}.type
-        mGetEventDetailsCall?.enqueue(RetrofitCallback(type, callback))
+        mGetEventDetailsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

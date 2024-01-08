@@ -76,6 +76,6 @@ class PhoneService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<CountryResponse>() {}.type
-        mGetCountriesCall?.enqueue(RetrofitCallback(type, callback))
+        mGetCountriesCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

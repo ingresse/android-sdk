@@ -106,7 +106,7 @@ class POSService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseSellTickets>() {}.type
-        mSellTicketsCall?.enqueue(RetrofitCallback(type, callback))
+        mSellTicketsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -144,7 +144,7 @@ class POSService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponsePrintTickets>() {}.type
-        mPrintTicketsCall?.enqueue(RetrofitCallback(type, callback))
+        mPrintTicketsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -176,7 +176,7 @@ class POSService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponsePrintLog>() {}.type
-        mPrintTicketsCall?.enqueue(RetrofitCallback(type, callback))
+        mPrintTicketsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -213,7 +213,7 @@ class POSService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<PlannerAttributesJSON>>() {}.type
-        mGetPlannerAttributesCall?.enqueue(RetrofitCallback(type, callback))
+        mGetPlannerAttributesCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -252,7 +252,7 @@ class POSService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseValidateTickets>() {}.type
-        mValidateTicketsCall?.enqueue(RetrofitCallback(type, callback))
+        mValidateTicketsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
 

@@ -149,7 +149,7 @@ class TransferService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<Array<UserTransfersJSON>>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -195,7 +195,7 @@ class TransferService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<List<RecentTransfersJSON>>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -240,7 +240,7 @@ class TransferService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<List<FriendsFromSearchJSON>>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -286,7 +286,7 @@ class TransferService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<UpdateTransferJSON>?>() {}.type
-        mUpdateTransferCall?.enqueue(RetrofitCallback(type, callback))
+        mUpdateTransferCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -329,7 +329,7 @@ class TransferService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<ReturnTicketJSON>?>() {}.type
-        mReturnTicketCall?.enqueue(RetrofitCallback(type, callback))
+        mReturnTicketCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -373,6 +373,6 @@ class TransferService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<TransferTicketJSON>?>() {}.type
-        mTransferTicketCall?.enqueue(RetrofitCallback(type, callback))
+        mTransferTicketCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }
