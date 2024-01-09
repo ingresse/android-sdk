@@ -120,7 +120,7 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object: TypeToken<Response<CompanyLoginJSON>>() {}.type
-        mCompanyLoginCall?.enqueue(RetrofitCallback(type, callback, client.logger))
+        mCompanyLoginCall?.enqueue(RetrofitCallback(type, callback, null))
     }
 
     /**
@@ -171,7 +171,7 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object: TypeToken<Response<LoginJSON>>() {}.type
-        mLoginCall?.enqueue(RetrofitCallback(type, callback, client.logger))
+        mLoginCall?.enqueue(RetrofitCallback(type, callback, null))
     }
 
     /**
@@ -416,6 +416,6 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<AuthPasswordJSON>?>() {}.type
-        mUpdatePasswordCall?.enqueue(RetrofitCallback(type, callback, client.logger))
+        mUpdatePasswordCall?.enqueue(RetrofitCallback(type, callback, null))
     }
 }
