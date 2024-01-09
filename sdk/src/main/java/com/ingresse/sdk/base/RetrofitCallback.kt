@@ -9,10 +9,14 @@ import com.ingresse.sdk.helper.HttpStatusCode.TOO_MANY_REQUESTS
 import com.ingresse.sdk.helper.HttpStatusCode.UNAUTHORIZED
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
+import okhttp3.RequestBody
+import okio.Buffer
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 import java.lang.reflect.Type
+
 
 class RetrofitObserver<T>(val type: Type, val callback: IngresseCallback<T>): SingleObserver<String> {
     private var disposable: Disposable? = null
@@ -66,6 +70,19 @@ class RetrofitCallback<T>(
     val callback: IngresseCallback<T>,
     val logger: ErrorLogger?
 ) : Callback<String> {
+
+    private fun bodyToString(request: RequestBody?): String {
+        return try {
+            request ?: return "Unknown request body"
+
+            val buffer = Buffer()
+            request.writeTo(buffer)
+            buffer.readUtf8()
+        } catch (e: IOException) {
+            "Error to parse request body"
+        }
+    }
+
     override fun onResponse(call: Call<String>, response: Response<String>) {
         val errorBody = response.errorBody()?.string()
         val body = response.body()
@@ -73,8 +90,10 @@ class RetrofitCallback<T>(
         val gson = Gson()
 
         if (!response.isSuccessful) {
+            val requestData = bodyToString(response.raw().request.body)
             logger?.logError(
                 response.raw().request.url.toUrl(),
+                requestData,
                 errorBody,
                 responseCode
             )
