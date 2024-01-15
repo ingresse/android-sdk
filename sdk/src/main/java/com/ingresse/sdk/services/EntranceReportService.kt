@@ -83,6 +83,6 @@ class EntranceReportService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseEntranceReport?>() {}.type
-        mGetEntranceReportService?.enqueue(RetrofitCallback(type, callback))
+        mGetEntranceReportService?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

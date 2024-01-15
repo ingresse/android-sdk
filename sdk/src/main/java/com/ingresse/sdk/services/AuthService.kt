@@ -120,7 +120,7 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object: TypeToken<Response<CompanyLoginJSON>>() {}.type
-        mCompanyLoginCall?.enqueue(RetrofitCallback(type, callback))
+        mCompanyLoginCall?.enqueue(RetrofitCallback(type, callback, null))
     }
 
     /**
@@ -171,7 +171,7 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object: TypeToken<Response<LoginJSON>>() {}.type
-        mLoginCall?.enqueue(RetrofitCallback(type, callback))
+        mLoginCall?.enqueue(RetrofitCallback(type, callback, null))
     }
 
     /**
@@ -225,7 +225,7 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<LoginJSON>?>() {}.type
-        mLoginWithFacebook?.enqueue(RetrofitCallback(type, callback))
+        mLoginWithFacebook?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -269,7 +269,7 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object: TypeToken<Response<UserAuthTokenJSON>>() {}.type
-        mRenewAuthTokenCall?.enqueue(RetrofitCallback(type, callback))
+        mRenewAuthTokenCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -317,7 +317,7 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<AuthPasswordJSON>?>() {}.type
-        mRecoverPasswordCall?.enqueue(RetrofitCallback(type, callback))
+        mRecoverPasswordCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -366,7 +366,7 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<ValidateHashJSON>?>() {}.type
-        mValidateHashCall?.enqueue(RetrofitCallback(type, callback))
+        mValidateHashCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -416,6 +416,6 @@ class AuthService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<AuthPasswordJSON>?>() {}.type
-        mUpdatePasswordCall?.enqueue(RetrofitCallback(type, callback))
+        mUpdatePasswordCall?.enqueue(RetrofitCallback(type, callback, null))
     }
 }

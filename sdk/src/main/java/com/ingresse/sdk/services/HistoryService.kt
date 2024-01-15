@@ -92,7 +92,7 @@ class HistoryService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<DataArray<CheckinHistoryJSON>?>>() {}.type
-        mGetCheckinHistoryCall?.enqueue(RetrofitCallback(type, callback))
+        mGetCheckinHistoryCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -134,6 +134,6 @@ class HistoryService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<DataArray<TransferHistoryItemJSON>?>>() {}.type
-        mGetTransferHistoryCall?.enqueue(RetrofitCallback(type, callback))
+        mGetTransferHistoryCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

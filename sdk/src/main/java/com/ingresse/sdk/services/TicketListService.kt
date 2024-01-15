@@ -107,6 +107,6 @@ class TicketListService(private val client: IngresseClient) {
         }
 
         val type = object: TypeToken<ResponseDataPaged<ArrayList<Responses.GroupJSON>>>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

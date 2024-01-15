@@ -98,7 +98,7 @@ class AttributesService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<DataArray<EventAttributesJSON>>() {}.type
-        mGetEventAttributesCall?.enqueue(RetrofitCallback(type, callback))
+        mGetEventAttributesCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -130,7 +130,7 @@ class AttributesService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Ignored>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -183,6 +183,6 @@ class AttributesService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<EventAttributesDataJSON>>() {}.type
-        mGetEventAttributesCall?.enqueue(RetrofitCallback(type, callback))
+        mGetEventAttributesCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

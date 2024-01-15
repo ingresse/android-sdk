@@ -81,6 +81,6 @@ class PermissionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<SalesGroupResponse>() {}.type
-        mSalesGroupCall?.enqueue(RetrofitCallback(type, callback))
+        mSalesGroupCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

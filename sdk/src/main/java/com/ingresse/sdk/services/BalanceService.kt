@@ -73,6 +73,6 @@ class BalanceService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponseType>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

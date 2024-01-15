@@ -131,7 +131,7 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<CreateTransactionJSON>?>() {}.type
-        mCreateTransactionCall?.enqueue(RetrofitCallback(type, callback))
+        mCreateTransactionCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -173,7 +173,7 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<TransactionDetailsJSON>?>() {}.type
-        mGetTransactionDetailsCall?.enqueue(RetrofitCallback(type, callback))
+        mGetTransactionDetailsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -211,7 +211,7 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<TransactionDetailsJSON>?>() {}.type
-        mCancelTransactionCall?.enqueue(RetrofitCallback(type, callback))
+        mCancelTransactionCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -252,7 +252,7 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<TransactionReportJSON>?>() {}.type
-        mGetTransactionReportCall?.enqueue(RetrofitCallback(type, callback))
+        mGetTransactionReportCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -295,7 +295,7 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<Array<TransactionJSON>?>>() {}.type
-        mGetTransactionListCall?.enqueue(RetrofitCallback(type, callback))
+        mGetTransactionListCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -356,7 +356,7 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<Array<TransactionJSON>>?>() {}.type
-        mGetTransactionsCall?.enqueue(RetrofitCallback(type, callback))
+        mGetTransactionsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -398,7 +398,7 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<TransactionJSON>?>() {}.type
-        mGetDetailsCall?.enqueue(RetrofitCallback(type, callback))
+        mGetDetailsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -434,7 +434,7 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<DataArray<String>>?>() {}.type
-        mGetRefundReasonsCall?.enqueue(RetrofitCallback(type, callback))
+        mGetRefundReasonsCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -476,6 +476,6 @@ class TransactionService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<TransactionDetailsRefundJSON>?>() {}.type
-        mRefundTransactionCall?.enqueue(RetrofitCallback(type, callback))
+        mRefundTransactionCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

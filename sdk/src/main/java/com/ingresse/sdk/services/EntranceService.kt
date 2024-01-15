@@ -116,6 +116,6 @@ class EntranceService(private val client: IngresseClient) {
         }
 
         val type = object: TypeToken<Response<Array<GuestJSON>>>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }
