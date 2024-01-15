@@ -209,7 +209,7 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<UserDataJSON>>() {}.type
-        mUserDataCall?.enqueue(RetrofitCallback(type, callback))
+        mUserDataCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -271,7 +271,7 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<UserUpdatedJSON>>() {}.type
-        mUpdateBasicInfosCall?.enqueue(RetrofitCallback(type, callback))
+        mUpdateBasicInfosCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -325,7 +325,7 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<UserUpdatedJSON>>() {}.type
-        mUpdateUserPictureCall?.enqueue(RetrofitCallback(type, callback))
+        mUpdateUserPictureCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -387,7 +387,7 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<UserUpdatedJSON>?>() {}.type
-        mUpdateUserAddressCall?.enqueue(RetrofitCallback(type, callback))
+        mUpdateUserAddressCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -447,7 +447,7 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<UserUpdatedJSON>?>() {}.type
-        mUpdateUserPlannerInfosCall?.enqueue(RetrofitCallback(type, callback))
+        mUpdateUserPlannerInfosCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -519,7 +519,7 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<Array<UserTicketsJSON>>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -572,7 +572,7 @@ class UserService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
         val type = object : TypeToken<Response<EventAttributesJSON>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -639,7 +639,7 @@ class UserService(private val client: IngresseClient) {
             override fun onTokenExpired() = onTokenExpired()
         }
         val type = object : TypeToken<Response<Array<WalletEventJSON>>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -700,7 +700,7 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<StrengthPasswordJSON?>>() {}.type
-        mValidatePasswordStrengthCall?.enqueue(RetrofitCallback(type, callback))
+        mValidatePasswordStrengthCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -743,7 +743,7 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Ignored>() {}.type
-        mChangePasswordCall?.enqueue(RetrofitCallback(type, callback))
+        mChangePasswordCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 
     /**
@@ -795,6 +795,6 @@ class UserService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<Response<DataJSON<CreateAccountJSON>>?>() {}.type
-        mCreateAccountCall?.enqueue(RetrofitCallback(type, callback))
+        mCreateAccountCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

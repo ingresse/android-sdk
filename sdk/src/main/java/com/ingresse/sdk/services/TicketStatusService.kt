@@ -95,6 +95,6 @@ class TicketStatusService(val client: IngresseClient, timeout: Long = 2) {
         }
 
         val type = object: TypeToken<Response<Array<CheckinSessionJSON>>>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

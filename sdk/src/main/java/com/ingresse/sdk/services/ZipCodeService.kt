@@ -81,6 +81,6 @@ class ZipCodeService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ZipCodeAddressJSON?>() {}.type
-        mZipCodeCall?.enqueue(RetrofitCallback(type, callback))
+        mZipCodeCall?.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }

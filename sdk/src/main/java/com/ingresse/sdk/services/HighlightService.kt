@@ -118,6 +118,6 @@ class HighlightService(private val client: IngresseClient) {
         }
 
         val type = object : TypeToken<ResponsePaged<HighlightEventJSON>?>() {}.type
-        call.enqueue(RetrofitCallback(type, callback))
+        call.enqueue(RetrofitCallback(type, callback, client.logger))
     }
 }
