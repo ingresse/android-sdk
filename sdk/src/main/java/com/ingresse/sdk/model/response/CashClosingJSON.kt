@@ -1,11 +1,23 @@
 package com.ingresse.sdk.model.response
 
+import com.google.gson.annotations.SerializedName
+
 data class CashClosingJSON(
         val summary: CashSummaryJSON,
-        val groups: List<CashGroupsJSON>)
+        val groups: List<CashGroupsJSON>,
+        val events: List<CashEventJSON>
+)
 
 data class CashGroupsJSON(val group: CashGroupJSON)
 data class CashGroupJSON(val id: Int, val name: String)
+
+data class CashEventJSON(
+        val id: String,
+        val title: String,
+        @SerializedName("accepted_currencies")
+        val acceptedCurrencies: String? = null,
+        val summary: CashSummaryJSON
+)
 
 data class CashSummaryJSON(
         val processed: List<CashSummaryItemJSON>,
