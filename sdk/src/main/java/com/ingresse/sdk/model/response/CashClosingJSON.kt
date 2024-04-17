@@ -14,7 +14,7 @@ data class CashGroupJSON(val id: Int, val name: String)
 data class CashEventJSON(
         val id: String,
         val title: String,
-        @SerializedName("accepted_currencies")
+        @SerializedName("accepted_currency")
         val acceptedCurrencies: String? = null,
         val summary: CashSummaryJSON
 )
