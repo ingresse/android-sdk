@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class CashClosingJSON(
         val summary: CashSummaryJSON,
         val groups: List<CashGroupsJSON>,
-        val events: List<CashEventJSON>
+        val events: List<CashEventJSON>?
 )
 
 data class CashGroupsJSON(val group: CashGroupJSON)
