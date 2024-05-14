@@ -18,6 +18,7 @@ enum class Environment(val prefix: String) {
     HML_A("hmla-"),
     HML_B("hmlb-"),
     HML_C("hmlc-"),
+    UAT_DEPLOY("uat-deploy-"),
     TEST("test-"),
     STG("stg-"),
     INTEGRATION("integration2-"),
@@ -35,6 +36,7 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD, custom
                 Environment.HML_A,
                 Environment.HML_B,
                 Environment.HML_C,
+                Environment.UAT_DEPLOY,
                 Environment.CUSTOM,
         )
 
