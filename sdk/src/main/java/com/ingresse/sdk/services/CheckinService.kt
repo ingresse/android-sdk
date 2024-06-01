@@ -97,7 +97,7 @@ class CheckinService(private val client: IngresseClient) {
             }
 
             override fun onRetrofitError(error: Throwable) {
-                onNetworkFail(error.localizedMessage)
+                onNetworkFail(error.localizedMessage.orEmpty())
             }
 
             override fun onTokenExpired() = onTokenExpired()
