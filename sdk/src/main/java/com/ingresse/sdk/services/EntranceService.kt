@@ -109,7 +109,7 @@ class EntranceService(private val client: IngresseClient) {
 
             override fun onRetrofitError(error: Throwable) {
                 if (!concurrent) mGuestListCall = null else mConcurrentCalls.remove(call)
-                onNetworkFail(error.localizedMessage)
+                onNetworkFail(error.localizedMessage.orEmpty())
             }
 
             override fun onTokenExpired() = onTokenExpired()
