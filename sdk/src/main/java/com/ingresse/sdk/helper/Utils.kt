@@ -8,3 +8,4 @@ fun guard(vararg args: Any?) : Boolean {
 
 typealias Block = () -> Unit
 typealias ErrorBlock = (APIError) -> Unit
+typealias RetrofitErrorBlock = (Throwable) -> Unit
