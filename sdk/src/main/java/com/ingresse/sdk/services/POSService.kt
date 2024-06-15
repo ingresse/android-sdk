@@ -12,6 +12,7 @@ import com.ingresse.sdk.builders.URLBuilder
 import com.ingresse.sdk.errors.APIError
 import com.ingresse.sdk.helper.Block
 import com.ingresse.sdk.helper.ErrorBlock
+import com.ingresse.sdk.helper.RetrofitErrorBlock
 import com.ingresse.sdk.model.request.PlannerAttributes
 import com.ingresse.sdk.model.request.PrintTickets
 import com.ingresse.sdk.model.request.SellTickets
@@ -81,7 +82,8 @@ class POSService(private val client: IngresseClient) {
     fun sellTickets(request: SellTickets,
                     onSuccess: (SellTicketsJSON) -> Unit,
                     onError: ErrorBlock,
-                    onTokenExpired: Block) {
+                    onTokenExpired: Block,
+                    onThrowableError: RetrofitErrorBlock? = null) {
 
         mSellTicketsCall = service.sellTickets(
             apikey = client.key,
@@ -100,6 +102,7 @@ class POSService(private val client: IngresseClient) {
                 val apiError = APIError()
                 apiError.message = error.localizedMessage
                 onError(apiError)
+                onThrowableError?.invoke(error)
             }
 
             override fun onTokenExpired() = onTokenExpired()
