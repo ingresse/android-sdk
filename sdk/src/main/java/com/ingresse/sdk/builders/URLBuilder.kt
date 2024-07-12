@@ -19,6 +19,12 @@ enum class Environment(val prefix: String) {
     HML_B("hmlb-"),
     HML_C("hmlc-"),
     UAT_DEPLOY("uat-deploy-"),
+    UAT_FUTEBOL("uat-futebol-"),
+    UAT_RETENCAO("uat-retencao-"),
+    UAT_EXPANSAO("uat-expansao-"),
+    UAT_NEO("uat-neo-"),
+    UAT_ZNGLR("uat-znglr-"),
+    UAT_I18N("uat-i18n-"),
     TEST("test-"),
     STG("stg-"),
     INTEGRATION("integration2-"),
@@ -32,12 +38,19 @@ class URLBuilder(host: Host, environment: Environment = Environment.PROD, custom
     private val hostPrefix = "https://"
 
     init {
-        val hmls = listOf(Environment.HML,
-                Environment.HML_A,
-                Environment.HML_B,
-                Environment.HML_C,
-                Environment.UAT_DEPLOY,
-                Environment.CUSTOM,
+        val hmls = listOf(
+            Environment.HML,
+            Environment.HML_A,
+            Environment.HML_B,
+            Environment.HML_C,
+            Environment.UAT_DEPLOY,
+            Environment.UAT_FUTEBOL,
+            Environment.UAT_RETENCAO,
+            Environment.UAT_EXPANSAO,
+            Environment.UAT_NEO,
+            Environment.UAT_ZNGLR,
+            Environment.UAT_I18N,
+            Environment.CUSTOM,
         )
 
         var prefix = environment.prefix
