@@ -88,6 +88,7 @@ class POSService(private val client: IngresseClient) {
         mSellTicketsCall = service.sellTickets(
             apikey = client.key,
             userToken = request.userToken,
+            otpCode = request.otpCode,
             params = request)
 
         val callback = object : IngresseCallback<ResponseSellTickets?> {
