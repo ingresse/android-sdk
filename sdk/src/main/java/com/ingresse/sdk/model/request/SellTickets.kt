@@ -8,6 +8,7 @@ data class SellTickets(
     var userToken: String,
     var eventId: String = "",
     var userEmail: String? = null,
+    var otpCode: String? = null,
     var payment: String = "",
     var installments: String? = null,
     var ticketOwnerDocument: String?,

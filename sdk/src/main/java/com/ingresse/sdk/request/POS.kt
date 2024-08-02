@@ -17,6 +17,7 @@ interface POS {
     fun sellTickets(@Query("apikey") apikey: String,
                     @Query("usertoken") userToken: String,
                     @Query("method") method: String = "sell",
+                    @Header("X-INGRESSE-OTP") otpCode: String? = null,
                     @Body params: SellTickets): Call<String>
 
     /**
