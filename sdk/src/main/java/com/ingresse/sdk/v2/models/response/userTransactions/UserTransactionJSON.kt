@@ -8,7 +8,8 @@ data class UserTransactionJSON(
     data class EventJSON(
         val id: Int,
         val title: String,
-        val datetime: String
+        val datetime: String,
+        val timezone: String
     )
 
     data class ItemsJSON(
