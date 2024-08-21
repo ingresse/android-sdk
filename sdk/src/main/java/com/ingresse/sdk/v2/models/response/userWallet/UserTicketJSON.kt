@@ -15,6 +15,8 @@ data class UserTicketJSON(
     val eventId: Int?,
     val eventTitle: String?,
     val eventVenue: EventVenueJSON?,
+    @SerializedName("timezone")
+    val eventTimezone: String?,
     val transactionId: String?,
     val description: String?,
     val sequence: String?,

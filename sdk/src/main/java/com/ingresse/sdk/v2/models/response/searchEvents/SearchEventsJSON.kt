@@ -19,6 +19,7 @@ data class SearchEventsJSON(
     val staff: StaffJSON?,
     val status: StatusJSON?,
     val title: String?,
+    val timezone: String?,
     val updatedAt: String?,
     val usersPermission: List<Int>?,
 )
