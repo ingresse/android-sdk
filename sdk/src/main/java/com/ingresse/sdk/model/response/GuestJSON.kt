@@ -18,6 +18,8 @@ class GuestJSON {
     val soldOnline: String? = null
     val guestTypeId: String? = null
     val transactionId: String? = null
+    val refunded: Boolean? = false
+    val refundedAt: String? = null
     val external: Boolean = false
     val transferred: Boolean = false
 }
