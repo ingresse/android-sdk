@@ -8,6 +8,7 @@ class GuestJSON {
     val holderUserId: Long = 0
     val holderName: String? = null
     val holderEmail: String? = null
+    val buyerDocument: String? = null
     val name: String? = null
     val email: String? = null
     val type: String? = null
