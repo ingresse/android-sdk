@@ -89,8 +89,10 @@ private fun <T> Gson.parseIngresseError(body: String): Result<T> {
 }
 
 private fun <T> Gson.parseErrorBody(errorBody: ResponseBody): Result<T> {
-    val result = fromJson(errorBody.charStream(), Error::class.java)
-    val message = "[${result.category}] ${result.message}"
+    val result = fromJson(errorBody.string(), IngresseError::class.java)?.responseError
+        ?: fromJson(errorBody.charStream(), Error::class.java)
+
+    val message = "[${result.category.orEmpty()}] ${result.message}"
     val throwable = Throwable(message)
 
     if (message.contains(TOKEN_EXPIRED, ignoreCase = true)) {

@@ -7,6 +7,7 @@ android {
     compileSdkVersion 31
 
     defaultConfig {
+        namespace "com.ingresse.sdk"
         minSdkVersion 19
         targetSdkVersion 31
         versionCode 55
