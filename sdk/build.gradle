@@ -7,10 +7,11 @@ android {
     compileSdkVersion 31
 
     defaultConfig {
+        namespace "com.ingresse.sdk"
         minSdkVersion 19
         targetSdkVersion 31
-        versionCode 55
-        versionName "2.19.0"
+        versionCode 56
+        versionName "2.20.0"
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }

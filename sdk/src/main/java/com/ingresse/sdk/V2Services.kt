@@ -10,6 +10,7 @@ import com.ingresse.sdk.v2.repositories.Home
 import com.ingresse.sdk.v2.repositories.Password
 import com.ingresse.sdk.v2.repositories.PasswordStrength
 import com.ingresse.sdk.v2.repositories.Search
+import com.ingresse.sdk.v2.repositories.Security
 import com.ingresse.sdk.v2.repositories.Ticket
 import com.ingresse.sdk.v2.repositories.UserData
 import com.ingresse.sdk.v2.repositories.UserTransaction
@@ -30,4 +31,5 @@ interface V2Services {
     val userWallet: UserWallet
     val userTransaction: UserTransaction
     val backstageReports: BackstageReports
+    val security: Security
 }

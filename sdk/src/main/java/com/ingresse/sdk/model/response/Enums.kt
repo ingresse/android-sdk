@@ -6,7 +6,8 @@ enum class CheckinStatus {
     NOT_FOUND,
     ALREADY_UPDATED,
     INVALID_SESSION,
-    SESSION_REQUIRED
+    SESSION_REQUIRED,
+    REFUNDED,
 }
 
 enum class ShopStatus(val status: String) {
