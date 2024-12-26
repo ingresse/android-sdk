@@ -1,17 +1,20 @@
 package com.ingresse.sdk.v2.models.response.login
 
+import com.google.gson.annotations.SerializedName
+
 data class CompanyLoginJSON(
     val status: Boolean,
     val message: String?,
     val data: List<CompanyDataJSON>?,
 ) {
 
-    data class CompanyDataJSON(
+    data class  CompanyDataJSON(
         val userId: Int,
         val token: String,
         val authToken: String,
         val company: CompanyJSON?,
         val application: CompanyApplicationJSON,
+        val device: DeviceJSON,
     ) {
 
         data class CompanyApplicationJSON(
@@ -32,5 +35,15 @@ data class CompanyLoginJSON(
                 val large: String,
             )
         }
+
+        data class DeviceJSON(
+            val id: String?,
+            val name: String?,
+            @SerializedName("creationdate")
+            val creationDate: String?,
+            val verified: Boolean?,
+            val mfa: Boolean?,
+            val mfaRequired: Boolean?,
+        )
     }
 }
