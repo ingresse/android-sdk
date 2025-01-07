@@ -11,7 +11,7 @@ object IngresseErrors {
 
     @JvmStatic
     fun refreshLanguage() {
-        val locale = Locale.getDefault().language
+        val locale = getLocale()
         val fileName = "assets/errors_$locale.properties"
         try {
             val input = getFile(fileName) ?: getFile("assets/errors_pt.properties")
@@ -31,11 +31,18 @@ object IngresseErrors {
     )
 
     @JvmStatic
-    fun getTitle(code: Int): String = errors.getProperty("title_$code", defaults["title_${Locale.getDefault().language}"]!!)
+    fun getTitle(code: Int): String = errors.getProperty("title_$code", defaults["title_${getLocale()}"]!!)
 
     @JvmStatic
     fun getError(code: Int): String {
-        if (code == 0) return defaults["error_no_code_${Locale.getDefault().language}"]!!
-        return errors.getProperty(code.toString(), String.format(defaults["error_${Locale.getDefault().language}"]!!, code))
+        if (code == 0) return defaults["error_no_code_${getLocale()}"]!!
+        return errors.getProperty(code.toString(), String.format(defaults["error_${getLocale()}"]!!, code))
+    }
+
+    private fun getLocale(): String {
+        val acceptedLanguages = listOf("pt", "es")
+        val currentLanguage = Locale.getDefault().language
+        val defaultLanguage = "pt"
+        return if (acceptedLanguages.contains(currentLanguage)) currentLanguage else defaultLanguage
     }
 }
