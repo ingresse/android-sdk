@@ -6,6 +6,8 @@ data class AttributesJSON(
     private val validationCpfTicketmodal : BooleanValueJSON?,
     private val passportAtBottom: BooleanValueJSON?,
     private val passportLabel: StringValueJSON?,
+    private val hasAdminFee: BooleanValueJSON?,
+    private val adminFeeValue: NumberValueJSON?,
 ) {
     data class BooleanValueJSON(
         val name: String?,
@@ -17,9 +19,16 @@ data class AttributesJSON(
         val value: String?
     )
 
+    data class NumberValueJSON(
+        val name: String?,
+        val value: Double?
+    )
+
     fun liveEnabled() = liveEnabled?.value
     fun validationCpfTicketbooth() = validationCpfTicketbooth?.value
     fun validationCpfTicketModal() = validationCpfTicketmodal?.value
     fun passportAtBottom() = passportAtBottom?.value
     fun passportLabel() = passportLabel?.value
+    fun hasAdminFee() = hasAdminFee?.value
+    fun adminFeeValue() = adminFeeValue?.value
 }
